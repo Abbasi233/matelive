@@ -1,13 +1,22 @@
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class StorageController {
+class StorageController extends GetxController {
   GetStorage _shared = GetStorage();
 
-  Future<bool> isFirstShowing() async {
+  Future<bool> readFirstShowing() async {
     return _shared.read("isFirstShowing") ?? true;
   }
 
-  void saveShowing() async {
+  void saveFirstShowing() async {
     _shared.write("isFirstShowing", false);
+  }
+
+  Future<bool> readLoggedIn() async {
+    return _shared.read("isLoggedIn") ?? false;
+  }
+
+  void saveLoggedIn() async {
+    _shared.write("isLoggedIn", true);
   }
 }

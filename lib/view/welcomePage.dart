@@ -81,7 +81,7 @@ class WelcomePage extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
                                         child: Text(
-                                          "Skip",
+                                          "Tanıtımı Geç",
                                           style: TextStyle(color: Colors.black),
                                         ),
                                       ),
@@ -104,7 +104,7 @@ class WelcomePage extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
-                                        child: Text("Next"),
+                                        child: Text("Sonraki"),
                                       ),
                                       onPressed: () {
                                         _controller.changePage(_pageController);
@@ -126,7 +126,7 @@ class WelcomePage extends StatelessWidget {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text("Got It!"),
+                                  child: Text("Hadi Başlayalım!"),
                                 ),
                                 onPressed: () => closeScreen(context),
                               ),
@@ -142,12 +142,12 @@ class WelcomePage extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.only(top: 30.0),
               padding: EdgeInsets.symmetric(vertical: 40.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(
-                  welcomePageItems.length,
-                  (index) => Obx(
-                    () => Container(
+              child: Obx(
+                () => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(
+                    welcomePageItems.length,
+                    (index) => Container(
                       margin: EdgeInsets.symmetric(horizontal: 3.0),
                       height: 10.0,
                       width: 10.0,
@@ -158,8 +158,8 @@ class WelcomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
+                    growable: false,
                   ),
-                  growable: false,
                 ),
               ),
             ),
@@ -170,7 +170,7 @@ class WelcomePage extends StatelessWidget {
   }
 
   void closeScreen(BuildContext context) {
-    _storage.saveShowing();
+    _storage.saveFirstShowing();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

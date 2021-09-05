@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:matelive/controller/getX/storage.dart';
-import 'package:matelive/view/signIn.dart';
-import 'package:matelive/view/welcomePage.dart';
 
-import 'view/homePage.dart';
+import 'constant.dart';
+import 'view/welcomePage.dart';
+import 'view/landingPage.dart';
+import 'controller/getX/storage.dart';
 
 Widget _firstScreen;
 
@@ -17,9 +17,9 @@ void main() async {
 }
 
 Future<Widget> isFirstShowingMethod() async {
-  StorageController _controller = StorageController();
-  bool result = await _controller.isFirstShowing();
-  return result ? WelcomePage() : SignInPage();
+  StorageController _controller = Get.put(StorageController());
+  bool result = await _controller.readFirstShowing();
+  return result ? WelcomePage() : LandingPage();
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Matelive',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: "Jost",
+        primaryColor: kPrimaryColor,
       ),
       home: _firstScreen,
     );
