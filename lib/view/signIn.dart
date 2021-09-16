@@ -1,36 +1,58 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/constant.dart';
+import 'package:matelive/view/utils/primaryButton.dart';
+
+import '/constant.dart';
+import '/view/signUp.dart';
 
 class SignInPage extends StatelessWidget {
   final _rememberMe = false.obs;
   final _formKey = GlobalKey<FormState>();
-  final _ePostaController = TextEditingController();
-  final _sifreController = TextEditingController();
+  final _eMailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            height: Get.size.height,
-            padding:
-                EdgeInsets.symmetric(horizontal: 20) + EdgeInsets.only(top: 30),
+        child: Container(
+          height: Get.size.height,
+          width: Get.size.width,
+          padding:
+              EdgeInsets.symmetric(horizontal: 20) + EdgeInsets.only(top: 30),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
                   "assets/images/logo.png",
                   width: Get.size.width * 0.6,
                 ),
                 SizedBox(height: 30),
-                Text("Matelive Giriş", style: styleH1),
+                Text("Matelive Giriş", style: styleH1()),
                 SizedBox(height: 30),
                 Padding(
                   padding: EdgeInsets.only(right: Get.size.width / 15),
-                  child: Text(
-                    "Aşağıdaki bilgileri doldurarak hesabınıza giriş yapabilir ya da buraya tıklayarak yeni bir hesap oluşturabilirsiniz.",
-                    style: styleH4,
+                  child: Text.rich(
+                    TextSpan(
+                      style: styleH4(),
+                      children: [
+                        TextSpan(
+                            text:
+                                "Aşağıdaki bilgileri doldurarak hesabınıza giriş yapabilir ya da "),
+                        WidgetSpan(
+                          child: InkWell(
+                            onTap: () => Get.to(() => SignUpPage()),
+                            child: Text(
+                              "buraya tıklayarak",
+                              style: customFont(22, color: kPrimaryColor),
+                            ),
+                          ),
+                        ),
+                        TextSpan(text: " yeni bir hesap oluşturabilirsiniz."),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 30),
@@ -40,11 +62,11 @@ class SignInPage extends StatelessWidget {
                     children: [
                       textInput(
                         hintText: "E-Posta Adresiniz",
-                        controller: _ePostaController,
+                        controller: _eMailController,
                       ),
                       textInput(
                         hintText: "Şifreniz",
-                        controller: _sifreController,
+                        controller: _passwordController,
                         password: true,
                       ),
                     ],
@@ -65,41 +87,21 @@ class SignInPage extends StatelessWidget {
                               fillColor:
                                   MaterialStateProperty.all(kPrimaryColor),
                             ),
-                            Text("Beni Hatırla", style: styleH4),
+                            Text("Beni Hatırla", style: styleH4()),
                           ],
                         ),
                       ),
                     ),
                     Expanded(
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                          ),
-                          backgroundColor:
-                              MaterialStateProperty.all(kPrimaryColor),
-                          textStyle: MaterialStateProperty.all(styleH4),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(kBorderRadius),
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
-                            );
-                          }
-                        },
+                      child: primaryButton(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [Text('Giriş Yap'), Icon(Icons.person)],
                         ),
+                        onPressed: () {
+                          // if (_formKey.currentState.validate()) {}
+                          Get.to(() => SignUpPage());
+                        },
                       ),
                     ),
                   ],
@@ -109,7 +111,7 @@ class SignInPage extends StatelessWidget {
                   onPressed: () {},
                   child: Text(
                     "Şifrenizi mi unuttunuz?",
-                    style: styleH4,
+                    style: styleH4(),
                   ),
                 ),
               ],
@@ -127,31 +129,31 @@ class SignInPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
-        style: styleH4,
+        style: styleH4(),
         controller: controller,
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: customFont(
             18,
-            weight: FontWeight.w500,
+            fontWeight: FontWeight.w500,
             color: Colors.grey,
           ),
           hoverColor: kPrimaryColor,
           border: OutlineInputBorder(
             borderSide: BorderSide(color: kPrimaryColor),
-            borderRadius: BorderRadius.circular(kBorderRadius),
+            borderRadius: BorderRadius.circular(kTextInputBorderRadius),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: kPrimaryColor),
-            borderRadius: BorderRadius.circular(kBorderRadius),
+            borderRadius: BorderRadius.circular(kTextInputBorderRadius),
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
         ),
         obscureText: password,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter some text';
+            return 'Lütfen bu alanı doldurun.';
           }
           return null;
         },

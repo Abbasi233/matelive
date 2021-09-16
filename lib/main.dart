@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'constant.dart';
+import 'view/authPage.dart';
 import 'view/welcomePage.dart';
-import 'view/landingPage.dart';
 import 'controller/getX/storage.dart';
 
 Widget _firstScreen;
@@ -17,9 +17,9 @@ void main() async {
 }
 
 Future<Widget> isFirstShowingMethod() async {
-  StorageController _controller = Get.put(StorageController());
-  bool result = await _controller.readFirstShowing();
-  return result ? WelcomePage() : LandingPage();
+  var _storageController = Get.put(StorageController());
+  bool result = await _storageController.readFirstShowing();
+  return result ? WelcomePage() : AuthPage();
 }
 
 class MyApp extends StatelessWidget {

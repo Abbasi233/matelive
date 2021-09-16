@@ -1,17 +1,16 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-// import 'landing_page.dart';
 import '/constant.dart';
-import '/view/homePage.dart';
+import 'landingPage.dart';
 import 'utils/welcomePageItems.dart';
 import '/controller/getX/storage.dart';
 import '/controller/getX/welcomePage.dart';
 
 class WelcomePage extends StatelessWidget {
-  final _storage = StorageController();
+  final _storage = Get.find<StorageController>();
   final _pageController = PageController();
-  final _controller = Get.put(WelcomePageController());
+  final _welcomePageController = Get.put(WelcomePageController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class WelcomePage extends StatelessWidget {
             itemBuilder: (context, i) {
               print("Drawed");
               _pageController.addListener(() {
-                _controller.emitPageNumber(_pageController);
+                _welcomePageController.emitPageNumber(_pageController);
               });
               return Container(
                 child: Column(
@@ -107,7 +106,7 @@ class WelcomePage extends StatelessWidget {
                                         child: Text("Sonraki"),
                                       ),
                                       onPressed: () {
-                                        _controller.changePage(_pageController);
+                                        _welcomePageController.changePage(_pageController);
                                       },
                                     ),
                                   ),
@@ -152,7 +151,7 @@ class WelcomePage extends StatelessWidget {
                       height: 10.0,
                       width: 10.0,
                       decoration: BoxDecoration(
-                        color: _controller.pageNo.value == index
+                        color: _welcomePageController.pageNo.value == index
                             ? kPrimaryColor
                             : kPrimaryColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(10.0),
@@ -174,7 +173,7 @@ class WelcomePage extends StatelessWidget {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(),
+        builder: (context) => LandingPage(),
       ),
     );
   }
