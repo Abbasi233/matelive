@@ -78,22 +78,23 @@ class HomePage extends StatelessWidget {
             // TODO METRİKLER
             Row(
               children: [
-                card("BAŞARILI GÖRÜŞME\nSAYISI", "0", kPrimaryColor),
+                gorusmeCard("BAŞARILI GÖRÜŞME\nSAYISI", "0", kPrimaryColor),
                 fixedWidth,
-                card("CEVAPSIZ ARAMA\nSAYISI", "0", Colors.lightGreen),
+                gorusmeCard("CEVAPSIZ ARAMA\nSAYISI", "0", Colors.lightGreen),
               ],
             ),
             fixedHeight,
             Row(
               children: [
-                card("TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
+                gorusmeCard("TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
                 fixedWidth,
-                card("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
+                gorusmeCard("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
               ],
             ),
             fixedHeight,
             Card(
               shape: RoundedRectangleBorder(
+                  side: BorderSide(color: kTextColor.withOpacity(0.5)),
                   borderRadius: BorderRadius.circular(kBorderRadius)),
               child: Container(
                 padding: EdgeInsets.all(20),
@@ -132,6 +133,7 @@ class HomePage extends StatelessWidget {
             fixedHeight,
             Card(
               shape: RoundedRectangleBorder(
+                  side: BorderSide(color: kTextColor.withOpacity(0.5)),
                   borderRadius: BorderRadius.circular(kBorderRadius)),
               child: Container(
                 padding: EdgeInsets.all(20),

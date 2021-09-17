@@ -15,59 +15,87 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 5,
       child: Scaffold(
         appBar: MyAppBar(
           elevation: 0,
           centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
-            child: Container(
-              color: kTabBarColor,
-              child: TabBar(
-                isScrollable: true,
-                indicatorWeight: 4,
-                indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: kPrimaryColor,
-                ),
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.only(top: 40, bottom: 5),
-                tabs: [
-                  _tab("ANA SAYFA", textColor: kPrimaryColor),
-                  _tab("KREDİ AL", textColor: kYellowColor),
-                  _tab("PROFİL BİLGİLERİ"),
-                  _tab("GÖRÜŞMELER"),
-                  _tab("BİLDİRİMLER"),
-                  _tab("ÇIKIŞ YAP"),
-                ],
-              ),
-            ),
-          ),
+          // bottom: PreferredSize(
+          //   preferredSize: Size.fromHeight(kToolbarHeight),
+          //   child: Container(
+          //     color: kTabBarColor,
+          //     child: TabBar(
+          //       isScrollable: true,
+          //       indicatorWeight: 4,
+          //       indicator: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(20),
+          //         color: kPrimaryColor,
+          //       ),
+          //       indicatorSize: TabBarIndicatorSize.label,
+          //       indicatorPadding: EdgeInsets.only(top: 40, bottom: 5),
+          //       tabs: [
+          //         _tab("ANA SAYFA", textColor: kPrimaryColor),
+          //         _tab("KREDİ AL", textColor: kYellowColor),
+          //         _tab("PROFİL BİLGİLERİ"),
+          //         _tab("GÖRÜŞMELER"),
+          //         _tab("BİLDİRİMLER"),
+          //         _tab("ÇIKIŞ YAP"),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ),
         body: TabBarView(
           children: [
             HomePage(),
+            Container(),
+            Container(),
             KrediAlPage(),
             Container(),
-            Container(),
-            Container(),
-            Container(),
+            // Container(),
           ],
         ),
+        bottomNavigationBar: Container(
+          color: kTabBarColor,
+          child: TabBar(
+            // isScrollable: true,
+            indicatorWeight: 4,
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: kPrimaryColor,
+            ),
+            labelColor: kYellowColor,
+            unselectedLabelColor: Colors.white,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorPadding: EdgeInsets.only(top: 40, bottom: 5),
+            tabs: [
+              // _tab("ANA SAYFA", textColor: kPrimaryColor),
+              // _tab("KREDİ AL", textColor: kYellowColor),
+              // _tab("PROFİL BİLGİLERİ"),
+              // _tab("GÖRÜŞMELER"),
+              // _tab("BİLDİRİMLER"),
+              // _tab("ÇIKIŞ YAP"),
+              _tab(Icons.home_rounded, textColor: kPrimaryColor),
+              _tab(Icons.call_rounded),
+              _tab(Icons.notifications_active_rounded),
+              _tab(Icons.attach_money_rounded, textColor: kYellowColor),
+              _tab(Icons.account_circle_rounded),
+              // _tab(Icons.exit),
+            ],
+          ),
+        ),
       ),
+      // ),
     );
   }
 
-  Tab _tab(String title, {Color textColor = Colors.white}) => Tab(
+  Tab _tab(IconData icon, {Color textColor = Colors.white}) => Tab(
         child: Container(
-          // width: Get.width * 0.25,
-          child: Text(
-            title,
-            style:
-                customFont(18, fontWeight: FontWeight.w500, color: textColor),
-            textAlign: TextAlign.center,
-          ),
-        ),
+            child:
+                // icon != Icons.person ?
+                Icon(icon)
+            // : CircleAvatar(backgroundImage: ,),
+            // TODO Kullanıcı Profil Fotoğrafı Eklenecek
+            ),
       );
 }

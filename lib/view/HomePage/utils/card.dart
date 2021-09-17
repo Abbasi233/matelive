@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:matelive/constant.dart';
 
-Widget card(String title, String value, Color lineColor) => Expanded(
+Widget gorusmeCard(String title, String value, Color lineColor) => Expanded(
       child: Card(
         shape: RoundedRectangleBorder(
+            side: BorderSide(color: kTextColor.withOpacity(0.5)),
             borderRadius: BorderRadius.circular(kBorderRadius)),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 8),
