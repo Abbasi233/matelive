@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/constant.dart';
-import 'package:matelive/view/HomePage/utils/card.dart';
-import 'package:matelive/view/HomePage/utils/fixedSpace.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
 
+import '/constant.dart';
 import 'utils/comment.dart';
+import '/view/utils/card.dart';
+import '/view/utils/fixedSpace.dart';
+import '/view/utils/primaryButton.dart';
+import '/view/utils/notifications_card.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -86,7 +87,8 @@ class HomePage extends StatelessWidget {
             fixedHeight,
             Row(
               children: [
-                gorusmeCard("TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
+                gorusmeCard(
+                    "TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
                 fixedWidth,
                 gorusmeCard("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
               ],
@@ -131,68 +133,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             fixedHeight,
-            Card(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(color: kTextColor.withOpacity(0.5)),
-                  borderRadius: BorderRadius.circular(kBorderRadius)),
-              child: Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "BİLDİRİMLER",
-                            style: styleH5(fontWeight: FontWeight.w600),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Tümünü Gör",
-                              style: customFont(
-                                16,
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Tümünü Sil",
-                              style: customFont(
-                                16,
-                                color: kOrangeColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(),
-                    // TODO GEÇMİŞ GÖRÜŞMELER
-                    // Expanded(
-                    //   child:
-                    Column(
-                      children: [0, 0, 0]
-                          .map(
-                            (i) => comment(
-                              description:
-                                  "Matelive'a hoşgeldiniz! Profil bilgilerinizi güncellemek için buraya tıklayabilirsiniz.",
-                              dateTime: DateTime.now(),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                    // ),
-                  ],
-                ),
-              ),
-            ),
+            NotificationsCard(showSeeAll: true, showDeleteAll: true),
             fixedHeight,
             Center(
                 child: Text(

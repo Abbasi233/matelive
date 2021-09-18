@@ -5,6 +5,7 @@ import 'package:matelive/view/KrediAl/krediAl.dart';
 import '/constant.dart';
 import 'utils/appBar.dart';
 import 'HomePage/homePage.dart';
+import '/view/Notifications/notifications_page.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -49,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             HomePage(),
             Container(),
-            Container(),
+            NotificationsPage(),
             KrediAlPage(),
             Container(),
             // Container(),
