@@ -6,6 +6,7 @@ import '/constant.dart';
 import 'utils/appBar.dart';
 import 'HomePage/homePage.dart';
 import '/view/Notifications/notifications_page.dart';
+import '/view/ProfilePage/profile_page.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -52,7 +53,7 @@ class _LandingPageState extends State<LandingPage> {
             Container(),
             NotificationsPage(),
             KrediAlPage(),
-            Container(),
+            ProfilePage(),
             // Container(),
           ],
         ),

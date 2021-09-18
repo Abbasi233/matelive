@@ -21,7 +21,6 @@ class NotificationsPage extends StatelessWidget {
               fixedHeight,
               Text("Merhaba, Mobil!", style: styleH1()),
               fixedHeight,
-              // TODO METRİKLER
               Row(
                 children: [
                   gorusmeCard("SİSTEM\n BİLDİRİMLERİ", "0", Colors.yellow[700]),
@@ -39,6 +38,10 @@ class NotificationsPage extends StatelessWidget {
               ),
               fixedHeight,
               NotificationsCard(),
+              fixedHeight,
+              Center(
+                  child: Text(
+                      "${DateTime.now().year} © Matelive Tüm Hakları Saklıdır.")),
               fixedHeight,
             ],
           ),
