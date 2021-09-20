@@ -13,38 +13,49 @@ import '/view/utils/primaryButton.dart';
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SizedBox(
-        width: Get.width,
-        height: Get.height,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                fixedHeight,
-                //Profil ve Galeri Fotoğrafları
-                PicturesCard(),
-                fixedHeight,
-                //Hesap Bilgileri
-                AccountInfoCard(),
-                fixedHeight,
-                //Sosyal Medya Bilgileri
-                SocialMediaInfoCard(),
-                fixedHeight,
-                //Güncelle Butonu
-                _buildUpdateButton("Hesap Bilgilerini Güncelle", () {}),
-                fixedHeight,
-                //Hesap Şifresini Güncelle
-                ChangePasswordCard(),
-                fixedHeight,
-                //Güncelle Butonu
-                _buildUpdateButton("Hesap Şifresini Güncelle", () {}),
-                fixedHeight,
-                //Hesap Ayarları
-                AccountSettingsCard(),
-                fixedHeight,
-              ],
+    return GestureDetector(
+      //TextField dışında bir yere tıklayınca TextField'ın unfocus olması için
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        body: SizedBox(
+          width: Get.width,
+          height: Get.height,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  fixedHeight,
+                  //Profil ve Galeri Fotoğrafları
+                  PicturesCard(),
+                  fixedHeight,
+                  //Hesap Bilgileri
+                  AccountInfoCard(),
+                  fixedHeight,
+                  //Sosyal Medya Bilgileri
+                  SocialMediaInfoCard(),
+                  fixedHeight,
+                  //Güncelle Butonu
+                  _buildUpdateButton("Hesap Bilgilerini Güncelle", () {}),
+                  fixedHeight,
+                  //Hesap Şifresini Güncelle
+                  ChangePasswordCard(),
+                  fixedHeight,
+                  //Güncelle Butonu
+                  _buildUpdateButton("Hesap Şifresini Güncelle", () {}),
+                  fixedHeight,
+                  //Hesap Ayarları
+                  AccountSettingsCard(),
+                  fixedHeight,
+                ],
+              ),
             ),
           ),
         ),
