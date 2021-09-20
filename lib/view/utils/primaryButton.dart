@@ -2,21 +2,35 @@ import 'package:flutter/material.dart';
 
 import '/constant.dart';
 
-Widget primaryButton({@required Widget child, @required Function onPressed}) =>
+Widget primaryButton({
+  @required Widget text,
+  @required Function onPressed,
+  double width,
+  double height = 50,
+  double borderRadius = kTextInputBorderRadius,
+  Color backgroundColor = kPrimaryColor,
+  ImageIcon imageIcon,
+}) =>
     Container(
-      height: 50,
+      width: width,
+      height: height,
       child: ElevatedButton(
-        child: child,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: imageIcon == null
+              ? [text]
+              : [text, SizedBox(width: 5), imageIcon],
+        ),
         onPressed: onPressed,
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
             EdgeInsets.symmetric(vertical: 10, horizontal: 30),
           ),
-          backgroundColor: MaterialStateProperty.all(kPrimaryColor),
+          backgroundColor: MaterialStateProperty.all(backgroundColor),
           textStyle: MaterialStateProperty.all(styleH4()),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(kTextInputBorderRadius),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
           ),
         ),

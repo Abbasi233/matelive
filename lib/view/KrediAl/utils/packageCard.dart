@@ -58,7 +58,7 @@ Widget packageCard(
                 packageName,
                 style: styleH5(fontWeight: FontWeight.w500),
               ),
-              primaryButton(child: Text("Paketi Seç"), onPressed: () {}),
+              primaryButton(text: Text("Paketi Seç"), onPressed: () {}),
             ],
           ),
         ),

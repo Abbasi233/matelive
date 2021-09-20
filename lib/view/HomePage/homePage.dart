@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 10),
                       child: primaryButton(
-                        child: Text(
+                        text: Text(
                           "Online Kullanıcıları Göster",
                           style: styleH4(
                               fontSize: 18,

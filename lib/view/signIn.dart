@@ -94,7 +94,7 @@ class SignInPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: primaryButton(
-                        child: Row(
+                        text: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [Text('Giriş Yap'), Icon(Icons.person)],
                         ),
