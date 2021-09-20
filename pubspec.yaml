@@ -15,6 +15,7 @@ dependencies:
   get_storage: ^2.0.3
   rotated_corner_decoration: ^2.0.0
   html_editor_enhanced: ^2.3.0
+  carousel_slider: ^4.0.0
 
 
 

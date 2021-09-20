@@ -23,18 +23,25 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               children: [
                 fixedHeight,
+                //Profil ve Galeri Fotoğrafları
                 PicturesCard(),
                 fixedHeight,
+                //Hesap Bilgileri
                 AccountInfoCard(),
                 fixedHeight,
+                //Sosyal Medya Bilgileri
                 SocialMediaInfoCard(),
                 fixedHeight,
+                //Güncelle Butonu
                 _buildUpdateButton("Hesap Bilgilerini Güncelle", () {}),
                 fixedHeight,
+                //Hesap Şifresini Güncelle
                 ChangePasswordCard(),
                 fixedHeight,
+                //Güncelle Butonu
                 _buildUpdateButton("Hesap Şifresini Güncelle", () {}),
                 fixedHeight,
+                //Hesap Ayarları
                 AccountSettingsCard(),
                 fixedHeight,
               ],
@@ -45,6 +52,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+//Güncelle Butonu
   Widget _buildUpdateButton(String title, Function onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),

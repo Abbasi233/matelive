@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'my_text.dart';
-import 'my_text_input.dart';
+import 'my_slider.dart';
 import '../../../constant.dart';
 import '/view/utils/fixedSpace.dart';
 import '/view/utils/primaryButton.dart';
+
+enum SelectedContent { ProfilePicture, GalleryPictures }
 
 class PicturesCard extends StatefulWidget {
   @override
@@ -13,22 +14,53 @@ class PicturesCard extends StatefulWidget {
 }
 
 class _PicturesCardState extends State<PicturesCard> {
-  int _selected = 0;
+  //'Profil fotoğrafı' ya da 'Galeri Fotoğrafları' seçimi
+  SelectedContent _selectedContent = SelectedContent.ProfilePicture;
+  List<Widget> items;
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: Get.width,
-        child: Column(
+  void initState() {
+    super.initState();
+
+    //Mockup data için burada
+    //Veri gelince silinebilir.
+    items = List.filled(
+        5,
+        Stack(
+          fit: StackFit.expand,
           children: [
-            _buildButtons(),
-            _selected == 0
-                ? _buildProfilePictureCard()
-                : _buildGalleryPicturesCard(),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.asset(
+                'assets/images/avatar.png',
+                fit: BoxFit.fill,
+              ),
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: _buildDeleteButton(),
+            ),
           ],
         ));
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: Get.width,
+      child: Column(
+        children: [
+          //'Profil fotoğrafı' ya da 'Galeri Fotoğrafları' butonları
+          _buildButtons(),
+          _selectedContent == SelectedContent.ProfilePicture
+              ? _buildProfilePictureCard()
+              : _buildGalleryPicturesCard(),
+        ],
+      ),
+    );
+  }
+
+  //'Profil fotoğrafı' ya da 'Galeri Fotoğrafları' butonları
   Widget _buildButtons() {
     return Card(
       elevation: 0,
@@ -38,16 +70,19 @@ class _PicturesCardState extends State<PicturesCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "PROFİL FOTOĞRAFINIZ",
+              _selectedContent == SelectedContent.ProfilePicture
+                  ? "PROFİL FOTOĞRAFINIZ"
+                  : "GALERİ",
               style: styleH5(fontWeight: FontWeight.w600),
             ),
             fixedHeight,
+            //'Profil Fotoğrafı' Butonu
             SizedBox(
               width: Get.width,
               child: primaryButton(
                 onPressed: () {
                   setState(() {
-                    _selected = 0;
+                    _selectedContent = SelectedContent.ProfilePicture;
                   });
                 },
                 height: 40,
@@ -63,12 +98,13 @@ class _PicturesCardState extends State<PicturesCard> {
               ),
             ),
             fixedHeight,
+            //'Galeri Fotoğrafları' Butonu
             SizedBox(
               width: Get.width,
               child: primaryButton(
                 onPressed: () {
                   setState(() {
-                    _selected = 1;
+                    _selectedContent = SelectedContent.GalleryPictures;
                   });
                 },
                 height: 40,
@@ -88,6 +124,7 @@ class _PicturesCardState extends State<PicturesCard> {
     );
   }
 
+//Profil Fotoğrafı değiştirmek için
   Widget _buildProfilePictureCard() {
     return Card(
       elevation: 0,
@@ -110,12 +147,14 @@ class _PicturesCardState extends State<PicturesCard> {
               SizedBox(height: 10),
               Stack(
                 children: [
+                  //Profil Fotoğrafı
                   Image.asset(
                     'assets/images/avatar.png',
                     width: Get.width,
                     height: 260,
                     fit: BoxFit.fill,
                   ),
+                  //Sil Butonu
                   Align(
                     alignment: Alignment.bottomRight,
                     child: _buildDeleteButton(),
@@ -144,6 +183,7 @@ class _PicturesCardState extends State<PicturesCard> {
     );
   }
 
+//Galerideki fotoğrafları görmek ve yeni foto. eklemek için.
   Widget _buildGalleryPicturesCard() {
     return Card(
       elevation: 0,
@@ -151,35 +191,13 @@ class _PicturesCardState extends State<PicturesCard> {
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
-            Scrollbar(
-              child: SizedBox(
-                width: Get.width,
-                height: 550,
-                child: ListView.separated(
-                  itemCount: 4,
-                  itemBuilder: (context, i) {
-                    return Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(
-                            'assets/images/avatar.png',
-                            width: Get.width,
-                            height: 260,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: _buildDeleteButton(),
-                        ),
-                      ],
-                    );
-                  },
-                  separatorBuilder: (context, i) => fixedHeight,
-                ),
-              ),
+            //Galeri Fotoları Slider
+            MySlider(
+              items,
+              225,
+              enlargeCenterPage: true,
             ),
+            fixedHeight,
             primaryButton(
               onPressed: () {},
               width: Get.width,
@@ -200,6 +218,7 @@ class _PicturesCardState extends State<PicturesCard> {
     );
   }
 
+//Fotoğrafların üzeirndeki sil butonu.
   Widget _buildDeleteButton() {
     return GestureDetector(
       child: Container(
