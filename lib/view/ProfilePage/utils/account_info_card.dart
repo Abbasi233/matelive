@@ -16,6 +16,7 @@ import 'my_text.dart';
 import 'my_text_input.dart';
 import '../../../constant.dart';
 import '/view/utils/fixedSpace.dart';
+import 'my_dropdown_button.dart';
 
 class AccountInfoCard extends StatelessWidget {
   final HtmlEditorController controller = HtmlEditorController();
@@ -43,7 +44,11 @@ class AccountInfoCard extends StatelessWidget {
               MyTextInput(),
               fixedHeight,
               MyText('Cinsiyetiniz'),
-              _buildDropdownButton(),
+              MyDropdownButton('Lütfen Seçiniz', <String>[
+                'Kadın',
+                'Erkek',
+                'Belirtmeyi Tercih Etmiyorum',
+              ]),
               fixedHeight,
               fixedHeight,
               fixedHeight,
@@ -79,45 +84,6 @@ class AccountInfoCard extends StatelessWidget {
               )
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdownButton() {
-    return SizedBox(
-      width: Get.width,
-      child: DropdownButton<String>(
-        onChanged: (_) {},
-        items: <String>[
-          'Kadın',
-          'Erkek',
-          'Belirtmeyi Tercih Etmiyorum',
-        ].map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        underline: Container(
-          height: 2,
-          color: Colors.black,
-        ),
-        isExpanded: true,
-        style: TextStyle(
-          color: Color(0xff737373),
-          letterSpacing: 0.5,
-        ),
-        hint: Text(
-          'Lütfen Seçiniz',
-          style: TextStyle(
-            color: Color(0xff737373),
-            letterSpacing: 0.5,
-          ),
-        ),
-        icon: ImageIcon(
-          Image.asset('assets/icons/arrow_expand.png').image,
-          size: 16,
         ),
       ),
     );
