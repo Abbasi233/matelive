@@ -5,8 +5,9 @@ import 'package:matelive/view/KrediAl/krediAl.dart';
 import '/constant.dart';
 import 'utils/appBar.dart';
 import 'HomePage/homePage.dart';
-import '/view/Notifications/notifications_page.dart';
+import '/view/CallsPage/calls_page.dart';
 import '/view/ProfilePage/profile_page.dart';
+import '/view/NotificationsPage/notifications_page.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -50,7 +51,7 @@ class _LandingPageState extends State<LandingPage> {
         body: TabBarView(
           children: [
             HomePage(),
-            Container(),
+            CallsPage(),
             NotificationsPage(),
             KrediAlPage(),
             ProfilePage(),

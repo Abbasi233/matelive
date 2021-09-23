@@ -12,7 +12,7 @@ import 'package:html_editor_enhanced/utils/shims/dart_ui_real.dart';
 import 'package:html_editor_enhanced/utils/toolbar.dart';
 import 'package:html_editor_enhanced/utils/utils.dart';
 
-import 'my_text.dart';
+import '../../utils/my_text.dart';
 import 'my_text_input.dart';
 import '../../../constant.dart';
 import '/view/utils/fixedSpace.dart';

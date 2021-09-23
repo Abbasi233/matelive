@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'my_text.dart';
+import '../../utils/my_text.dart';
 import 'my_text_input.dart';
 import '../../../constant.dart';
 import '/view/utils/fixedSpace.dart';
