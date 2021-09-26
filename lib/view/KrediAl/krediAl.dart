@@ -5,7 +5,7 @@ import '/constant.dart';
 import 'utils/packageCard.dart';
 import '/view/utils/footer.dart';
 
-class KrediAlPage extends StatelessWidget {
+class CreditsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

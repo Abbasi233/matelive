@@ -21,47 +21,21 @@ class _LandingPageState extends State<LandingPage> {
       length: 5,
       child: Scaffold(
         appBar: MyAppBar(
-          elevation: 0,
+          elevation: 2,
           centerTitle: true,
-          // bottom: PreferredSize(
-          //   preferredSize: Size.fromHeight(kToolbarHeight),
-          //   child: Container(
-          //     color: kTabBarColor,
-          //     child: TabBar(
-          //       isScrollable: true,
-          //       indicatorWeight: 4,
-          //       indicator: BoxDecoration(
-          //         borderRadius: BorderRadius.circular(20),
-          //         color: kPrimaryColor,
-          //       ),
-          //       indicatorSize: TabBarIndicatorSize.label,
-          //       indicatorPadding: EdgeInsets.only(top: 40, bottom: 5),
-          //       tabs: [
-          //         _tab("ANA SAYFA", textColor: kPrimaryColor),
-          //         _tab("KREDİ AL", textColor: kYellowColor),
-          //         _tab("PROFİL BİLGİLERİ"),
-          //         _tab("GÖRÜŞMELER"),
-          //         _tab("BİLDİRİMLER"),
-          //         _tab("ÇIKIŞ YAP"),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ),
         body: TabBarView(
           children: [
             HomePage(),
             CallsPage(),
             NotificationsPage(),
-            KrediAlPage(),
+            CreditsPage(),
             ProfilePage(),
-            // Container(),
           ],
         ),
         bottomNavigationBar: Container(
           color: kTabBarColor,
           child: TabBar(
-            // isScrollable: true,
             indicatorWeight: 4,
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -72,18 +46,11 @@ class _LandingPageState extends State<LandingPage> {
             indicatorSize: TabBarIndicatorSize.label,
             indicatorPadding: EdgeInsets.only(top: 40, bottom: 5),
             tabs: [
-              // _tab("ANA SAYFA", textColor: kPrimaryColor),
-              // _tab("KREDİ AL", textColor: kYellowColor),
-              // _tab("PROFİL BİLGİLERİ"),
-              // _tab("GÖRÜŞMELER"),
-              // _tab("BİLDİRİMLER"),
-              // _tab("ÇIKIŞ YAP"),
-              _tab(Icons.home_rounded, textColor: kPrimaryColor),
+              _tab(Icons.home_rounded),
               _tab(Icons.call_rounded),
               _tab(Icons.notifications_active_rounded),
-              _tab(Icons.attach_money_rounded, textColor: kYellowColor),
+              _tab(Icons.attach_money_rounded),
               _tab(Icons.account_circle_rounded),
-              // _tab(Icons.exit),
             ],
           ),
         ),
@@ -92,7 +59,7 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Tab _tab(IconData icon, {Color textColor = Colors.white}) => Tab(
+  Tab _tab(IconData icon) => Tab(
         child: Container(
             child:
                 // icon != Icons.person ?

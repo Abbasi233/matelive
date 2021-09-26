@@ -1,16 +1,16 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import 'package:html_editor_enhanced/html_editor.dart';
-import 'package:html_editor_enhanced/utils/callbacks.dart';
-import 'package:html_editor_enhanced/utils/file_upload_model.dart';
-import 'package:html_editor_enhanced/utils/options.dart';
-import 'package:html_editor_enhanced/utils/plugins.dart';
-import 'package:html_editor_enhanced/utils/shims/dart_ui.dart';
-import 'package:html_editor_enhanced/utils/shims/dart_ui_fake.dart';
-import 'package:html_editor_enhanced/utils/shims/dart_ui_real.dart';
-import 'package:html_editor_enhanced/utils/toolbar.dart';
-import 'package:html_editor_enhanced/utils/utils.dart';
+// import 'package:html_editor_enhanced/html_editor.dart';
+// import 'package:html_editor_enhanced/utils/callbacks.dart';
+// import 'package:html_editor_enhanced/utils/file_upload_model.dart';
+// import 'package:html_editor_enhanced/utils/options.dart';
+// import 'package:html_editor_enhanced/utils/plugins.dart';
+// import 'package:html_editor_enhanced/utils/shims/dart_ui.dart';
+// import 'package:html_editor_enhanced/utils/shims/dart_ui_fake.dart';
+// import 'package:html_editor_enhanced/utils/shims/dart_ui_real.dart';
+// import 'package:html_editor_enhanced/utils/toolbar.dart';
+// import 'package:html_editor_enhanced/utils/utils.dart';
 
 import '../../utils/my_text.dart';
 import 'my_text_input.dart';
@@ -19,7 +19,7 @@ import '/view/utils/fixedSpace.dart';
 import 'my_dropdown_button.dart';
 
 class AccountInfoCard extends StatelessWidget {
-  final HtmlEditorController controller = HtmlEditorController();
+  // final HtmlEditorController controller = HtmlEditorController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,25 +63,25 @@ class AccountInfoCard extends StatelessWidget {
               fixedHeight,
               MyText('Profil Açıklamanız'),
               fixedHeight,
-              SizedBox(
-                height: 200,
-                child: HtmlEditor(
-                  controller: controller, //required
-                  htmlEditorOptions: HtmlEditorOptions(
-                    initialText: 'sdfsdfsdf',
-                    hint: "Your text here...",
-                    //initalText: "text content initial, if any",
-                  ),
-                  otherOptions: OtherOptions(
-                    height: 400,
-                  ),
-                  htmlToolbarOptions: HtmlToolbarOptions(
-                    defaultToolbarButtons: [
-                      FontButtons(),
-                    ],
-                  ),
-                ),
-              )
+              // SizedBox(
+              //   height: 200,
+              //   child: HtmlEditor(
+              //     controller: controller, //required
+              //     htmlEditorOptions: HtmlEditorOptions(
+              //       initialText: 'sdfsdfsdf',
+              //       hint: "Your text here...",
+              //       //initalText: "text content initial, if any",
+              //     ),
+              //     otherOptions: OtherOptions(
+              //       height: 400,
+              //     ),
+              //     htmlToolbarOptions: HtmlToolbarOptions(
+              //       defaultToolbarButtons: [
+              //         FontButtons(),
+              //       ],
+              //     ),
+              //   ),
+              // )
             ],
           ),
         ),

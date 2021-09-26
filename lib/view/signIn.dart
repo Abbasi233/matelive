@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/view/Agora/test.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 
 import '/constant.dart';
@@ -100,7 +101,8 @@ class SignInPage extends StatelessWidget {
                         ),
                         onPressed: () {
                           // if (_formKey.currentState.validate()) {}
-                          Get.to(() => SignUpPage());
+                          Get.to(() => AgoraCall());
+                          // Get.to(() => SignUpPage());
                         },
                       ),
                     ),
