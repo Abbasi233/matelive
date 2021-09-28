@@ -45,3 +45,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# .gitignore'a yeni bir ignore dosyası/klasörü eklemek için
+# önce ignore edilecek dosyayı/klasörü yaz 
+/android/app/build
+
+# sonra sırayla
+# git rm -r --cached .
+# git add .
+# git commit -m ".gitignore is now working"
