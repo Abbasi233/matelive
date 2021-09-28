@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/view/Agora/test.dart';
 
 import '/constant.dart';
 import 'utils/comment.dart';
@@ -68,7 +69,9 @@ class HomePage extends StatelessWidget {
                               color: Colors.white,
                               fontWeight: FontWeight.w500),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(()=> AgoraCall());
+                        },
                       ),
                     ),
                   ],

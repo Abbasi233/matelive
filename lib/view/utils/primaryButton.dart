@@ -7,6 +7,7 @@ Widget primaryButton({
   @required Function onPressed,
   double width,
   double height = 50,
+  double padding = 0,
   double borderRadius = kTextInputBorderRadius,
   Color backgroundColor = kPrimaryColor,
   ImageIcon imageIcon,
@@ -14,6 +15,7 @@ Widget primaryButton({
     Container(
       width: width,
       height: height,
+      padding: EdgeInsets.symmetric(horizontal: padding),
       child: ElevatedButton(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

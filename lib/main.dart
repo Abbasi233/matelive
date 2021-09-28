@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 
 import 'constant.dart';
 import 'view/authPage.dart';
+import 'view/utils/appBar.dart';
 import 'view/welcomePage.dart';
 import 'controller/getX/storage.dart';
 

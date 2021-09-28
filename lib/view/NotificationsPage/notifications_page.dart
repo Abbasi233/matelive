@@ -19,7 +19,7 @@ class NotificationsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               fixedHeight,
-              Text("Merhaba, Mobil!", style: styleH1()),
+              Text("Bildirimler", style: styleH1()),
               fixedHeight,
               Row(
                 children: [

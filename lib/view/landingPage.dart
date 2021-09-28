@@ -14,15 +14,27 @@ class LandingPage extends StatefulWidget {
   _LandingPageState createState() => _LandingPageState();
 }
 
+
+///
+/// LANDİNG PAGE GETX'E ALINIP HER YERDEN ERİŞİM KONTROLÜ SAĞLANACAK
 class _LandingPageState extends State<LandingPage> {
+  var appBarController = Get.put(AppBarController());
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
+        key: appBarController.scaffoldKey,
         appBar: MyAppBar(
           elevation: 2,
           centerTitle: true,
+        ),
+        drawer: Drawer(
+          child: ListView.separated(
+            itemCount: 3,
+            separatorBuilder: (context, i) => Divider(),
+            itemBuilder: (context, i) => ListTile(title: Text("Özellik $i")),
+          ),
         ),
         body: TabBarView(
           children: [

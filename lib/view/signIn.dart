@@ -101,8 +101,8 @@ class SignInPage extends StatelessWidget {
                         ),
                         onPressed: () {
                           // if (_formKey.currentState.validate()) {}
-                          Get.to(() => AgoraCall());
-                          // Get.to(() => SignUpPage());
+                          // Get.to(() => AgoraCall());
+                          Get.to(() => SignUpPage());
                         },
                       ),
                     ),

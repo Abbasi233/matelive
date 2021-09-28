@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:get/get.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -37,20 +38,21 @@ class _AgoraCallState extends State<AgoraCall> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Audio quickstart'),
+        title: Text('Agora Audio'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Please chat!'),
             primaryButton(
-                text: Text("Tıkla"),
-                onPressed: () async {
-                  // Join channel with channel name as 123
-                  await engine.joinChannel(Token, 'matelive_mobile', null, 0);
-                  print("Joined!");
-                })
+              text: Text("Görüşmeye Başla"),
+              onPressed: () async {
+                // Join channel with channel name as 123
+                await engine.joinChannel(Token, 'matelive_mobile', null, 0);
+                print("Joined!");
+              },
+              padding: 20,
+            )
           ],
         ),
       ),
@@ -68,21 +70,22 @@ class _AgoraCallState extends State<AgoraCall> {
       RtcEngineEventHandler(
         joinChannelSuccess: (String channel, int uid, int elapsed) {
           print('joinChannelSuccess $channel $uid');
-          setState(() {
-            _joined = true;
-          });
+          Get.snackbar("Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
+          // setState(() {
+          //   _joined = true;
+          // });
         },
         userJoined: (int uid, int elapsed) {
           print('userJoined $uid');
-          setState(() {
-            _remoteUid = uid;
-          });
+          // setState(() {
+          //   _remoteUid = uid;
+          // });
         },
         userOffline: (int uid, UserOfflineReason reason) {
           print('userOffline $uid');
-          setState(() {
-            _remoteUid = 0;
-          });
+          // setState(() {
+          //   _remoteUid = 0;
+          // });
         },
       ),
     );

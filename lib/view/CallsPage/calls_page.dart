@@ -76,7 +76,7 @@ class _MyExpansionPanelListState extends State<MyExpansionPanelList> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MyText('Aranan: Jone Doe', fontSize: 19),
+              MyText('Görüşme: John Doe', fontSize: 19),
               ImageIcon(
                 AssetImage('assets/icons/outgoing_call.png'),
                 size: 24,
