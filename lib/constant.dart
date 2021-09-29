@@ -7,6 +7,7 @@ const kTabBarColor = Color(0xFF1d1d1d);
 const kYellowColor = Color(0xFFffd54f);
 const kOrangeColor = Color(0xFFe74c0c);
 const kBlackColor = Colors.black;
+const kWhiteColor = Colors.white;
 
 /// fontSize: 36, fontWeight: FontWeight.w600
 TextStyle styleH1(
@@ -56,3 +57,6 @@ TextStyle customFont(double fontSize,
 
 const kBorderRadius = 15.0;
 const kTextInputBorderRadius = 40.0;
+
+const fixedWidth = SizedBox(width: 15);
+const fixedHeight = SizedBox(height: 20);

@@ -1,15 +1,15 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/Agora/test.dart';
 
 import '/constant.dart';
-import 'utils/comment.dart';
-import '/view/utils/card.dart';
-import '/view/utils/fixedSpace.dart';
+import '../utils/miniCard.dart';
 import '/view/utils/primaryButton.dart';
+import '/view/LandingPage/controller.dart';
 import '/view/utils/notifications_card.dart';
+import 'OnlineUsersPage/online_users.dart';
 
 class HomePage extends StatelessWidget {
+  final _landingPageController = Get.find<LandingPageController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,11 +66,12 @@ class HomePage extends StatelessWidget {
                           "Online Kullanıcıları Göster",
                           style: styleH4(
                               fontSize: 18,
-                              color: Colors.white,
+                              color: kWhiteColor,
                               fontWeight: FontWeight.w500),
                         ),
                         onPressed: () {
-                          Get.to(()=> AgoraCall());
+                          // Get.to(()=> AgoraCall());
+                          Get.to(()=> OnlineUsers());
                         },
                       ),
                     ),
@@ -82,18 +83,18 @@ class HomePage extends StatelessWidget {
             // TODO METRİKLER
             Row(
               children: [
-                gorusmeCard("BAŞARILI GÖRÜŞME\nSAYISI", "0", kPrimaryColor),
+                miniCard("BAŞARILI GÖRÜŞME\nSAYISI", "0", kPrimaryColor),
                 fixedWidth,
-                gorusmeCard("CEVAPSIZ ARAMA\nSAYISI", "0", Colors.lightGreen),
+                miniCard("CEVAPSIZ ARAMA\nSAYISI", "0", Colors.lightGreen),
               ],
             ),
             fixedHeight,
             Row(
               children: [
-                gorusmeCard(
+                miniCard(
                     "TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
                 fixedWidth,
-                gorusmeCard("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
+                miniCard("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
               ],
             ),
             fixedHeight,
@@ -113,7 +114,9 @@ class HomePage extends StatelessWidget {
                           style: styleH6(fontWeight: FontWeight.w600),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _landingPageController.changeTab(1);
+                          },
                           child: Text(
                             "Tümünü Gör",
                             style: customFont(

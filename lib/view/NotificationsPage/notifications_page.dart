@@ -2,8 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
-import '/view/utils/fixedSpace.dart';
-import '/view/utils/card.dart';
+import '../utils/miniCard.dart';
 import '/view/utils/notifications_card.dart';
 
 class NotificationsPage extends StatelessWidget {
@@ -23,17 +22,17 @@ class NotificationsPage extends StatelessWidget {
               fixedHeight,
               Row(
                 children: [
-                  gorusmeCard("SİSTEM\n BİLDİRİMLERİ", "0", Colors.yellow[700]),
+                  miniCard("SİSTEM\n BİLDİRİMLERİ", "0", Colors.yellow[700]),
                   fixedWidth,
-                  gorusmeCard("BEĞENİ\nBİLDİRİMLERİ", "0", Colors.yellow[700]),
+                  miniCard("BEĞENİ\nBİLDİRİMLERİ", "0", Colors.yellow[700]),
                 ],
               ),
               fixedHeight,
               Row(
                 children: [
-                  gorusmeCard("DÜRTME\nBİLDİRİMLERİ", "0", Colors.yellow[700]),
+                  miniCard("DÜRTME\nBİLDİRİMLERİ", "0", Colors.yellow[700]),
                   fixedWidth,
-                  gorusmeCard("FAVORİ\nBİLDİRİMLERİ", "0", Colors.yellow[700]),
+                  miniCard("FAVORİ\nBİLDİRİMLERİ", "0", Colors.yellow[700]),
                 ],
               ),
               fixedHeight,

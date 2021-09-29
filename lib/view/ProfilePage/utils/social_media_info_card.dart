@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../utils/my_text.dart';
 import 'my_text_input.dart';
 import '../../../constant.dart';
-import '/view/utils/fixedSpace.dart';
 
 class SocialMediaInfoCard extends StatelessWidget {
   @override

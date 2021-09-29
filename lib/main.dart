@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'constant.dart';
-import 'view/authPage.dart';
+import 'view/auth_page.dart';
 import 'view/utils/appBar.dart';
-import 'view/welcomePage.dart';
+import 'view/welcome_page.dart';
 import 'controller/getX/storage.dart';
 
 Widget _firstScreen;
@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Jost",
         primaryColor: kPrimaryColor,
+        appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: kBlackColor)),
+        secondaryHeaderColor: kBlackColor,
       ),
       home: _firstScreen,
     );

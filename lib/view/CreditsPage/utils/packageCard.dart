@@ -29,7 +29,7 @@ Widget packageCard(
                     text: "En Sevilen!",
                     style: customFont(
                       22,
-                      color: Colors.white,
+                      color: kWhiteColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

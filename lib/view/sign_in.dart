@@ -4,7 +4,7 @@ import 'package:matelive/view/Agora/test.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 
 import '/constant.dart';
-import '/view/signUp.dart';
+import 'sign_up.dart';
 
 class SignInPage extends StatelessWidget {
   final _rememberMe = false.obs;

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:matelive/controller/getX/storage.dart';
-import 'package:matelive/view/landingPage.dart';
-import 'package:matelive/view/signIn.dart';
+import 'package:matelive/view/LandingPage/landing_page.dart';
+import 'package:matelive/view/sign_in.dart';
 import 'package:matelive/view/utils/circularProgress.dart';
 
 class AuthPage extends StatelessWidget {

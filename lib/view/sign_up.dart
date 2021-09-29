@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/utils/emailConfirm.dart';
+import 'package:matelive/view/EmailConfirmPage/email_confirm_page.dart';
 
 import '/constant.dart';
 

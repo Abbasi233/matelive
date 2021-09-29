@@ -2,12 +2,11 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
-import 'utils/account_info_card.dart';
 import 'utils/pictures_card.dart';
-import 'utils/social_media_info_card.dart';
+import 'utils/account_info_card.dart';
 import 'utils/change_password_card.dart';
 import 'utils/account_settings_card.dart';
-import '/view/utils/fixedSpace.dart';
+import 'utils/social_media_info_card.dart';
 import '/view/utils/primaryButton.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -76,14 +75,14 @@ class ProfilePage extends StatelessWidget {
           title,
           style: styleH4(
             fontSize: 18,
-            color: Colors.white,
+            color: kWhiteColor,
             fontWeight: FontWeight.bold,
           ),
         ),
         imageIcon: ImageIcon(
           AssetImage('assets/icons/forward_button.png'),
           size: 22,
-          color: Colors.white,
+          color: kWhiteColor,
         ),
       ),
     );

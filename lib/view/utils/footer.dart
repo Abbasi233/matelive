@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/view/utils/fixedSpace.dart';
+import '../../constant.dart';
 
 Widget footer() => Column(
       children: [

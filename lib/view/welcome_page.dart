@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
-import 'landingPage.dart';
+import 'LandingPage/landing_page.dart';
 import 'utils/welcomePageItems.dart';
 import '/controller/getX/storage.dart';
 import '/controller/getX/welcomePage.dart';
@@ -15,7 +15,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: kWhiteColor,
       body: Stack(
         children: [
           PageView.builder(
@@ -95,7 +95,7 @@ class WelcomePage extends StatelessWidget {
                                       style: ButtonStyle(
                                         foregroundColor:
                                             MaterialStateProperty.all(
-                                                Colors.white),
+                                                kWhiteColor),
                                         backgroundColor:
                                             MaterialStateProperty.all(
                                                 kPrimaryColor),
@@ -106,7 +106,8 @@ class WelcomePage extends StatelessWidget {
                                         child: Text("Sonraki"),
                                       ),
                                       onPressed: () {
-                                        _welcomePageController.changePage(_pageController);
+                                        _welcomePageController
+                                            .changePage(_pageController);
                                       },
                                     ),
                                   ),
@@ -118,7 +119,7 @@ class WelcomePage extends StatelessWidget {
                               child: TextButton(
                                 style: ButtonStyle(
                                   foregroundColor:
-                                      MaterialStateProperty.all(Colors.white),
+                                      MaterialStateProperty.all(kWhiteColor),
                                   backgroundColor:
                                       MaterialStateProperty.all(kPrimaryColor),
                                 ),

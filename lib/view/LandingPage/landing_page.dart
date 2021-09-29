@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/KrediAl/krediAl.dart';
+import 'package:matelive/view/CreditsPage/credits_page.dart';
 
+import 'controller.dart';
 import '/constant.dart';
-import 'utils/appBar.dart';
-import 'HomePage/homePage.dart';
+import '../utils/appBar.dart';
+import '../HomePage/home_page.dart';
 import '/view/CallsPage/calls_page.dart';
 import '/view/ProfilePage/profile_page.dart';
 import '/view/NotificationsPage/notifications_page.dart';
@@ -14,17 +15,24 @@ class LandingPage extends StatefulWidget {
   _LandingPageState createState() => _LandingPageState();
 }
 
+class _LandingPageState extends State<LandingPage>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
+  var _landingPageController = Get.put(LandingPageController());
 
-///
-/// LANDİNG PAGE GETX'E ALINIP HER YERDEN ERİŞİM KONTROLÜ SAĞLANACAK
-class _LandingPageState extends State<LandingPage> {
-  var appBarController = Get.put(AppBarController());
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+    _landingPageController.initTabController(_tabController);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        key: appBarController.scaffoldKey,
+        key: _landingPageController.scaffoldKey,
         appBar: MyAppBar(
           elevation: 2,
           centerTitle: true,
@@ -37,6 +45,7 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
         body: TabBarView(
+          controller: _landingPageController.tabController,
           children: [
             HomePage(),
             CallsPage(),
@@ -48,13 +57,14 @@ class _LandingPageState extends State<LandingPage> {
         bottomNavigationBar: Container(
           color: kTabBarColor,
           child: TabBar(
+            controller: _landingPageController.tabController,
             indicatorWeight: 4,
             indicator: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: kPrimaryColor,
             ),
             labelColor: kYellowColor,
-            unselectedLabelColor: Colors.white,
+            unselectedLabelColor: kWhiteColor,
             indicatorSize: TabBarIndicatorSize.label,
             indicatorPadding: EdgeInsets.only(top: 40, bottom: 5),
             tabs: [
@@ -67,7 +77,6 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
       ),
-      // ),
     );
   }
 

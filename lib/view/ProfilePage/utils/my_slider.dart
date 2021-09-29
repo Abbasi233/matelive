@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../../../constant.dart';
+
 class MySlider extends StatefulWidget {
   final List<Widget> items;
   final double height;
@@ -45,7 +47,7 @@ class _MySliderState extends State<MySlider> {
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: (Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
+                        ? kWhiteColor
                         : Colors.black)
                     .withOpacity(_current == entry.key ? 0.9 : 0.4)),
           );

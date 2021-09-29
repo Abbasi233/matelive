@@ -32,6 +32,7 @@ Widget primaryButton({
           textStyle: MaterialStateProperty.all(styleH4()),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
+              side: BorderSide(color: kPrimaryColor),
               borderRadius: BorderRadius.circular(borderRadius),
             ),
           ),

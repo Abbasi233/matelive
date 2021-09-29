@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constant.dart';
-import '/view/utils/fixedSpace.dart';
 import 'my_dropdown_button.dart';
 
 class AccountSettingsCard extends StatelessWidget {

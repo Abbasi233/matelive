@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/landingPage.dart';
+import 'package:matelive/view/LandingPage/landing_page.dart';
 
 import '/constant.dart';
-import '/view/signUp.dart';
+import '../sign_up.dart';
 
 class EmailConfirmPage extends StatelessWidget {
   @override

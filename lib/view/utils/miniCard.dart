@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matelive/constant.dart';
 
-Widget gorusmeCard(String title, String value, Color lineColor) => Expanded(
+Widget miniCard(String title, String value, Color lineColor) => Expanded(
       child: Card(
         shape: RoundedRectangleBorder(
             side: BorderSide(color: kTextColor.withOpacity(0.5)),

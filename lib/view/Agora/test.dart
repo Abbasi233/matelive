@@ -68,9 +68,20 @@ class _AgoraCallState extends State<AgoraCall> {
     // Define event handling logic
     engine.setEventHandler(
       RtcEngineEventHandler(
+        warning: (warningCode) {
+          print(warningCode.toString());
+        },
+        rtcStats: (stats) {
+          print("Status: ${stats.userCount}");
+        },
+        connectionStateChanged: (state, reason) {
+          print(
+              "Connection Changed : ${state.toString()}, ${reason.toString()}");
+        },
         joinChannelSuccess: (String channel, int uid, int elapsed) {
           print('joinChannelSuccess $channel $uid');
-          Get.snackbar("Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
+          Get.snackbar(
+              "Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
           // setState(() {
           //   _joined = true;
           // });

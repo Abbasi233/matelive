@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:matelive/view/LandingPage/controller.dart';
 
 import '/constant.dart';
 import '/view/HomePage/utils/comment.dart';
@@ -8,6 +10,8 @@ class NotificationsCard extends StatelessWidget {
   final bool showDeleteAll;
 
   NotificationsCard({this.showSeeAll = false, this.showDeleteAll = false});
+
+  final _landingPageController = Get.find<LandingPageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,9 @@ class NotificationsCard extends StatelessWidget {
                   ),
                   showSeeAll
                       ? TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _landingPageController.changeTab(2);
+                          },
                           child: Text(
                             "Tümünü Gör",
                             style: customFont(

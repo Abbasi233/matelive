@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'my_slider.dart';
 import '../../../constant.dart';
-import '/view/utils/fixedSpace.dart';
 import '/view/utils/primaryButton.dart';
 
 enum SelectedContent { ProfilePicture, GalleryPictures }
@@ -91,7 +90,7 @@ class _PicturesCardState extends State<PicturesCard> {
                   "Profil Fotoğrafı",
                   style: styleH4(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: kWhiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -112,7 +111,7 @@ class _PicturesCardState extends State<PicturesCard> {
                   "Galeri Fotoğrafları",
                   style: styleH4(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: kWhiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -171,7 +170,7 @@ class _PicturesCardState extends State<PicturesCard> {
                   "Profil Fotoğrafını Güncelle",
                   style: styleH4(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: kWhiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -207,7 +206,7 @@ class _PicturesCardState extends State<PicturesCard> {
                 "Fotoğraf Ekle",
                 style: styleH4(
                   fontSize: 18,
-                  color: Colors.white,
+                  color: kWhiteColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -234,12 +233,12 @@ class _PicturesCardState extends State<PicturesCard> {
             ImageIcon(
               AssetImage('assets/icons/trash.png'),
               size: 16,
-              color: Colors.white,
+              color: kWhiteColor,
             ),
             SizedBox(width: 2),
             Text(
               'Sil',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: kWhiteColor),
             ),
           ],
         ),
