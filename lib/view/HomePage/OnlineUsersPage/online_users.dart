@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/view/utils/drawer.dart';
 
 import '../../../constant.dart';
 import '/view/utils/appBar.dart';
@@ -88,7 +89,7 @@ class _OnlineUsersState extends State<OnlineUsers> {
               age: "23 Yaşında",
             ),
             userCard(
-              username: "Mobil Test",
+              username: "Furkan Yılmaz",
               age: "Yaş Bilgisi Bulunamadı.",
             ),
             footer(),

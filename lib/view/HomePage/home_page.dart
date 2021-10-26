@@ -71,7 +71,11 @@ class HomePage extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Get.to(()=> AgoraCall());
-                          Get.to(()=> OnlineUsers());
+                          // Get.to(()=> OnlineUsers());
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OnlineUsers()));
                         },
                       ),
                     ),
@@ -91,8 +95,7 @@ class HomePage extends StatelessWidget {
             fixedHeight,
             Row(
               children: [
-                miniCard(
-                    "TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
+                miniCard("TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
                 fixedWidth,
                 miniCard("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
               ],

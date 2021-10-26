@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:matelive/view/CreditsPage/credits_page.dart';
+import 'package:matelive/view/utils/drawer.dart';
 
 import 'controller.dart';
 import '/constant.dart';
@@ -37,13 +38,7 @@ class _LandingPageState extends State<LandingPage>
           elevation: 2,
           centerTitle: true,
         ),
-        drawer: Drawer(
-          child: ListView.separated(
-            itemCount: 3,
-            separatorBuilder: (context, i) => Divider(),
-            itemBuilder: (context, i) => ListTile(title: Text("Özellik $i")),
-          ),
-        ),
+        drawer: MyDrawer.build(),
         body: TabBarView(
           controller: _landingPageController.tabController,
           children: [

@@ -4,11 +4,8 @@ import 'package:get_storage/get_storage.dart';
 
 import 'constant.dart';
 import 'view/auth_page.dart';
-import 'view/utils/appBar.dart';
 import 'view/welcome_page.dart';
 import 'controller/getX/storage.dart';
-
-Widget _firstScreen;
 
 void main() async {
   await GetStorage.init();
@@ -22,6 +19,8 @@ Future<Widget> isFirstShowingMethod() async {
   bool result = await _storageController.readFirstShowing();
   return result ? WelcomePage() : AuthPage();
 }
+
+Widget _firstScreen;
 
 class MyApp extends StatelessWidget {
   @override

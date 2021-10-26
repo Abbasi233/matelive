@@ -11,6 +11,7 @@ Widget primaryButton({
   double borderRadius = kTextInputBorderRadius,
   Color backgroundColor = kPrimaryColor,
   ImageIcon imageIcon,
+  bool disabled = false,
 }) =>
     Container(
       width: width,
@@ -23,16 +24,17 @@ Widget primaryButton({
               ? [text]
               : [text, SizedBox(width: 5), imageIcon],
         ),
-        onPressed: onPressed,
+        onPressed: disabled ? null : onPressed,
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
             EdgeInsets.symmetric(vertical: 10, horizontal: 30),
           ),
-          backgroundColor: MaterialStateProperty.all(backgroundColor),
+          backgroundColor: MaterialStateProperty.all(
+              disabled ? kTextColor : backgroundColor),
           textStyle: MaterialStateProperty.all(styleH4()),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              side: BorderSide(color: kPrimaryColor),
+              side: BorderSide(color: disabled ? kTextColor : kPrimaryColor),
               borderRadius: BorderRadius.circular(borderRadius),
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:matelive/constant.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:matelive/view/UserPage/user_page.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 
 Widget userCard({
@@ -119,7 +120,9 @@ Widget userCard({
                                 Text("Profil"),
                               ],
                             ),
-                            onPressed: () {})
+                            onPressed: () {
+                              Get.to(()=> UserPage(username));
+                            })
                       ],
                     ),
                   ),

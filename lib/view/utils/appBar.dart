@@ -20,13 +20,13 @@ class MyAppBar extends AppBar {
                 width: Get.width * 0.4,
               ),
           // actions: [
-          //   IconButton(
-          //     onPressed: () {
-          //       Get.find<LandingPageController>().openDrawer();
-          //     },
-          //     icon: Icon(Icons.menu),
-          //   )
-          // ],
+          //         IconButton(
+          //           onPressed: () {
+          //             Get.find<LandingPageController>().openDrawer();
+          //           },
+          //           icon: Icon(Icons.menu),
+          //         )
+          //       ],
           elevation: elevation,
           bottom: bottom,
           leading: leading,
