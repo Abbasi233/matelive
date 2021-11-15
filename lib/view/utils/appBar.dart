@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
-import '/view/LandingPage/controller.dart';
 
 class MyAppBar extends AppBar {
   MyAppBar({

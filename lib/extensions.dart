@@ -1,5 +1,5 @@
-extension DateFormat on DateTime {
-  String format() {
+extension DateToString on DateTime {
+  String formatWithMonthName() {
     List<String> _months = [
       "Ocak",
       "Şubat",
@@ -15,5 +15,17 @@ extension DateFormat on DateTime {
       "Aralık"
     ];
     return "${this.day.toString().padLeft(2, '0')} ${_months[this.month]} ${this.year} ${this.hour.toString().padLeft(2, '0')}:${this.minute.toString().padLeft(2, '0')}";
+  }
+
+  String formatToString() {
+    return "${this.day.toString().padLeft(2, '0')}/${this.month.toString().padLeft(2, '0')}/${this.year}";
+  }
+}
+
+extension StringToDate on String {
+  DateTime formatToDate() {
+    var items = this.split("/");
+    return DateTime(
+        int.parse(items[2]), int.parse(items[1]), int.parse(items[0]));
   }
 }

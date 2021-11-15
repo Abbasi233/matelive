@@ -1,12 +1,21 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/Agora/call_page.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
+import 'package:matelive/controller/getX/storage_controller.dart';
+import 'package:matelive/view/auth/reset_password.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 
-import '/constant.dart';
 import 'sign_up.dart';
+import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
+import '/view/utils/primaryButton.dart';
+import '/view/LandingPage/landing_page.dart';
+import 'utils/text_input.dart';
 
 class SignInPage extends StatelessWidget {
+  final storageController = Get.find<StorageController>();
+
+  final _api = API();
   final _rememberMe = false.obs;
   final _formKey = GlobalKey<FormState>();
   final _eMailController = TextEditingController();
@@ -65,6 +74,7 @@ class SignInPage extends StatelessWidget {
                         hintText: "E-Posta Adresiniz",
                         controller: _eMailController,
                       ),
+                      fixedHeight,
                       textInput(
                         hintText: "Şifreniz",
                         controller: _passwordController,
@@ -99,10 +109,23 @@ class SignInPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [Text('Giriş Yap'), Icon(Icons.person)],
                         ),
-                        onPressed: () {
-                          // if (_formKey.currentState.validate()) {}
-                          // Get.to(() => AgoraCall());
-                          Get.to(() => SignUpPage());
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            var result = await _api.login({
+                              "email": _eMailController.text,
+                              "password": _passwordController.text,
+                            });
+
+                            if (result) {
+                              if (_rememberMe.value) {
+                                storageController.saveLogin(Login().toJson());
+                              }
+
+                              Get.off(() => LandingPage());
+                            } else {
+                              failureSnackbar("Başarısız");
+                            }
+                          }
                         },
                       ),
                     ),
@@ -110,55 +133,18 @@ class SignInPage extends StatelessWidget {
                 ),
                 Divider(),
                 TextButton(
-                  onPressed: () {},
                   child: Text(
                     "Şifrenizi mi unuttunuz?",
                     style: styleH4(),
                   ),
+                  onPressed: () {
+                    Get.to(() => ResetPasswordPage());
+                  },
                 ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget textInput(
-      {String hintText,
-      TextEditingController controller,
-      bool password = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: TextFormField(
-        style: styleH4(),
-        controller: controller,
-        cursorColor: kPrimaryColor,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: customFont(
-            18,
-            fontWeight: FontWeight.w500,
-            color: Colors.grey,
-          ),
-          hoverColor: kPrimaryColor,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: kPrimaryColor),
-            borderRadius: BorderRadius.circular(kTextInputBorderRadius),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: kPrimaryColor),
-            borderRadius: BorderRadius.circular(kTextInputBorderRadius),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-        ),
-        obscureText: password,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Lütfen bu alanı doldurun.';
-          }
-          return null;
-        },
       ),
     );
   }

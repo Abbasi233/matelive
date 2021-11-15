@@ -1,17 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:matelive/view/LandingPage/controller.dart';
+import 'package:flutter/material.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/controller/getX/notifications_controller.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/model/notifications.dart' as app;
+import 'package:matelive/model/paged_response.dart';
+import 'package:matelive/view/utils/progressIndicator.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
-import '/view/HomePage/utils/comment.dart';
+import 'notification_item.dart';
+import '/view/LandingPage/controller.dart';
 
 class NotificationsCard extends StatelessWidget {
+  NotificationsCard({
+    this.showThree = false,
+    this.showSeeAll = false,
+    this.showDeleteAll = false,
+  });
+
+  final bool showThree;
   final bool showSeeAll;
   final bool showDeleteAll;
-
-  NotificationsCard({this.showSeeAll = false, this.showDeleteAll = false});
-
   final _landingPageController = Get.find<LandingPageController>();
+  final _notificationsController = Get.find<NotificationsController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +60,50 @@ class NotificationsCard extends StatelessWidget {
                         )
                       : Opacity(opacity: 0),
                   showDeleteAll
-                      ? TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Tümünü Sil",
-                            style: customFont(
-                              16,
-                              color: kOrangeColor,
-                              fontWeight: FontWeight.w500,
+                      ? Obx(
+                          () => TextButton(
+                            onPressed: _notificationsController
+                                    .pagedResponse.value.data.isNotEmpty
+                                ? () async {
+                                    var dialogResult = await Get.dialog(
+                                      AlertDialog(
+                                        content: Text(
+                                            "Tüm bildirimleri silmek istediğinizden emin misiniz?"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () =>
+                                                  Get.back(result: true),
+                                              child: Text("Evet")),
+                                          TextButton(
+                                              onPressed: () =>
+                                                  Get.back(result: false),
+                                              child: Text("Hayır")),
+                                        ],
+                                      ),
+                                    );
+
+                                    if (dialogResult) {
+                                      var result = await API()
+                                          .clearNotification(Login().token);
+                                      if (result is bool && result) {
+                                        successSnackbar(
+                                            "Tüm bildirimleriniz başarıyla silindi.");
+                                      } else {
+                                        failureSnackbar(result);
+                                      }
+                                    }
+                                  }
+                                : null,
+                            child: Text(
+                              "Tümünü Sil",
+                              style: customFont(
+                                16,
+                                color: _notificationsController
+                                        .pagedResponse.value.data.isNotEmpty
+                                    ? kOrangeColor
+                                    : kTextColor,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         )
@@ -64,21 +112,66 @@ class NotificationsCard extends StatelessWidget {
               ),
             ),
             Divider(),
-            // TODO GEÇMİŞ GÖRÜŞMELER
-            // Expanded(
-            //   child:
-            Column(
-              children: [0, 0, 0]
-                  .map(
-                    (i) => comment(
-                      description:
-                          "Matelive'a hoşgeldiniz! Profil bilgilerinizi güncellemek için buraya tıklayabilirsiniz.",
-                      dateTime: DateTime.now(),
-                    ),
-                  )
-                  .toList(),
+            Obx(
+              () {
+                var data = _notificationsController.pagedResponse.value.data;
+                int endRange = showThree && data.length > 3 ? 3 : data.length;
+                return data != null
+                    ? data.isNotEmpty
+                        ? Column(
+                            children: data
+                                .getRange(0, endRange)
+                                .map(
+                                  (i) => notificationItem(
+                                    message: (i as app.Notification).message,
+                                    dateTime: (i as app.Notification)
+                                        .createdAtFormatted,
+                                    onPressed: () async {
+                                      var dialogResult = await Get.dialog(
+                                        AlertDialog(
+                                          content: Text(
+                                              "Seçilen bildirimi silmek istediğinizden emin misiniz?"),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () =>
+                                                    Get.back(result: true),
+                                                child: Text("Evet")),
+                                            TextButton(
+                                                onPressed: () =>
+                                                    Get.back(result: false),
+                                                child: Text("Hayır")),
+                                          ],
+                                        ),
+                                      );
+
+                                      if (dialogResult) {
+                                        var result =
+                                            await API().delNotification(
+                                          Login().token,
+                                          (i as app.Notification).id,
+                                        );
+
+                                        if (result is bool && result) {
+                                          successSnackbar(
+                                              "Bildirim başarıyla silinmiştir.");
+                                        } else {
+                                          failureSnackbar(result);
+                                        }
+                                      }
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : Center(
+                            child: Text(
+                              "Şu anda herhangi bir bildiriminiz bulunmamaktadır.",
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                    : showProgressIndicator(context);
+              },
             ),
-            // ),
           ],
         ),
       ),

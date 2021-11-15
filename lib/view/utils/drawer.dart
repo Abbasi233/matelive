@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:matelive/view/Agora/call_page.dart';
-import 'package:matelive/view/HomePage/home_page.dart';
-import 'package:matelive/view/LandingPage/landing_page.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
+import 'package:matelive/controller/getX/storage_controller.dart';
 
 import '/constant.dart';
+import '/model/login.dart';
+import '../auth/sign_in.dart';
+import '/controller/api.dart';
+import '/view/HomePage/home_page.dart';
+import '/view/utils/primaryButton.dart';
 
 class MyDrawer {
   static ListTile _listTile(Text title, Widget page,
@@ -15,7 +17,7 @@ class MyDrawer {
       title: Text(title.data, style: styleH4(color: color)),
       onTap: () {
         // Get.off(() => page)
-        },
+      },
     );
   }
 
@@ -39,9 +41,31 @@ class MyDrawer {
                   Text("Çıkış"),
                 ],
               ),
+              padding: 50,
               onPressed: () {
+                Get.dialog(
+                  AlertDialog(
+                    title: Text('Çıkış Onayı'),
+                    content:
+                        Text('Uygulamadan çıkmak istediğinize emin misiniz?'),
+                    actions: <Widget>[
+                      OutlinedButton(
+                        child: Text('Evet'),
+                        onPressed: () async {
+                          bool result = await API().logout(Login().token);
+                          // Token geçersizse mesaj dönüyor ama ekrana yazdırmaya gerek yok.
+                          Get.find<StorageController>().saveLogin(null);
+                          Get.offAll(() => SignInPage());
+                        },
+                      ),
+                      OutlinedButton(
+                        child: Text('Hayır'),
+                        onPressed: () => Get.back(),
+                      ),
+                    ],
+                  ),
+                );
               },
-              padding: 50
             )
           ],
         ),

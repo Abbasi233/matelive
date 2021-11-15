@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '/constant.dart';
 import '/extensions.dart';
 
-Widget comment({String description, DateTime dateTime, Function onPressed}) =>
+Widget notificationItem(
+        {String message, String dateTime, Function onPressed}) =>
     Container(
       padding: EdgeInsets.only(top: 15),
       child: Row(
@@ -22,15 +24,25 @@ Widget comment({String description, DateTime dateTime, Function onPressed}) =>
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  description,
-                  style: styleH5(fontWeight: FontWeight.w600),
+                Html(
+                  data: "<p>$message<p>",
+                  style: {
+                    "p": Style(
+                      fontSize: FontSize.larger,
+                      color: kTextColor,
+                      // fontWeight: FontWeight.w600,
+                    ),
+                  },
                 ),
+                // Text(
+                //   message,
+                //   style: styleH5(fontWeight: FontWeight.w600),
+                // ),
                 SizedBox(height: 5),
                 Row(
                   children: [
                     Text(
-                      dateTime.format(),
+                      dateTime,
                       style: styleH6().copyWith(fontStyle: FontStyle.italic),
                     ),
                     SizedBox(width: 10),
@@ -48,7 +60,9 @@ Widget comment({String description, DateTime dateTime, Function onPressed}) =>
                     ),
                   ],
                 ),
-                Divider(),
+                Divider(
+                  thickness: 1,
+                ),
               ],
             ),
           ),

@@ -1,8 +1,14 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/utils/drawer.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/model/paged_response.dart';
+import 'package:matelive/model/user_detail.dart';
+import 'package:matelive/view/utils/circularProgress.dart';
+import 'package:matelive/view/utils/progressIndicator.dart';
+import 'package:matelive/view/utils/progress_dialog.dart';
 
-import '../../../constant.dart';
+import '/constant.dart';
 import '/view/utils/appBar.dart';
 import '/view/utils/footer.dart';
 import '/view/utils/primaryButton.dart';
@@ -14,13 +20,22 @@ class OnlineUsers extends StatefulWidget {
 }
 
 class _OnlineUsersState extends State<OnlineUsers> {
-  var _selectedFilter = 'Tümü';
+  var onlineUsers = 0.obs;
+  String _selectedFilter = 'Tümü';
+  Future<Map<bool, dynamic>> _future;
 
   List<String> buttonLabels = [
     "Tümü",
     "Kadınlar",
     "Erkekler",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO BURADAKİ getAllUsers metodu onlineUsers ile değişecek
+    _future = API().getAllUsers(Login().token, _selectedFilter, "", "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +53,19 @@ class _OnlineUsersState extends State<OnlineUsers> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           children: [
             fixedHeight,
-            Text.rich(
-              TextSpan(
-                text: "Matelive'da ",
-                style: styleH5(color: kTabBarColor),
-                children: [
-                  TextSpan(
-                    text: "3 Kullanıcı ",
-                    style: styleH3(fontWeight: FontWeight.w600),
-                  ),
-                  TextSpan(text: "Online")
-                ],
+            Obx(
+              () => Text.rich(
+                TextSpan(
+                  text: "Matelive'da ",
+                  style: styleH5(color: kTabBarColor),
+                  children: [
+                    TextSpan(
+                      text: "${onlineUsers.value} Kullanıcı ",
+                      style: styleH3(fontWeight: FontWeight.w600),
+                    ),
+                    TextSpan(text: "Online")
+                  ],
+                ),
               ),
             ),
             fixedHeight,
@@ -71,6 +88,15 @@ class _OnlineUsersState extends State<OnlineUsers> {
                           onPressed: () {
                             setState(() {
                               _selectedFilter = label;
+                              String gender = "";
+                              if (label == "Kadınlar") {
+                                gender = "kadin";
+                              } else if (label == "Erkekler") {
+                                gender = "erkek";
+                              }
+
+                              _future = API()
+                                  .getAllUsers(Login().token, gender, "", "");
                             });
                           },
                         ),
@@ -80,17 +106,34 @@ class _OnlineUsersState extends State<OnlineUsers> {
                   )
                   .toList(),
             ),
-            userCard(
-              username: "Mobil Test",
-              age: "Yaş Bilgisi Bulunamadı.",
-            ),
-            userCard(
-              username: "Mobil Test",
-              age: "23 Yaşında",
-            ),
-            userCard(
-              username: "Furkan Yılmaz",
-              age: "Yaş Bilgisi Bulunamadı.",
+            fixedHeight,
+            FutureBuilder<Map<bool, dynamic>>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  var data = snapshot.data;
+                  if (data.keys.first) {
+                    var pagedResponse = data.values.first as PagedResponse;
+                    WidgetsBinding.instance.addPostFrameCallback(
+                      (_) => onlineUsers.value = pagedResponse.data.length,
+                    );
+
+                    return Column(
+                      children: pagedResponse.data
+                          .map<Widget>(
+                            (userDetail) => userCard(userDetail: userDetail),
+                          )
+                          .toList(),
+                    );
+                  } else {
+                    return Container(
+                      height: 300,
+                      child: Center(child: Text(snapshot.data.values.first)),
+                    );
+                  }
+                }
+                return showProgressIndicator(context);
+              },
             ),
             footer(),
           ],

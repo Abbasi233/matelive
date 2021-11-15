@@ -1,12 +1,21 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/EmailConfirmPage/email_confirm_page.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/view/auth/email_confirm_page.dart';
+import 'package:matelive/view/auth/sign_in.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
+import 'utils/text_input.dart';
 
 class SignUpPage extends StatelessWidget {
-  final _rememberMe = false.obs;
+  final _login = Login();
+  final _policies = false.obs;
   final _formKey = GlobalKey<FormState>();
+
+  final _adController = TextEditingController();
+  final _soyadController = TextEditingController();
   final _eMailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordRepeatController = TextEditingController();
@@ -67,9 +76,17 @@ class SignUpPage extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(child: textInput(hintText: "Adınız")),
+                        Expanded(
+                            child: textInput(
+                          hintText: "Adınız",
+                          controller: _adController,
+                        )),
                         SizedBox(width: 20),
-                        Expanded(child: textInput(hintText: "Soyadınız")),
+                        Expanded(
+                            child: textInput(
+                          hintText: "Soyadınız",
+                          controller: _soyadController,
+                        )),
                       ],
                     ),
                     SizedBox(height: 15),
@@ -98,8 +115,8 @@ class SignUpPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Checkbox(
-                      value: _rememberMe.value,
-                      onChanged: (value) => _rememberMe.value = value,
+                      value: _policies.value,
+                      onChanged: (value) => _policies.value = value,
                       fillColor: MaterialStateProperty.all(kPrimaryColor),
                     ),
                     Text("Sözleşmeleri okudum, onaylıyorum.", style: styleH4()),
@@ -107,7 +124,8 @@ class SignUpPage extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top: 20,right: Get.size.width * 0.4, bottom: 30),
+                padding: EdgeInsets.only(
+                    top: 20, right: Get.size.width * 0.4, bottom: 30),
                 child: ElevatedButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(
@@ -117,13 +135,40 @@ class SignUpPage extends StatelessWidget {
                     textStyle: MaterialStateProperty.all(styleH4()),
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(kTextInputBorderRadius),
+                        borderRadius:
+                            BorderRadius.circular(kTextInputBorderRadius),
                       ),
                     ),
                   ),
-                  onPressed: () {
-                    // if (_formKey.currentState.validate()) {}
-                    Get.to(() => EmailConfirmPage());
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      if (_policies.value) {
+                        var body = {
+                          "name": _adController.text,
+                          "surname": _soyadController.text,
+                          "email": _eMailController.text,
+                          "password": _passwordController.text,
+                          "password_confirmation":
+                              _passwordRepeatController.text,
+                          "policy": true, // ??
+                        };
+
+                        var result = await API().register(body);
+
+                        if (result) {
+                          Get.back();
+                          successSnackbar(
+                              "Kaydolma işlemi başarıyla tamamlandı. E-posta hesabınıza gelen posta ile doğrulama işlemini gerçekleştirerek uygulamaya giriş yapabilirsiniz.");
+                          Get.off(() => EmailConfirmPage());
+                        } else {
+                          failureSnackbar(
+                              "Kaydolma işlemi sırasında bir hata oluştu. Lütfen girdiğiniz bilgileri kontrol ediniz.");
+                        }
+                      } else {
+                        failureSnackbar(
+                            "Sözleşmeleri onaylamadan kayıt olma işlemini gerçekleştiremezsiniz.");
+                      }
+                    }
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 5),
@@ -138,42 +183,6 @@ class SignUpPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget textInput(
-      {String hintText,
-      TextEditingController controller,
-      bool password = false}) {
-    return TextFormField(
-      style: styleH4(),
-      controller: controller,
-      cursorColor: kPrimaryColor,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: customFont(
-          18,
-          fontWeight: FontWeight.w500,
-          color: Colors.grey,
-        ),
-        hoverColor: kPrimaryColor,
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: kPrimaryColor),
-          borderRadius: BorderRadius.circular(kTextInputBorderRadius),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: kPrimaryColor),
-          borderRadius: BorderRadius.circular(kTextInputBorderRadius),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-      ),
-      obscureText: password,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Lütfen bu alanı doldurun.';
-        }
-        return null;
-      },
     );
   }
 }

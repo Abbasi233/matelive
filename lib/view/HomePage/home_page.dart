@@ -1,5 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/model/paged_response.dart';
+import 'package:matelive/view/utils/progressIndicator.dart';
 
 import '/constant.dart';
 import '../utils/miniCard.dart';
@@ -10,8 +15,10 @@ import 'OnlineUsersPage/online_users.dart';
 
 class HomePage extends StatelessWidget {
   final _landingPageController = Get.find<LandingPageController>();
+
   @override
   Widget build(BuildContext context) {
+    print(Login().token);
     return Scaffold(
       body: Container(
         width: Get.width,
@@ -19,9 +26,8 @@ class HomePage extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 20),
           children: [
-            // TODO ${user.kullaniciAdi}
             fixedHeight,
-            Text("Merhaba, Mobil!", style: styleH1()),
+            Text("Merhaba, ${Login().user.name}", style: styleH1()),
             fixedHeight,
             Card(
               color: kYellowColor,
@@ -31,55 +37,80 @@ class HomePage extends StatelessWidget {
               child: Container(
                 height: 250,
                 padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Görüşmeye Başlayın!",
-                        style: styleH3(fontWeight: FontWeight.w600)),
-                    Text.rich(
-                      TextSpan(
-                        text: "Şu an ",
+                child: FutureBuilder<Map<bool, dynamic>>(
+                  future: API().getOnlineUsers(Login().token, "", ""),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var data = snapshot.data;
+                      if (data.keys.first) {
+                        var pagedResponse = data.values.first as PagedResponse;
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Görüşmeye Başlayın!",
+                                style: styleH3(fontWeight: FontWeight.w600)),
+                            Text.rich(
+                              TextSpan(
+                                text: "Şu an ",
+                                children: [
+                                  TextSpan(
+                                    text: pagedResponse.data.length.toString(),
+                                    style: styleH4(
+                                      fontWeight: FontWeight.w600,
+                                      color: kBlackColor,
+                                    ),
+                                  ),
+                                  TextSpan(text: " kişi online.\n"),
+                                  TextSpan(text: "Hemen görüşmeye başlayın!"),
+                                ],
+                              ),
+                              style: styleH5(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: kBlackColor),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: primaryButton(
+                                text: Text(
+                                  "Online Kullanıcıları Göster",
+                                  style: styleH4(
+                                      fontSize: 18,
+                                      color: kWhiteColor,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                onPressed: () {
+                                  // Get.to(()=> AgoraCall());
+                                  // Get.to(()=> OnlineUsers());
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => OnlineUsers()));
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {}
+                    }
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          // TODO ONLINE KİŞİ SAYISI
-                          TextSpan(
-                            text: "0",
-                            style: styleH4(
-                              fontWeight: FontWeight.w600,
+                          AutoSizeText(
+                            "Çevrimiçi olan kullanıcılar bulunuyor...",
+                            style: styleH5(
                               color: kBlackColor,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          TextSpan(text: " kişi online.\n"),
-                          TextSpan(text: "Hemen görüşmeye başlayın!"),
+                          showProgressIndicator(context),
                         ],
                       ),
-                      style: styleH5(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: kBlackColor),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: primaryButton(
-                        text: Text(
-                          "Online Kullanıcıları Göster",
-                          style: styleH4(
-                              fontSize: 18,
-                              color: kWhiteColor,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        onPressed: () {
-                          // Get.to(()=> AgoraCall());
-                          // Get.to(()=> OnlineUsers());
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OnlineUsers()));
-                        },
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -142,7 +173,11 @@ class HomePage extends StatelessWidget {
               ),
             ),
             fixedHeight,
-            NotificationsCard(showSeeAll: true, showDeleteAll: true),
+            NotificationsCard(
+              showThree: true,
+              showSeeAll: true,
+              showDeleteAll: true,
+            ),
             fixedHeight,
             Center(
                 child: Text(

@@ -1,26 +1,47 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/controller/getX/notifications_controller.dart';
+import 'package:matelive/model/login.dart';
 
 import 'constant.dart';
-import 'view/auth_page.dart';
-import 'view/welcome_page.dart';
-import 'controller/getX/storage.dart';
+import '/view/auth/sign_in.dart';
+import 'view/auth/welcome_page.dart';
+import '/view/LandingPage/landing_page.dart';
+import 'controller/getX/storage_controller.dart';
 
+Widget _firstPage;
 void main() async {
   await GetStorage.init();
-  _firstScreen = await isFirstShowingMethod();
+  _firstPage = await isFirstShowing();
 
   runApp(MyApp());
 }
 
-Future<Widget> isFirstShowingMethod() async {
+Future<Widget> isFirstShowing() async {
   var _storageController = Get.put(StorageController());
-  bool result = await _storageController.readFirstShowing();
-  return result ? WelcomePage() : AuthPage();
+  bool result = _storageController.readFirstShowing();
+
+  if (result) {
+    return WelcomePage();
+  } else {
+    if (_storageController.readLogin()) {
+      await getNofiticaions();
+      return LandingPage();
+    }
+  }
+  return SignInPage();
 }
 
-Widget _firstScreen;
+Future<void> getNofiticaions() async {
+  var result = await API().getNotificationsByType(Login().token, "all");
+  if (result.keys.first) {
+    Get.put<NotificationsController>(NotificationsController())
+        .pagedResponse
+        .value = result.values.first;
+  }
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -34,7 +55,7 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(iconTheme: IconThemeData(color: kBlackColor)),
         secondaryHeaderColor: kBlackColor,
       ),
-      home: _firstScreen,
+      home: _firstPage,
     );
   }
 }

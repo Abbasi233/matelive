@@ -2,10 +2,10 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
-import 'LandingPage/landing_page.dart';
-import 'utils/welcomePageItems.dart';
-import '/controller/getX/storage.dart';
-import '/controller/getX/welcomePage.dart';
+import 'sign_in.dart';
+import '../utils/welcomePageItems.dart';
+import '../../controller/getX/storage_controller.dart';
+import '../../controller/getX/welcome_page_controller.dart';
 
 class WelcomePage extends StatelessWidget {
   final _storage = Get.find<StorageController>();
@@ -31,10 +31,6 @@ class WelcomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    // Image.asset(
-                    //   welcomePageItems[i]['header'],
-                    //   fit: BoxFit.fitWidth,
-                    // ),
                     SizedBox(height: 100),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 30.0),
@@ -171,11 +167,6 @@ class WelcomePage extends StatelessWidget {
 
   void closeScreen(BuildContext context) {
     _storage.saveFirstShowing();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LandingPage(),
-      ),
-    );
+    Get.off(() => SignInPage());
   }
 }

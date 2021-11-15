@@ -1,33 +1,47 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:matelive/constant.dart';
+import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:matelive/view/UserPage/user_page.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:matelive/model/user_detail.dart';
 
-Widget userCard({
-  @required String username,
-  @required String age,}
-) {
+import '/constant.dart';
+import '/view/UserPage/user_page.dart';
+import '/view/utils/primaryButton.dart';
+
+Widget userCard({UserDetail userDetail}) {
   const double _fixedSize = 40;
   return Card(
     margin: const EdgeInsets.only(bottom: 30),
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(kBorderRadius)),
+      borderRadius: BorderRadius.circular(kBorderRadius),
+    ),
     elevation: 4,
     child: Container(
       height: 220,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kBorderRadius),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage("assets/images/avatar.png"),
-              ),
-            ),
+          CachedNetworkImage(
+            imageBuilder: (context, provider) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(kBorderRadius),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: provider,
+                  ),
+                ),
+              );
+            },
+            fit: BoxFit.cover,
+            imageUrl: userDetail.image,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                Center(
+                    child: CircularProgressIndicator(
+              value: downloadProgress.progress,
+              color: kPrimaryColor,
+            )),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           Container(
             decoration: BoxDecoration(
@@ -102,27 +116,28 @@ Widget userCard({
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          username,
+                          "${userDetail.name} ${userDetail.surname}",
                           style: styleH2(color: kWhiteColor),
                           overflow: TextOverflow.fade,
                         ),
                         Text(
-                          age,
+                          userDetail.age,
                           style: styleH4(color: kWhiteColor),
                         ),
                         primaryButton(
-                            padding: Get.width * 0.1,
-                            text: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(LineAwesomeIcons.user),
-                                SizedBox(width: 5),
-                                Text("Profil"),
-                              ],
-                            ),
-                            onPressed: () {
-                              Get.to(()=> UserPage(username));
-                            })
+                          padding: Get.width * 0.1,
+                          text: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(LineAwesomeIcons.user),
+                              SizedBox(width: 5),
+                              Text("Profil"),
+                            ],
+                          ),
+                          onPressed: () {
+                            Get.to(() => UserDetailPage(userDetail));
+                          },
+                        )
                       ],
                     ),
                   ),

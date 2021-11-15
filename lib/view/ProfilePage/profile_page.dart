@@ -2,87 +2,61 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
 import 'utils/pictures_card.dart';
 import 'utils/account_info_card.dart';
 import 'utils/change_password_card.dart';
 import 'utils/account_settings_card.dart';
-import 'utils/social_media_info_card.dart';
-import '/view/utils/primaryButton.dart';
+import '/view/utils/progressIndicator.dart';
 
 class ProfilePage extends StatelessWidget {
+  final profileFuture = API().getProfile(Login().token);
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       //TextField dışında bir yere tıklayınca TextField'ın unfocus olması için
       onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
+        // FocusScopeNode currentFocus = FocusScope.of(context);
 
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus.unfocus();
-        }
+        // if (!currentFocus.hasPrimaryFocus &&
+        //     currentFocus.focusedChild != null) {
+        //   FocusManager.instance.primaryFocus.unfocus();
+        // }
       },
       child: Scaffold(
-        body: SizedBox(
-          width: Get.width,
-          height: Get.height,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  fixedHeight,
-                  //Profil ve Galeri Fotoğrafları
-                  PicturesCard(),
-                  fixedHeight,
-                  //Hesap Bilgileri
-                  AccountInfoCard(),
-                  fixedHeight,
-                  //Sosyal Medya Bilgileri
-                  SocialMediaInfoCard(),
-                  fixedHeight,
-                  //Güncelle Butonu
-                  _buildUpdateButton("Hesap Bilgilerini Güncelle", () {}),
-                  fixedHeight,
-                  //Hesap Şifresini Güncelle
-                  ChangePasswordCard(),
-                  fixedHeight,
-                  //Güncelle Butonu
-                  _buildUpdateButton("Hesap Şifresini Güncelle", () {}),
-                  fixedHeight,
-                  //Hesap Ayarları
-                  AccountSettingsCard(),
-                  fixedHeight,
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-//Güncelle Butonu
-  Widget _buildUpdateButton(String title, Function onPressed) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: primaryButton(
-        onPressed: onPressed,
-        width: Get.width,
-        height: 45,
-        borderRadius: 8,
-        text: Text(
-          title,
-          style: styleH4(
-            fontSize: 18,
-            color: kWhiteColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        imageIcon: ImageIcon(
-          AssetImage('assets/icons/forward_button.png'),
-          size: 22,
-          color: kWhiteColor,
+        body: FutureBuilder(
+          future: profileFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                width: Get.width,
+                height: Get.height,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        fixedHeight,
+                        PicturesCard(),
+                        fixedHeight,
+                        AccountInfoCard(),
+                        fixedHeight,
+                        fixedHeight,
+                        ChangePasswordCard(),
+                        fixedHeight,
+                        fixedHeight,
+                        AccountSettingsCard(),
+                        fixedHeight,
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            return showProgressIndicator(context);
+          },
         ),
       ),
     );

@@ -1,7 +1,7 @@
 name: matelive
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
@@ -10,19 +10,20 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
   get: ^4.3.8
+  http: ^0.13.4
   get_storage: ^2.0.3
-  rotated_corner_decoration: ^2.0.0
-  html_editor_enhanced: ^2.3.0
+  auto_size_text: ^2.1.0
   carousel_slider: ^4.0.0
-
   agora_rtc_engine: ^4.0.7
   permission_handler: ^8.1.6
   font_awesome_flutter: ^9.1.0
   line_awesome_flutter: ^2.0.0
-  auto_size_text: ^2.1.0
-  # html_editor_enhanced: ^2.3.0
+  html_editor_enhanced: ^2.4.0+1
+  rotated_corner_decoration: ^2.0.0
+  cached_network_image: ^3.1.0+1
+  pull_to_refresh: ^2.0.0
+  flutter_html: ^2.1.5
 
 
 dev_dependencies:

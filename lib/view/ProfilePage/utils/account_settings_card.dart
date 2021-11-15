@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constant.dart';
-import 'my_dropdown_button.dart';
 
 class AccountSettingsCard extends StatelessWidget {
   @override
@@ -22,36 +21,36 @@ class AccountSettingsCard extends StatelessWidget {
               ),
               fixedHeight,
               _buildLabel('Profil fotoğrafımı kimler görebilir?'),
-              MyDropdownButton('Tüm Matelive Üyeleri', <String>[
-                'Sadece Ben',
-                'Tüm Matelive Üyeleri',
-                'Sadece Beğendiğim Üyeler',
-                'Sadece Favorilere Eklediğim Üyeler',
-              ]),
-              fixedHeight,
-              _buildLabel('Galeri görsellerimi kimler görebilir?'),
-              MyDropdownButton('Tüm Matelive Üyeleri', <String>[
-                'Sadece Ben',
-                'Tüm Matelive Üyeleri',
-                'Sadece Beğendiğim Üyeler',
-                'Sadece Favorilere Eklediğim Üyeler',
-              ]),
-              fixedHeight,
-              _buildLabel('Sosyal medya adreslerimi kimler\ngörebilir?'),
-              MyDropdownButton('Tüm Matelive Üyeleri', <String>[
-                'Sadece Ben',
-                'Tüm Matelive Üyeleri',
-                'Sadece Beğendiğim Üyeler',
-                'Sadece Favorilere Eklediğim Üyeler',
-              ]),
-              fixedHeight,
-              _buildLabel('Profil açıklamamı kimler görebilir?'),
-              MyDropdownButton('Tüm Matelive Üyeleri', <String>[
-                'Sadece Ben',
-                'Tüm Matelive Üyeleri',
-                'Sadece Beğendiğim Üyeler',
-                'Sadece Favorilere Eklediğim Üyeler',
-              ]),
+              // MyDropdownButton('Tüm Matelive Üyeleri', <String>[
+              //   'Sadece Ben',
+              //   'Tüm Matelive Üyeleri',
+              //   'Sadece Beğendiğim Üyeler',
+              //   'Sadece Favorilere Eklediğim Üyeler',
+              // ]),
+              // fixedHeight,
+              // _buildLabel('Galeri görsellerimi kimler görebilir?'),
+              // MyDropdownButton('Tüm Matelive Üyeleri', <String>[
+              //   'Sadece Ben',
+              //   'Tüm Matelive Üyeleri',
+              //   'Sadece Beğendiğim Üyeler',
+              //   'Sadece Favorilere Eklediğim Üyeler',
+              // ]),
+              // fixedHeight,
+              // _buildLabel('Sosyal medya adreslerimi kimler\ngörebilir?'),
+              // MyDropdownButton('Tüm Matelive Üyeleri', <String>[
+              //   'Sadece Ben',
+              //   'Tüm Matelive Üyeleri',
+              //   'Sadece Beğendiğim Üyeler',
+              //   'Sadece Favorilere Eklediğim Üyeler',
+              // ]),
+              // fixedHeight,
+              // _buildLabel('Profil açıklamamı kimler görebilir?'),
+              // MyDropdownButton('Tüm Matelive Üyeleri', <String>[
+              //   'Sadece Ben',
+              //   'Tüm Matelive Üyeleri',
+              //   'Sadece Beğendiğim Üyeler',
+              //   'Sadece Favorilere Eklediğim Üyeler',
+              // ]),
               fixedHeight,
             ],
           ),
