@@ -26,6 +26,7 @@ class MyDrawer {
       child: SafeArea(
         child: Column(
           children: [
+            _listTile(Text("Tüm Üyeler"), HomePage()),
             _listTile(Text("Beğenmeler"), HomePage()),
             _listTile(Text("Dürtmeler"), HomePage()),
             _listTile(Text("Favoriler"), HomePage()),

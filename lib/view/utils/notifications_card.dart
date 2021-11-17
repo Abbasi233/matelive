@@ -23,7 +23,7 @@ class NotificationsCard extends StatelessWidget {
   final bool showSeeAll;
   final bool showDeleteAll;
   final _landingPageController = Get.find<LandingPageController>();
-  final _notificationsController = Get.find<NotificationsController>();
+  final _notificationsController = Get.put(NotificationsController());
 
   @override
   Widget build(BuildContext context) {

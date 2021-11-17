@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/controller/getX/notifications_controller.dart';
 import 'package:matelive/controller/getX/storage_controller.dart';
 import 'package:matelive/view/auth/reset_password.dart';
 import 'package:matelive/view/utils/snackbar.dart';
@@ -121,7 +122,16 @@ class SignInPage extends StatelessWidget {
                                 storageController.saveLogin(Login().toJson());
                               }
 
-                              Get.off(() => LandingPage());
+                              var result = await API()
+                                  .getNotificationsByType(Login().token, "all");
+                              if (result.keys.first) {
+                                Get.put(NotificationsController())
+                                    .pagedResponse
+                                    .value = result.values.first;
+                                Get.off(() => LandingPage());
+                              } else {
+                                failureSnackbar(result[false]);
+                              }
                             } else {
                               failureSnackbar("Başarısız");
                             }

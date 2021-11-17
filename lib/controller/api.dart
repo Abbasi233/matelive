@@ -206,6 +206,24 @@ class API {
     return false; // tam olarak ne dönüleceğine karar veremedim
   }
 
+  Future<Map<bool, String>> uploadImage(String token, dynamic body) async {
+    showProgressDialog();
+    Uri url = Uri.parse("$_URL/auth-user/profile/upload");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    closeProgressDialog();
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["message"]};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
   Future<Map<bool, dynamic>> getTotalNotifications(String token) async {
     Uri url = Uri.parse("$_URL/notification/totals");
     http.Response response = await http.get(

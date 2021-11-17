@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,7 +7,7 @@ import 'package:matelive/controller/api.dart';
 import 'package:matelive/model/login.dart';
 import 'package:matelive/model/user_detail.dart';
 import 'package:matelive/view/Agora/call_page.dart';
-import 'package:matelive/view/UserPage/show_image.dart';
+import 'package:matelive/view/utils/show_image.dart';
 import 'package:matelive/view/utils/appBar.dart';
 import 'package:matelive/view/utils/footer.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
@@ -56,7 +57,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     child: CachedNetworkImage(
                       imageUrl: userDetail.image,
                       imageBuilder: (context, provider) => CircleAvatar(
-                        radius: 50,
+                        radius: Get.width * 0.15,
                         foregroundImage: provider,
                       ),
                       progressIndicatorBuilder:
@@ -71,38 +72,33 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       Get.dialog(showImage(userDetail.image));
                     },
                   ),
-                  Text.rich(
-                    TextSpan(
-                      text: "${userDetail.name} ${userDetail.surname}",
-                      style: styleH3().copyWith(),
-                      children: [
-                        TextSpan(
-                          text: " (Onaylanmış Kullanıcı)\n",
-                          style: styleH5(color: Colors.green),
-                        ),
-                        TextSpan(
-                          text: "Toplam Başarılı Görüşme Sayısı: ",
-                          style: styleH5(),
-                          children: [
-                            TextSpan(
-                              text: "0",
-                              style: styleH4(
-                                  color: kBlackColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${userDetail.name} ${userDetail.surname}",
+                        style: styleH3().copyWith(),
+                      ),
+                      userDetail.emailVerified
+                          ? Icon(
+                              Icons.verified,
+                              color: Colors.blue,
+                            )
+                          : Container(),
+                    ],
                   ),
-                  primaryButton(
-                    text: Text("Şu An Çevrimiçi"),
-                    onPressed: () {
-                      // Get.to(() => CallPage(widget.username));
-                    },
-                    padding: Get.width * 0.20,
-                    // disabled: true,
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(30)),
+                    width: Get.width * 0.50,
+                    child: Center(
+                        child: AutoSizeText(
+                      "Şu An Çevrimiçi",
+                      style: styleH4(
+                          color: kWhiteColor, fontWeight: FontWeight.w400),
+                    )),
                   ),
                 ],
               ),

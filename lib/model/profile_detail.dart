@@ -22,6 +22,7 @@ class ProfileDetail implements UserDetail {
   bool isOnline;
   SocialMedias socialMedias;
   List<Gallery> gallery;
+  Map<String, int> settings;
 
   ProfileDetail.fromJson(Map<String, dynamic> json) {
     _profileDetail.id = json["id"];
@@ -42,5 +43,27 @@ class ProfileDetail implements UserDetail {
     _profileDetail.socialMedias = SocialMedias.fromJson(json["social_medias"]);
     _profileDetail.gallery = List<Gallery>.from(
         json["gallery"]?.map((x) => Gallery.fromJson(x)) ?? []);
+    _profileDetail.settings = Map.from(json["settings"]);
   }
+}
+
+class Settings {
+  Settings({
+    this.permissionProfilePicture,
+    this.permissionGallery,
+    this.permissionSocialMedia,
+    this.permissionDescription,
+  });
+
+  int permissionProfilePicture;
+  int permissionGallery;
+  int permissionSocialMedia;
+  int permissionDescription;
+
+  factory Settings.fromJson(Map<String, dynamic> json) => Settings(
+        permissionProfilePicture: json["permission_profile_picture"] ?? "",
+        permissionGallery: json["permission_gallery"] ?? "",
+        permissionSocialMedia: json["permission_social_media"] ?? "",
+        permissionDescription: json["permission_description"] ?? "",
+      );
 }

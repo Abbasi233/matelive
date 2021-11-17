@@ -14,12 +14,12 @@ import 'controller/getX/storage_controller.dart';
 Widget _firstPage;
 void main() async {
   await GetStorage.init();
-  _firstPage = await isFirstShowing();
+  _firstPage = await initFirstPage();
 
   runApp(MyApp());
 }
 
-Future<Widget> isFirstShowing() async {
+Future<Widget> initFirstPage() async {
   var _storageController = Get.put(StorageController());
   bool result = _storageController.readFirstShowing();
 
@@ -27,20 +27,20 @@ Future<Widget> isFirstShowing() async {
     return WelcomePage();
   } else {
     if (_storageController.readLogin()) {
-      await getNofiticaions();
-      return LandingPage();
+      return await getNofitications() ? LandingPage() : SignInPage();
     }
   }
   return SignInPage();
 }
 
-Future<void> getNofiticaions() async {
+Future<bool> getNofitications() async {
   var result = await API().getNotificationsByType(Login().token, "all");
   if (result.keys.first) {
-    Get.put<NotificationsController>(NotificationsController())
-        .pagedResponse
-        .value = result.values.first;
+    Get.put(NotificationsController()).pagedResponse.value =
+        result.values.first;
+    return true;
   }
+  return false;
 }
 
 class MyApp extends StatelessWidget {
