@@ -14,11 +14,19 @@ extension DateToString on DateTime {
       "Kasım",
       "Aralık"
     ];
-    return "${this.day.toString().padLeft(2, '0')} ${_months[this.month]} ${this.year} ${this.hour.toString().padLeft(2, '0')}:${this.minute.toString().padLeft(2, '0')}";
+    try {
+      return "${this.day.toString().padLeft(2, '0')} ${_months[this.month]} ${this.year} ${this.hour.toString().padLeft(2, '0')}:${this.minute.toString().padLeft(2, '0')}";
+    } catch (e) {
+      return null;
+    }
   }
 
   String formatToString() {
-    return "${this.day.toString().padLeft(2, '0')}/${this.month.toString().padLeft(2, '0')}/${this.year}";
+    try {
+      return "${this.day.toString().padLeft(2, '0')}/${this.month.toString().padLeft(2, '0')}/${this.year}";
+    } catch (e) {
+      return null;
+    }
   }
 }
 

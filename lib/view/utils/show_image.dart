@@ -1,14 +1,37 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-Widget showImage(String imageUrl) {
-  return FittedBox(
+import '../../constant.dart';
+import '/model/user_detail.dart';
+
+Widget showImage({List<Gallery> gallery, String imageUrl}) {
+  return Container(
+    constraints: BoxConstraints.expand(),
     child: Padding(
       padding: EdgeInsets.all(Get.width * 0.06),
-      child: Image.network(
-        imageUrl,
-        fit: BoxFit.contain,
-      ),
+      child: gallery != null
+          ? PageView.builder(
+              itemCount: gallery.length,
+              itemBuilder: (context, index) => Image.network(
+                gallery[index].image,
+                fit: BoxFit.contain,
+              ),
+            )
+          : CachedNetworkImage(
+              imageUrl: imageUrl,
+              imageBuilder: (context, provider) => Image.network(
+                imageUrl,
+                fit: BoxFit.contain,
+              ),
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  Center(
+                      child: CircularProgressIndicator(
+                value: downloadProgress.progress,
+                color: kPrimaryColor,
+              )),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
     ),
   );
 }

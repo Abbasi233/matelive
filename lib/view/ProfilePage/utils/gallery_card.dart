@@ -23,7 +23,10 @@ class _GalleryCardState extends State<GalleryCard> {
             children: [
               Container(
                 margin: EdgeInsets.only(bottom: 10),
-                child: Text("Fotoğraf Galerisi", style: styleH2(),),
+                child: Text(
+                  "Fotoğraf Galerisi",
+                  style: styleH2(),
+                ),
               ),
             ],
           ),
@@ -40,7 +43,7 @@ class _GalleryCardState extends State<GalleryCard> {
               if (index != ProfileDetail().gallery.length) {
                 return GestureDetector(
                   onTap: () {
-                    Get.dialog(showImage(ProfileDetail().gallery[index].image));
+                    Get.dialog(showImage(gallery: ProfileDetail().gallery));
                   },
                   child: CachedNetworkImage(
                     imageUrl: ProfileDetail().gallery[index].image,

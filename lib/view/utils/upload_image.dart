@@ -24,18 +24,21 @@ dynamic selectImage({String klasorAdi, resimId}) async {
       imageQuality: 25,
     );
 
-    var file = File(image.path);
+    if (image != null) {
+      var file = File(image.path);
 
-    print(file.lengthSync());
-    print(
-        "${await file.length()} + --------------------------------------------------------------------------");
-    _resimBoyutu = await file.length();
+      print(file.lengthSync());
+      print(
+          "${await file.length()} + --------------------------------------------------------------------------");
+      _resimBoyutu = await file.length();
 
-    if (_resimBoyutu > boyutSiniri) {
-      failureSnackbar(
-          "Lütfen 2.5 MB boyutundan daha düşük boyutlu bir resim seçin.");
-    } else {
-      return image;
+      if (_resimBoyutu > boyutSiniri) {
+        failureSnackbar(
+            "Lütfen 2.5 MB boyutundan daha düşük boyutlu bir resim seçin.");
+        return null;
+      } else {
+        return image;
+      }
     }
   } else {
     // if (Platform.isIOS) {

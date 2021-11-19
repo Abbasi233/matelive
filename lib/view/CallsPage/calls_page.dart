@@ -1,163 +1,70 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/view/utils/footer.dart';
+import 'package:matelive/view/utils/progressIndicator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../constant.dart';
-import '/view/utils/my_text.dart';
+import 'utils/expansion_panel.dart';
 
-class CallsPage extends StatelessWidget {
+class CallsPage extends StatefulWidget {
+  @override
+  State<CallsPage> createState() => _CallsPageState();
+}
+
+class _CallsPageState extends State<CallsPage>
+    with SingleTickerProviderStateMixin {
+  var callsFuture = API().getCalls(Login().token);
+
+  final _refreshController = RefreshController(initialRefresh: false);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: Get.width,
-        height: Get.height,
-        child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                fixedHeight,
-                Text("Başarılı Görüşmeler", style: styleH1()),
-                fixedHeight,
-                MyExpansionPanelList(),
-                fixedHeight,
-              ],
-            )),
-      ),
-    );
-  }
-}
-
-class MyExpansionPanelList extends StatefulWidget {
-  @override
-  _MyExpansionPanelListState createState() => _MyExpansionPanelListState();
-}
-
-class _MyExpansionPanelListState extends State<MyExpansionPanelList> {
-  List<Item> generateItems(int numberOfItems) {
-    return List.generate(numberOfItems, (int index) {
-      return Item(
-        headerValue: 'Book $index',
-        expandedValue: 'Details for Book $index goes here',
-      );
-    });
-  }
-
-  List<Item> _books;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _books = generateItems(8);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          _books[index].isExpanded = !isExpanded;
-        });
-      },
-      children: _books.map<ExpansionPanel>((Item item) {
-        return _buildExpansionPanel(item);
-      }).toList(),
-      elevation: 0,
-    );
-  }
-
-  _buildExpansionPanel(Item item) {
-    return ExpansionPanel(
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MyText('Görüşme: John Doe', fontSize: 19),
-              ImageIcon(
-                AssetImage('assets/icons/outgoing_call.png'),
-                size: 24,
-                color: Colors.green,
-              ),
-            ],
-          ),
-        );
-      },
-      body: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MyText(
-              'Konuşma Detayları',
-              fontSize: 15,
-              fontWeight: FontWeight.normal,
-            ),
-            Divider(thickness: 2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: FutureBuilder<Map<bool, dynamic>>(
+          future: callsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data.keys.first) {
+                return SmartRefresher(
+                  enablePullDown: true,
+                  onRefresh: _onRefresh,
+                  controller: _refreshController,
+                  header: MaterialClassicHeader(),
+                  physics: BouncingScrollPhysics(),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MyText('Başlangıç: '),
-                        MyText(
-                          '9 Eylül 12:20',
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
-                        ),
+                        fixedHeight,
+                        Text("Başarılı Görüşmeler", style: styleH1()),
+                        fixedHeight,
+                        CallsExpansionPanel(snapshot.data.values.first),
+                        fixedHeight,
+                        footer(),
                       ],
                     ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        MyText('Bitiş: '),
-                        MyText(
-                          '9 Eylül 12:55',
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    MyText(
-                      'Süre',
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                    ),
-                    SizedBox(height: 5),
-                    MyText(
-                      '35 DK',
-                      fontSize: 23,
-                    ),
-                  ],
-                )
-              ],
-            )
-          ],
+                  ),
+                );
+              }
+            }
+            return showProgressIndicator(context);
+          },
         ),
       ),
-      isExpanded: item.isExpanded,
     );
   }
-}
 
-class Item {
-  Item({
-    this.expandedValue,
-    this.headerValue,
-    this.isExpanded = false,
-  });
-
-  String expandedValue;
-  String headerValue;
-  bool isExpanded;
+  void _onRefresh() async {
+    var newFuture = await API().getCalls(Login().token);
+    setState(() {
+      callsFuture = Future.value(newFuture);
+    });
+    _refreshController.refreshCompleted();
+  }
 }

@@ -69,7 +69,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                     onTap: () {
-                      Get.dialog(showImage(userDetail.image));
+                      Get.dialog(showImage(imageUrl: userDetail.image));
                     },
                   ),
                   Row(

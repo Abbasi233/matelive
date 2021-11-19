@@ -1,5 +1,7 @@
 import 'dart:convert' as convert;
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:matelive/model/calls.dart';
 
 import 'package:matelive/model/login.dart';
 import 'package:matelive/model/notifications.dart';
@@ -132,13 +134,12 @@ class API {
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       return ProfileDetail.fromJson(jsonResponse["data"]);
     }
     return jsonResponse["message"];
   }
 
-  // gallery parametresini profile nesnesiyle neden birleştirmedi ? ikisni ayrı ayrı çekmeye gerek var mı
   Future<dynamic> getImages(String token) async {
     Uri url = Uri.parse("$_URL/auth-user/images");
     http.Response response = await http.get(
@@ -148,10 +149,25 @@ class API {
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       return UserDetail.fromJson(jsonResponse["data"]);
     }
     return jsonResponse["message"];
+  }
+
+  Future<Map<bool, dynamic>> getCalls(String token, {String type}) async {
+    Uri url = Uri.parse("$_URL/auth-user/calls?type=$type");
+    http.Response response = await http.get(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: PagedResponse.fromJson(jsonResponse, Calls)};
+    }
+    return {true: jsonResponse["message"]};
   }
 
   Future<Map<bool, String>> updatePassword(String token, dynamic body) async {
@@ -184,7 +200,7 @@ class API {
     closeProgressDialog();
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       UserDetail.fromJson(jsonResponse["data"]);
       return {true: "Profil bilgileriniz başarıyla güncellendi."};
     }
@@ -200,28 +216,29 @@ class API {
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       return true; // tam olarak ne dönüleceğine karar veremedim
     }
     return false; // tam olarak ne dönüleceğine karar veremedim
   }
 
-  Future<Map<bool, String>> uploadImage(String token, dynamic body) async {
+  Future<bool> uploadImage(String token, String filename, String type) async {
     showProgressDialog();
-    Uri url = Uri.parse("$_URL/auth-user/profile/upload");
-    http.Response response = await http.post(
-      url,
-      headers: _getHeader(token),
-      body: convert.jsonEncode(body),
-    );
-    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    closeProgressDialog();
-    print(jsonResponse);
 
+    Uri url = Uri.parse("$_URL/auth-user/profile/upload");
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(_getHeader(token));
+    request.files.add(await http.MultipartFile.fromPath("file", filename));
+    request.fields["type"] = type;
+    var response = await request.send();
+
+    closeProgressDialog();
+
+    print(response.reasonPhrase);
     if (response.statusCode < 400) {
-      return {true: jsonResponse["message"]};
+      return true;
     }
-    return {false: jsonResponse["message"]};
+    return false;
   }
 
   Future<Map<bool, dynamic>> getTotalNotifications(String token) async {

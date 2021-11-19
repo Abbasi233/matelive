@@ -51,12 +51,14 @@ class UserDetail {
         age: json["age"],
         description: json["description"],
         emailVerified: json["email_verified"],
-        lastActivity: DateTime.parse(json["last_activity"]),
+        lastActivity: json["last_activity"] == null
+            ? null
+            : DateTime.parse(json["last_activity"]),
         isOnline: json["is_online"],
         socialMedias: json["social_medias"] != null
             ? SocialMedias.fromJson(json["social_medias"])
             : null,
-        gallery:  List<Gallery>.from(
+        gallery: List<Gallery>.from(
             json["gallery"]?.map((x) => Gallery.fromJson(x)) ?? []),
       );
 }

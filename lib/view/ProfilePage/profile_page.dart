@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:matelive/model/profile_detail.dart';
 import 'package:matelive/view/ProfilePage/utils/gallery_card.dart';
+import 'package:matelive/view/utils/footer.dart';
 import 'package:matelive/view/utils/show_image.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 import 'package:matelive/view/utils/snackbar.dart';
@@ -19,8 +23,13 @@ import 'utils/account_info_card.dart';
 import 'utils/change_password_card.dart';
 import '/view/utils/progressIndicator.dart';
 
-class ProfilePage extends StatelessWidget {
-  final profileFuture = API().getProfile(Login().token);
+class ProfilePage extends StatefulWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  var profileFuture = API().getProfile(Login().token);
 
   final List<String> gender = [
     "Kadın",
@@ -83,8 +92,8 @@ class ProfilePage extends StatelessWidget {
                                           Icon(Icons.error),
                                     ),
                                     onTap: () {
-                                      Get.dialog(
-                                          showImage(ProfileDetail().image));
+                                      Get.dialog(showImage(
+                                          imageUrl: ProfileDetail().image));
                                     },
                                   ),
                                 ),
@@ -105,8 +114,26 @@ class ProfilePage extends StatelessWidget {
                                       var image = await selectImage();
 
                                       if (image != null) {
-                                        // var result = await API()
-                                        //     .uploadImage(Login().token, {});
+                                        print((image as XFile).path);
+                                        var result = await API().uploadImage(
+                                          Login().token,
+                                          (image as XFile).path,
+                                          "profile-image",
+                                        );
+                                        var newProfileResult = await API()
+                                            .getProfile(Login().token);
+
+                                        setState(() {
+                                          profileFuture =
+                                              Future.value(newProfileResult);
+                                        });
+                                        if (result) {
+                                          successSnackbar(
+                                              "Profil resminiz başarıyla güncellenmiştir.");
+                                        } else {
+                                          failureSnackbar(
+                                              "Profil resminiz güncellenirken bir sorun yaşandı.");
+                                        }
                                       } else {
                                         normalSnackbar(
                                             "Herhangi bir resim seçilmedi.");
@@ -230,12 +257,119 @@ class ProfilePage extends StatelessWidget {
                               ),
                             ),
                             fixedHeight,
-                            GalleryCard(),
+                            // GalleryCard(),
+                            Container(
+                              // padding: const EdgeInsets.symmetric(),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                          "Fotoğraf Galerisi",
+                                          style: styleH2(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 3,
+                                      mainAxisSpacing: 3,
+                                    ),
+                                    itemCount:
+                                        ProfileDetail().gallery.length + 1,
+                                    itemBuilder: (context, index) {
+                                      if (index !=
+                                          ProfileDetail().gallery.length) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Get.dialog(
+                                              showImage(
+                                                  gallery:
+                                                      ProfileDetail().gallery),
+                                            );
+                                          },
+                                          child: CachedNetworkImage(
+                                            imageUrl: ProfileDetail()
+                                                .gallery[index]
+                                                .image,
+                                            imageBuilder: (context, provider) =>
+                                                Container(
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: provider,
+                                                    fit: BoxFit.cover),
+                                              ),
+                                            ),
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                Center(
+                                              child: CircularProgressIndicator(
+                                                value:
+                                                    downloadProgress.progress,
+                                                color: kPrimaryColor,
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
+                                        );
+                                      }
+                                      return IconButton(
+                                        icon: Icon(
+                                          Icons.add_box_rounded,
+                                          color: kPrimaryColor,
+                                        ),
+                                        iconSize: 48,
+                                        onPressed: () async {
+                                          var image = await selectImage();
+
+                                          if (image != null) {
+                                            print((image as XFile).path);
+                                            var result =
+                                                await API().uploadImage(
+                                              Login().token,
+                                              (image as XFile).path,
+                                              "profile-gallery",
+                                            );
+                                            var newProfileResult = await API()
+                                                .getProfile(Login().token);
+
+                                            setState(() {
+                                              profileFuture = Future.value(
+                                                  newProfileResult);
+                                            });
+                                            if (result) {
+                                              successSnackbar(
+                                                  "Galeri fotoğrafınız başarıyla yüklendi.");
+                                            } else {
+                                              failureSnackbar(
+                                                  "Galeri fotoğrafınız yüklenirken bir sorun yaşandı.");
+                                            }
+                                          } else {
+                                            normalSnackbar(
+                                                "Herhangi bir resim seçilmedi.");
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                             fixedHeight,
                             AccountInfoCard(),
                             fixedHeight,
                             ChangePasswordCard(),
                             fixedHeight,
+                            footer(),
                           ],
                         ),
                       ),
