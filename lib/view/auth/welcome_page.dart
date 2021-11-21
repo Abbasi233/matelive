@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '/constant.dart';
-import 'sign_in.dart';
+import 'sign_in_page.dart';
 import '../utils/welcomePageItems.dart';
 import '../../controller/getX/storage_controller.dart';
 import '../../controller/getX/welcome_page_controller.dart';

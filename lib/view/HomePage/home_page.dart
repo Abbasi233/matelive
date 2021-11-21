@@ -11,7 +11,7 @@ import '../utils/miniCard.dart';
 import '/view/utils/primaryButton.dart';
 import '/view/LandingPage/controller.dart';
 import '/view/utils/notifications_card.dart';
-import 'OnlineUsersPage/online_users.dart';
+import 'OnlineUsersPage/online_users_page.dart';
 
 class HomePage extends StatelessWidget {
   final _landingPageController = Get.find<LandingPageController>();
@@ -87,7 +87,7 @@ class HomePage extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => OnlineUsers()));
+                                          builder: (context) => OnlineUsersPage()));
                                 },
                               ),
                             ),

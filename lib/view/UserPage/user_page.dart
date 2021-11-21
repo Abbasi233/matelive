@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:matelive/constant.dart';
 import 'package:matelive/controller/api.dart';
@@ -12,6 +13,7 @@ import 'package:matelive/view/utils/appBar.dart';
 import 'package:matelive/view/utils/footer.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 import 'package:matelive/view/utils/progressIndicator.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 
 class UserDetailPage extends StatefulWidget {
   final UserDetail userDetail;
@@ -33,7 +35,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
   @override
   void initState() {
     super.initState();
-    // _future = API().getUserDetail(Login().token, userDetail.id);
     userDetail = widget.userDetail;
   }
 
@@ -48,7 +49,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
         child: ListView(
           children: [
             Container(
-              height: Get.height * 0.4,
+              padding: const EdgeInsets.symmetric(vertical: 20),
               color: Colors.grey[300],
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -87,18 +88,32 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           : Container(),
                     ],
                   ),
+                  Html(
+                    data: "<p>${userDetail.description}<p>",
+                    style: {
+                      "p": Style(
+                        fontSize: FontSize.larger,
+                        color: kTextColor,
+                        // fontWeight: FontWeight.w600,
+                        textAlign: TextAlign.center,
+                      ),
+                    },
+                  ),
                   Container(
                     height: 50,
                     decoration: BoxDecoration(
-                        color: kPrimaryColor,
+                        color: userDetail.isOnline ? kPrimaryColor : kTextColor,
                         borderRadius: BorderRadius.circular(30)),
                     width: Get.width * 0.50,
                     child: Center(
-                        child: AutoSizeText(
-                      "Şu An Çevrimiçi",
-                      style: styleH4(
-                          color: kWhiteColor, fontWeight: FontWeight.w400),
-                    )),
+                      child: AutoSizeText(
+                        userDetail.isOnline
+                            ? "Şu An Çevrimiçi"
+                            : "Şu An Çevrimdışı",
+                        style: styleH4(
+                            color: kWhiteColor, fontWeight: FontWeight.w400),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -109,15 +124,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Fotoğraf Galerisi",
-                    style: styleH2(),
-                  ),
-                  Text(
-                    "Kullanıcı henüz bir görsel paylaşmadı.",
-                    style: styleH4(),
-                  ),
-                  fixedHeight,
                   Container(
                     height: 150,
                     padding: const EdgeInsets.all(20),
@@ -166,7 +172,50 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  fixedHeight,
+                  Text(
+                    "Fotoğraf Galerisi",
+                    style: styleH2(),
+                  ),
+                  fixedHeight,
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 3,
+                      mainAxisSpacing: 3,
+                    ),
+                    itemCount: userDetail.gallery.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Get.dialog(
+                            showImage(gallery: userDetail.gallery),
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: userDetail.gallery[index].image,
+                          imageBuilder: (context, provider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: provider, fit: BoxFit.cover),
+                            ),
+                          ),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                            child: CircularProgressIndicator(
+                              value: downloadProgress.progress,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

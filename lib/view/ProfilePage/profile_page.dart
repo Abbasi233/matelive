@@ -188,12 +188,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderRadius: BorderRadius.circular(30)),
                               width: Get.width * 0.50,
                               child: Center(
-                                  child: AutoSizeText(
-                                "Şu An Çevrimiçi",
-                                style: styleH4(
-                                    color: kWhiteColor,
-                                    fontWeight: FontWeight.w400),
-                              )),
+                                child: AutoSizeText(
+                                  "Şu An Çevrimiçi",
+                                  style: styleH4(
+                                      color: kWhiteColor,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -257,9 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             fixedHeight,
-                            // GalleryCard(),
                             Container(
-                              // padding: const EdgeInsets.symmetric(),
                               child: Column(
                                 children: [
                                   Row(

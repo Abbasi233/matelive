@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:matelive/controller/api.dart';
 import 'package:matelive/model/login.dart';
 import 'package:matelive/view/auth/email_confirm_page.dart';
-import 'package:matelive/view/auth/sign_in.dart';
 import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';

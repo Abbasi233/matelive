@@ -114,7 +114,7 @@ class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
                     ),
                     SizedBox(height: 5),
                     MyText(
-                      formatDuration(call.durationSeconds) + " DK",
+                      formatDuration(call.durationSeconds),
                       fontSize: 18,
                     ),
                   ],
@@ -129,13 +129,21 @@ class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
   }
 
   String formatDuration(int seconds) {
+    String returnValue = "";
     var data = Duration(seconds: seconds);
     var fullTime = data.toString().split(".");
     var time = fullTime[0].split(":");
 
     if (time[0] != "0") {
-      return fullTime[0];
+      returnValue += "${time[0]}s ";
     }
-    return "${time[1]}:${time[2]}";
+    if (time[1] != "00") {
+      returnValue += "${time[1]}dk ";
+    }
+    if (time[2] != "00") {
+      returnValue += "${time[2]}sn";
+    }
+
+    return returnValue == "" ? "Süre Yok" : returnValue;
   }
 }

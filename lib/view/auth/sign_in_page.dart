@@ -5,7 +5,7 @@ import 'package:matelive/controller/getX/storage_controller.dart';
 import 'package:matelive/view/auth/reset_password.dart';
 import 'package:matelive/view/utils/snackbar.dart';
 
-import 'sign_up.dart';
+import 'sign_up_page.dart';
 import '/constant.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
@@ -125,6 +125,7 @@ class SignInPage extends StatelessWidget {
                               var result = await API()
                                   .getNotificationsByType(Login().token, "all");
                               if (result.keys.first) {
+                                API().getProfile(Login().token);
                                 Get.put(NotificationsController())
                                     .pagedResponse
                                     .value = result.values.first;
@@ -133,7 +134,7 @@ class SignInPage extends StatelessWidget {
                                 failureSnackbar(result[false]);
                               }
                             } else {
-                              failureSnackbar("Başarısız");
+                              failureSnackbar("Kullanıcı adı veya şifre yanlış.");
                             }
                           }
                         },

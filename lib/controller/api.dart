@@ -125,7 +125,7 @@ class API {
     return jsonResponse["message"];
   }
 
-  Future<dynamic> getProfile(String token) async {
+  Future<Map<bool, dynamic>> getProfile(String token) async {
     Uri url = Uri.parse("$_URL/auth-user/profile");
     http.Response response = await http.get(
       url,
@@ -135,9 +135,9 @@ class API {
     print(jsonResponse);
 
     if (response.statusCode < 400) {
-      return ProfileDetail.fromJson(jsonResponse["data"]);
+      return {true: ProfileDetail.fromJson(jsonResponse["data"])};
     }
-    return jsonResponse["message"];
+    return {false: jsonResponse["message"]};
   }
 
   Future<dynamic> getImages(String token) async {
@@ -155,7 +155,7 @@ class API {
     return jsonResponse["message"];
   }
 
-  Future<Map<bool, dynamic>> getCalls(String token, {String type}) async {
+  Future<Map<bool, dynamic>> getCalls(String token, {String type = ""}) async {
     Uri url = Uri.parse("$_URL/auth-user/calls?type=$type");
     http.Response response = await http.get(
       url,

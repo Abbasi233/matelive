@@ -14,12 +14,12 @@ import '/view/utils/footer.dart';
 import '/view/utils/primaryButton.dart';
 import '/view/HomePage/OnlineUsersPage/utils/user_card.dart';
 
-class OnlineUsers extends StatefulWidget {
+class OnlineUsersPage extends StatefulWidget {
   @override
-  _OnlineUsersState createState() => _OnlineUsersState();
+  _OnlineUsersPageState createState() => _OnlineUsersPageState();
 }
 
-class _OnlineUsersState extends State<OnlineUsers> {
+class _OnlineUsersPageState extends State<OnlineUsersPage> {
   var onlineUsers = 0.obs;
   String _selectedFilter = 'Tümü';
   Future<Map<bool, dynamic>> _future;
@@ -33,8 +33,7 @@ class _OnlineUsersState extends State<OnlineUsers> {
   @override
   void initState() {
     super.initState();
-    // TODO BURADAKİ getAllUsers metodu onlineUsers ile değişecek
-    _future = API().getAllUsers(Login().token, _selectedFilter, "", "");
+    _future = API().getOnlineUsers(Login().token, _selectedFilter, "");
   }
 
   @override
@@ -90,13 +89,13 @@ class _OnlineUsersState extends State<OnlineUsers> {
                               _selectedFilter = label;
                               String gender = "";
                               if (label == "Kadınlar") {
-                                gender = "kadin";
+                                gender = "1";
                               } else if (label == "Erkekler") {
-                                gender = "erkek";
+                                gender = "2";
                               }
 
                               _future = API()
-                                  .getAllUsers(Login().token, gender, "", "");
+                                  .getOnlineUsers(Login().token, gender, "");
                             });
                           },
                         ),
@@ -115,7 +114,7 @@ class _OnlineUsersState extends State<OnlineUsers> {
                   if (data.keys.first) {
                     var pagedResponse = data.values.first as PagedResponse;
                     WidgetsBinding.instance.addPostFrameCallback(
-                      (_) => onlineUsers.value = pagedResponse.data.length,
+                      (_) => onlineUsers.value = pagedResponse.meta.total,
                     );
 
                     return Column(

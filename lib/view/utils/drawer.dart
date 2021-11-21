@@ -2,10 +2,11 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:matelive/controller/getX/storage_controller.dart';
+import 'package:matelive/view/LandingPage/AllUsersPage/all_users_page.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
-import '../auth/sign_in.dart';
+import '../auth/sign_in_page.dart';
 import '/controller/api.dart';
 import '/view/HomePage/home_page.dart';
 import '/view/utils/primaryButton.dart';
@@ -16,7 +17,8 @@ class MyDrawer {
     return ListTile(
       title: Text(title.data, style: styleH4(color: color)),
       onTap: () {
-        // Get.off(() => page)
+        Get.back();
+        Get.to(() => page);
       },
     );
   }
@@ -26,7 +28,7 @@ class MyDrawer {
       child: SafeArea(
         child: Column(
           children: [
-            _listTile(Text("Tüm Üyeler"), HomePage()),
+            _listTile(Text("Tüm Üyeler"), AllUsersPage()),
             _listTile(Text("Beğenmeler"), HomePage()),
             _listTile(Text("Dürtmeler"), HomePage()),
             _listTile(Text("Favoriler"), HomePage()),

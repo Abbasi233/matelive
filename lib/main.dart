@@ -6,7 +6,7 @@ import 'package:matelive/controller/getX/notifications_controller.dart';
 import 'package:matelive/model/login.dart';
 
 import 'constant.dart';
-import '/view/auth/sign_in.dart';
+import 'view/auth/sign_in_page.dart';
 import 'view/auth/welcome_page.dart';
 import '/view/LandingPage/landing_page.dart';
 import 'controller/getX/storage_controller.dart';
@@ -23,14 +23,27 @@ Future<Widget> initFirstPage() async {
   var _storageController = Get.put(StorageController());
   bool result = _storageController.readFirstShowing();
 
-  if (result) {
-    return WelcomePage();
-  } else {
+  if (!result) {
     if (_storageController.readLogin()) {
-      return await getNofitications() ? LandingPage() : SignInPage();
+      return await initApp() ? LandingPage() : SignInPage();
     }
+  } else {
+    return WelcomePage();
   }
   return SignInPage();
+}
+
+Future<bool> initApp() async {
+  var futureList = await Future.wait([
+    getProfile(),
+    getNofitications(),
+  ]);
+  return futureList.every((element) => element);
+}
+
+Future<bool> getProfile() async {
+  var result = await API().getProfile(Login().token);
+  return result.keys.first;
 }
 
 Future<bool> getNofitications() async {
