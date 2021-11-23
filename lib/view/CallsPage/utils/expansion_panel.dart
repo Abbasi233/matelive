@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:matelive/model/calls.dart';
+import 'package:matelive/model/Call/previous_call.dart';
 import 'package:matelive/model/paged_response.dart';
 import 'package:matelive/model/profile_detail.dart';
 import 'package:matelive/view/utils/my_text.dart';
@@ -13,7 +13,7 @@ class CallsExpansionPanel extends StatefulWidget {
 }
 
 class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
-  List<Calls> _calls;
+  List<PreviousCall> _calls;
 
   @override
   void initState() {
@@ -30,17 +30,18 @@ class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
           _calls[index].isExpanded = !isExpanded;
         });
       },
-      children: _calls.map<ExpansionPanel>((Calls item) {
+      children: _calls.map<ExpansionPanel>((PreviousCall item) {
         return _buildExpansionPanel(item);
       }).toList(),
       elevation: 0,
     );
   }
 
-  ExpansionPanel _buildExpansionPanel(Calls call) {
+  ExpansionPanel _buildExpansionPanel(PreviousCall call) {
     bool iCaller = call.caller.id == ProfileDetail().id ? true : false;
 
     return ExpansionPanel(
+      canTapOnHeader: true,
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),

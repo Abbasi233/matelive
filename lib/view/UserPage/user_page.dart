@@ -5,9 +5,12 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:matelive/constant.dart';
 import 'package:matelive/controller/api.dart';
+import 'package:matelive/controller/getX/Agora/calling_controller.dart';
+import 'package:matelive/model/Call/call_result.dart';
 import 'package:matelive/model/login.dart';
+import 'package:matelive/model/profile_detail.dart';
 import 'package:matelive/model/user_detail.dart';
-import 'package:matelive/view/Agora/call_page.dart';
+import 'package:matelive/view/CallPage/call_page.dart';
 import 'package:matelive/view/utils/show_image.dart';
 import 'package:matelive/view/utils/appBar.dart';
 import 'package:matelive/view/utils/footer.dart';
@@ -31,6 +34,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
     "Erkek",
     "Belirtilmemiş",
   ];
+
+  var callingController = Get.find<CallingController>();
 
   @override
   void initState() {
@@ -105,14 +110,50 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         color: userDetail.isOnline ? kPrimaryColor : kTextColor,
                         borderRadius: BorderRadius.circular(30)),
                     width: Get.width * 0.50,
-                    child: Center(
-                      child: AutoSizeText(
-                        userDetail.isOnline
-                            ? "Şu An Çevrimiçi"
-                            : "Şu An Çevrimdışı",
-                        style: styleH4(
-                            color: kWhiteColor, fontWeight: FontWeight.w400),
+                    child: InkWell(
+                      child: Center(
+                        child: AutoSizeText(
+                          userDetail.id == ProfileDetail().id
+                              ? "Kendi Profiliniz"
+                              : userDetail.isOnline
+                                  ? "Şu An Çevrimiçi"
+                                  : "Şu An Çevrimdışı",
+                          style: styleH4(
+                              color: kWhiteColor, fontWeight: FontWeight.w400),
+                        ),
                       ),
+                      onTap: userDetail.isOnline
+                          ? () async {
+                              var result = await Get.dialog(AlertDialog(
+                                title: Text("Arama İşlemi"),
+                                content: Text(
+                                    "${userDetail.name} ${userDetail.surname} isimli kullanıcıyı aramak istediğinize emin misiniz?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Get.back(result: true),
+                                      child: Text("Evet")),
+                                  TextButton(
+                                      onPressed: () => Get.back(result: false),
+                                      child: Text("Hayır")),
+                                ],
+                              ));
+
+                              if (result) {
+                                var apiResult = await API()
+                                    .createCall(Login().token, userDetail.id);
+
+                                if (apiResult.keys.first) {
+                                  CallResult callResult =
+                                      apiResult.values.first;
+                                  
+                                  callingController.isCurrentCallerMe = true;
+                                  Get.to(() => CallPage(userDetail));
+                                } else {
+                                  failureSnackbar(apiResult.values.first);
+                                }
+                              }
+                            }
+                          : null,
                     ),
                   ),
                 ],
@@ -179,46 +220,55 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     style: styleH2(),
                   ),
                   fixedHeight,
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 3,
-                      mainAxisSpacing: 3,
-                    ),
-                    itemCount: userDetail.gallery.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Get.dialog(
-                            showImage(gallery: userDetail.gallery),
-                          );
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: userDetail.gallery[index].image,
-                          imageBuilder: (context, provider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: provider, fit: BoxFit.cover),
-                            ),
+                  userDetail.gallery.isNotEmpty
+                      ? GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 3,
+                            mainAxisSpacing: 3,
                           ),
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Center(
-                            child: CircularProgressIndicator(
-                              value: downloadProgress.progress,
-                              color: kPrimaryColor,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                          itemCount: userDetail.gallery.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Get.dialog(
+                                  showImage(gallery: userDetail.gallery),
+                                );
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: userDetail.gallery[index].image,
+                                imageBuilder: (context, provider) => Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: provider, fit: BoxFit.cover),
+                                  ),
+                                ),
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) => Center(
+                                  child: CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text(
+                              "Kullanıcı henüz bir fotoğraf paylaşmadı.",
+                              style: styleH4(color: kBlackColor),
+                              textAlign: TextAlign.center),
                         ),
-                      );
-                    },
-                  ),
                 ],
               ),
             ),
+            fixedHeight,
             footer(),
           ],
         ),

@@ -1,7 +1,8 @@
 import 'dart:convert' as convert;
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:matelive/model/calls.dart';
+import 'package:matelive/model/Call/call_result.dart';
+import 'package:matelive/model/Call/previous_call.dart';
 
 import 'package:matelive/model/login.dart';
 import 'package:matelive/model/notifications.dart';
@@ -165,7 +166,7 @@ class API {
     print(jsonResponse);
 
     if (response.statusCode < 400) {
-      return {true: PagedResponse.fromJson(jsonResponse, Calls)};
+      return {true: PagedResponse.fromJson(jsonResponse, PreviousCall)};
     }
     return {true: jsonResponse["message"]};
   }
@@ -336,7 +337,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, UserDetail)};
@@ -373,5 +374,154 @@ class API {
       return UserDetail.fromJson(jsonResponse["data"]);
     }
     return jsonResponse["message"];
+  }
+
+  ////////////////////////////////////////////////////
+  /// CALLING 
+  ////////////////////////////////////////////////////
+
+  Future<Map<bool, dynamic>> createCall(String token, int targetId) async {
+    /*
+    'status' => [
+        'waiting' => '1',
+        'accepted' => '2',
+        'started' => '3',
+        'ended' => '4',
+        'declined_by_caller' => '5',
+        'declined_by_answerer' => '6',
+        'not_answered' => '7',
+    ]
+    */
+    Uri url = Uri.parse("$_URL/webcall/call/$targetId");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: CallResult.fromJson(jsonResponse)};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> callAction(
+      String token, int webcallId, Map<String, dynamic> body) async {
+    /*
+    'actions' => [
+        'accepted' => '2',
+        'declined_by_caller' => '5',
+        'declined_by_answerer' => '6',
+        'not_answered' => '7',
+    ],
+
+    'body' => {
+        "action":2
+    }
+    */
+    Uri url = Uri.parse("$_URL/webcall/action/$webcallId");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: CallResult.fromJson(jsonResponse)};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> startCall(
+      String token, int webcallId, Map<String, dynamic> body) async {
+    /*{
+      "channel_name":"pknZWY1637004782",
+      "role":1
+    } */
+    Uri url = Uri.parse("$_URL/webcall/start/$webcallId");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: CallResult.fromJson(jsonResponse)};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> finishCall(
+      String token, int webcallId, Map<String, dynamic> body) async {
+    /*
+      {
+          "reasoner_id":7,
+          "end_reason":1,
+          "duration":100
+      }
+    */
+    Uri url = Uri.parse("$_URL/webcall/finish/$webcallId");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: CallResult.fromJson(jsonResponse)};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> generateToken(
+      String token, Map<String, dynamic> body) async {
+    /*
+      {
+          "channel_name":"pknZWY1637004782",
+          "role":1
+      }
+    */
+    Uri url = Uri.parse("$_URL/webcall/generate-token");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["token"]};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<bool> lowCreditNotification(
+      String token, int webcallId, Map<String, dynamic> body) async {
+    /*
+      {
+          "duration":50
+      }
+    */
+    Uri url = Uri.parse("$_URL/webcall/low-credit-notification/$webcallId");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return true; // Bildirim başarıyla gönderildi.
+    }
+    return false;
   }
 }

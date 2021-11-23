@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 import '../../constant.dart';
 import '/model/user_detail.dart';
 
-Widget showImage({List<Gallery> gallery, String imageUrl}) {
+Widget showImage(
+    {String imageUrl, List<Gallery> gallery, int galleryIndex = 0}) {
+  final pageController = PageController(initialPage: galleryIndex);
   return Container(
     constraints: BoxConstraints.expand(),
     child: Padding(
       padding: EdgeInsets.all(Get.width * 0.06),
       child: gallery != null
           ? PageView.builder(
+              controller: pageController,
               itemCount: gallery.length,
               itemBuilder: (context, index) => Image.network(
                 gallery[index].image,

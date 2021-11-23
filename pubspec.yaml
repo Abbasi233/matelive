@@ -25,6 +25,9 @@ dependencies:
   pull_to_refresh: ^2.0.0
   flutter_html: ^2.1.5
   image_picker: ^0.8.4+4
+  workmanager: ^0.4.1
+  laravel_echo: ^0.2.9
+  pusher_client: ^2.0.0
 
 dev_dependencies:
   flutter_test:

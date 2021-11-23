@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(Login().token);
+    log("Token: " + Login().token);
     return Scaffold(
       body: Container(
         width: Get.width,
@@ -87,7 +88,8 @@ class HomePage extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => OnlineUsersPage()));
+                                          builder: (context) =>
+                                              OnlineUsersPage()));
                                 },
                               ),
                             ),

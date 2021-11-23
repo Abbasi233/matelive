@@ -290,8 +290,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                           onTap: () {
                                             Get.dialog(
                                               showImage(
-                                                  gallery:
-                                                      ProfileDetail().gallery),
+                                                gallery:
+                                                    ProfileDetail().gallery,
+                                                galleryIndex: index,
+                                              ),
                                             );
                                           },
                                           child: CachedNetworkImage(

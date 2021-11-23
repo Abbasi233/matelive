@@ -1,4 +1,4 @@
-import 'package:matelive/model/calls.dart';
+import 'package:matelive/model/Call/previous_call.dart';
 import 'package:matelive/model/notifications.dart';
 import 'package:matelive/model/user_detail.dart';
 
@@ -26,9 +26,9 @@ class PagedResponse {
           json["data"].map((x) => Notification.fromJson(x)).toList(),
         );
         break;
-      case Calls:
-        data = List<Calls>.from(
-          json["data"].map((x) => Calls.fromJson(x)).toList(),
+      case PreviousCall:
+        data = List<PreviousCall>.from(
+          json["data"].map((x) => PreviousCall.fromJson(x)).toList(),
         );
         break;
     }
