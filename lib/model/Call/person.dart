@@ -21,7 +21,7 @@ class Person {
   String name;
   String surname;
   int type;
-  int currentStatus;
+  String currentStatus;
   String slug;
   int gender;
   String email;

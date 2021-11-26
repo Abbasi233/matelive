@@ -62,8 +62,11 @@ class NotificationsCard extends StatelessWidget {
                   showDeleteAll
                       ? Obx(
                           () => TextButton(
-                            onPressed: _notificationsController
-                                    .pagedResponse.value.data.isNotEmpty
+                            onPressed: (_notificationsController
+                                            .pagedResponse.value.data !=
+                                        null &&
+                                    _notificationsController
+                                        .pagedResponse.value.data.isNotEmpty)
                                 ? () async {
                                     var dialogResult = await Get.dialog(
                                       AlertDialog(
@@ -98,8 +101,11 @@ class NotificationsCard extends StatelessWidget {
                               "Tümünü Sil",
                               style: customFont(
                                 16,
-                                color: _notificationsController
-                                        .pagedResponse.value.data.isNotEmpty
+                                color: (_notificationsController
+                                            .pagedResponse.value.data !=
+                                        null &&
+                                    _notificationsController
+                                        .pagedResponse.value.data.isNotEmpty)
                                     ? kOrangeColor
                                     : kTextColor,
                                 fontWeight: FontWeight.w500,

@@ -10,6 +10,7 @@ import 'package:matelive/model/user_detail.dart';
 import 'package:matelive/view/utils/snackbar.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pusher_client/pusher_client.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '/constant.dart';
 import '/view/utils/primaryButton.dart';
@@ -24,27 +25,52 @@ class CallPage extends StatefulWidget {
   _CallPageState createState() => _CallPageState();
 }
 
-class _CallPageState extends State<CallPage> {
+class _CallPageState extends State<CallPage>
+    with SingleTickerProviderStateMixin {
+  // CUSTOM ANİMASYON İÇİN SO'DAKİ BU CEVABI KULLANABİLİRSİN
+  // https://stackoverflow.com/questions/53854589/create-very-custom-animations-in-flutter
+
+  // AnimationController _controller;
+  // Animation<double> _animation;
+
   var callingController = Get.put(CallingController());
 
   RtcEngine engine;
   UserDetail userDetail;
   RtcEngineContext rtcContext;
 
+  bool value = true;
+
   PusherClient pusher;
   String callTime = "Aranıyor...";
+
+  final StopWatchTimer _stopWatchTimer =
+      StopWatchTimer(mode: StopWatchMode.countUp);
 
   @override
   void initState() {
     super.initState();
     //initPlatformState();
     userDetail = widget.userDetail;
+
+    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
+    // _controller = AnimationController(
+    //   duration: const Duration(milliseconds: 2000),
+    //   vsync: this,
+    // );
+    // _animation = CurvedAnimation(
+    //   parent: _controller,
+    //   curve: Curves.linear,
+    // );
   }
 
   @override
-  void dispose() {
-    // engine.destroy();
+  void dispose() async {
     super.dispose();
+    // engine.destroy();
+    // _controller.dispose();
+    await _stopWatchTimer.dispose();
   }
 
   bool telefonuDondur = false;
@@ -71,7 +97,45 @@ class _CallPageState extends State<CallPage> {
                         "${userDetail.name} ${userDetail.surname}",
                         style: styleH1(),
                       ),
-                      Text(callTime, style: styleH4()),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 0),
+                        child: StreamBuilder<int>(
+                          stream: _stopWatchTimer.rawTime,
+                          initialData: _stopWatchTimer.rawTime.value,
+                          builder: (context, snap) {
+                            final value = snap.data;
+                            return Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    child: Text(
+                                      StopWatchTimer.getDisplayTime(
+                                        value,
+                                        hours: false,
+                                        milliSecond: false,
+                                      ).toString(),
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        fontFamily: 'Helvetica',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      // Obx(() => Text(
+                      //     callingController.stopwatch.value.isRunning
+                      //         ? formatElapsedTime(
+                      //             callingController.stopwatch.value.elapsed)
+                      //         : callTime,
+                      //     style: styleH4())),
                     ],
                   ),
                 ),
@@ -81,13 +145,6 @@ class _CallPageState extends State<CallPage> {
                     radius: Get.width / 3,
                     foregroundImage: provider,
                   ),
-
-                  //  Container(
-                  //     decoration: BoxDecoration(
-                  //       image:
-                  //           DecorationImage(image: , fit: BoxFit.cover),
-                  //     ),
-                  //   ),
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Center(
                     child: CircularProgressIndicator(
@@ -114,19 +171,35 @@ class _CallPageState extends State<CallPage> {
                     },
                   ),
                 ),
-                Transform.rotate(
-                  angle: telefonuDondur ? math.pi / 2 : math.pi,
+                // Animasyon için bu formülü kullanabilirsin
+                // Transform.rotate(
+                //   angle: telefonuDondur ? math.pi / 2 : math.pi,
+                //   child:
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: kPrimaryColor,
+                    shape: BoxShape.circle,
+                  ),
                   child: IconButton(
+                    color: kWhiteColor,
                     icon: Icon(Icons.call),
                     onPressed: () {
-                      setState(() => telefonuDondur = !telefonuDondur);
                       // await engine.joinChannel(Token, 'matelive_mobile', null, 0);
                       // print("Joined!");
-                      callingController.callingState.value =
-                          !callingController.callingState.value;
+
+                      _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                      print(_stopWatchTimer.secondTime.value);
+                      // callingController.finishCall(
+                      //   "by_button",
+                      //   callingController.stopwatch.elapsed.inSeconds,
+                      // );
+                      // callingController.stopwatch.reset();
                     },
                   ),
                 ),
+
+                // ),
                 Obx(
                   () => IconButton(
                     iconSize: 36,
@@ -143,6 +216,17 @@ class _CallPageState extends State<CallPage> {
         ],
       ),
     );
+  }
+
+  String formatElapsedTime(Duration value) {
+    String returnValue = "";
+    var splittedValue = value.toString().split(".")[0];
+
+    if (splittedValue[0] != "0") {
+      returnValue += splittedValue[0];
+    }
+    returnValue += "${splittedValue[1]}:${splittedValue[2]}";
+    return returnValue;
   }
 
   Future<void> initPlatformState() async {

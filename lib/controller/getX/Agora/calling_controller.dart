@@ -1,14 +1,21 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/model/Call/call_result.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/model/profile_detail.dart';
 import 'package:matelive/model/user_detail.dart';
 import 'package:matelive/view/CallPage/call_page.dart';
 import 'package:matelive/view/utils/snackbar.dart';
+import 'package:matelive/controller/api.dart';
 
 class CallingController extends GetxController {
+  RxBool speakerState = true.obs;
   RxBool callingState = false.obs;
   RxBool microphoneState = true.obs;
-  RxBool speakerState = true.obs;
+  Rx<Stopwatch> stopwatch = Stopwatch().obs;
+
   bool isCurrentCallerMe = false;
+  CallResult callResult = CallResult();
 
   IconData get getCallingIcon =>
       callingState.value ? Icons.call : Icons.call_end;
@@ -29,6 +36,13 @@ class CallingController extends GetxController {
     'not_answered': "7",
   };
 
+  Map<String, int> endReasons = {
+    'by_button': 1,
+    'user_left': 2,
+    'user_credit': 3,
+    'user_credit_low': 4
+  };
+
   void callingByRequestStatus(dynamic data) {
     UserDetail userDetail = UserDetail.fromJson(data["callerDetails"]);
     Get.to(() => CallPage(userDetail));
@@ -36,6 +50,7 @@ class CallingController extends GetxController {
 
   void actionByRequestStatus(String status, dynamic actionerDetails) {
     if (status == callStatus["accepted"]) {
+      stopwatch.value.start();
       successSnackbar("Birazdan Yönlendirileceksiniz");
     } else if (status == callStatus["declined_by_caller"]) {
       Get.back();
@@ -56,7 +71,27 @@ class CallingController extends GetxController {
             "Gelen aramaya cevap vermediğiniz için arama iptal edilmiştir.");
       }
     }
-
     isCurrentCallerMe = false;
+  }
+
+  void finishCall(String endReason, int duration) async {
+    var finishCallBody = {
+      "reasoner_id": ProfileDetail().id,
+      "end_reason": endReasons[endReason],
+      "duration": duration,
+    };
+
+    var apiResult = await API().finishCall(
+      Login().token,
+      callResult.webcall.id,
+      finishCallBody,
+    );
+
+    if (apiResult.keys.first) {
+      Get.back();
+    } else {
+      Get.back();
+      failureSnackbar(apiResult.values.first);
+    }
   }
 }

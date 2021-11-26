@@ -122,38 +122,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               color: kWhiteColor, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      onTap: userDetail.isOnline
-                          ? () async {
-                              var result = await Get.dialog(AlertDialog(
-                                title: Text("Arama İşlemi"),
-                                content: Text(
-                                    "${userDetail.name} ${userDetail.surname} isimli kullanıcıyı aramak istediğinize emin misiniz?"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () => Get.back(result: true),
-                                      child: Text("Evet")),
-                                  TextButton(
-                                      onPressed: () => Get.back(result: false),
-                                      child: Text("Hayır")),
-                                ],
-                              ));
-
-                              if (result) {
-                                var apiResult = await API()
-                                    .createCall(Login().token, userDetail.id);
-
-                                if (apiResult.keys.first) {
-                                  CallResult callResult =
-                                      apiResult.values.first;
-                                  
-                                  callingController.isCurrentCallerMe = true;
-                                  Get.to(() => CallPage(userDetail));
-                                } else {
-                                  failureSnackbar(apiResult.values.first);
-                                }
-                              }
-                            }
-                          : null,
+                      onTap: userDetail.isOnline ? createCall : null,
                     ),
                   ),
                 ],
@@ -235,7 +204,10 @@ class _UserDetailPageState extends State<UserDetailPage> {
                             return GestureDetector(
                               onTap: () {
                                 Get.dialog(
-                                  showImage(gallery: userDetail.gallery),
+                                  showImage(
+                                    galleryIndex: index,
+                                    gallery: userDetail.gallery,
+                                  ),
                                 );
                               },
                               child: CachedNetworkImage(
@@ -272,129 +244,36 @@ class _UserDetailPageState extends State<UserDetailPage> {
             footer(),
           ],
         ),
-        // FutureBuilder(
-        //     future: _future,
-        //     builder: (context, snapshot) {
-        //       if (snapshot.hasData) {
-        //         return ListView(
-        //           children: [
-        //             Container(
-        //               height: Get.height * 0.4,
-        //               color: Colors.grey[300],
-        //               child: Column(
-        //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //                 children: [
-        //                   CircleAvatar(
-        //                     radius: 50,
-        //                     foregroundImage:
-        //                         Image.asset("assets/images/avatar.png").image,
-        //                   ),
-        //                   Text.rich(
-        //                     TextSpan(
-        //                       text: "widget.username",
-        //                       style: styleH3().copyWith(),
-        //                       children: [
-        //                         TextSpan(
-        //                           text: " (Onaylanmış Kullanıcı)\n",
-        //                           style: styleH5(color: Colors.green),
-        //                         ),
-        //                         TextSpan(
-        //                           text: "Toplam Başarılı Görüşme Sayısı: ",
-        //                           style: styleH5(),
-        //                           children: [
-        //                             TextSpan(
-        //                               text: "0",
-        //                               style: styleH4(
-        //                                   color: kBlackColor,
-        //                                   fontWeight: FontWeight.w600),
-        //                             ),
-        //                           ],
-        //                         )
-        //                       ],
-        //                     ),
-        //                     textAlign: TextAlign.center,
-        //                   ),
-        //                   primaryButton(
-        //                     text: Text("Şu An Çevrimiçi"),
-        //                     onPressed: () {
-        //                       // Get.to(() => CallPage(widget.username));
-        //                     },
-        //                     padding: Get.width * 0.20,
-        //                     // disabled: true,
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //             fixedHeight,
-        //             Container(
-        //               padding: const EdgeInsets.symmetric(horizontal: 20),
-        //               child: Column(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 children: [
-        //                   Text(
-        //                     "Fotoğraf Galerisi",
-        //                     style: styleH2(),
-        //                   ),
-        //                   Text(
-        //                     "Kullanıcı henüz bir görsel paylaşmadı.",
-        //                     style: styleH4(),
-        //                   ),
-        //                   fixedHeight,
-        //                   Container(
-        //                     height: 150,
-        //                     padding: const EdgeInsets.all(20),
-        //                     decoration: BoxDecoration(
-        //                       borderRadius:
-        //                           BorderRadius.circular(kBorderRadius),
-        //                       border: Border.all(
-        //                         width: 1,
-        //                         color: kTextColor,
-        //                       ),
-        //                     ),
-        //                     child: Column(
-        //                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //                       crossAxisAlignment: CrossAxisAlignment.stretch,
-        //                       children: [
-        //                         Text("HAKKINDA",
-        //                             style:
-        //                                 styleH4(fontWeight: FontWeight.w600)),
-        //                         Text.rich(
-        //                           TextSpan(
-        //                             text: "Cinsiyet: ",
-        //                             children: [
-        //                               TextSpan(
-        //                                   text: "Belirtilmemiş",
-        //                                   style: styleH4(
-        //                                       fontWeight: FontWeight.w600))
-        //                             ],
-        //                           ),
-        //                           style: styleH4(),
-        //                         ),
-        //                         Text.rich(
-        //                           TextSpan(
-        //                             text: "Yaş: ",
-        //                             children: [
-        //                               TextSpan(
-        //                                   text: "Belirtilmemiş",
-        //                                   style: styleH4(
-        //                                       fontWeight: FontWeight.w600))
-        //                             ],
-        //                           ),
-        //                           style: styleH4(),
-        //                         ),
-        //                       ],
-        //                     ),
-        //                   )
-        //                 ],
-        //               ),
-        //             ),
-        //             footer(),
-        //           ],
-        //         );
-        //         }
-        //         return showProgressIndicator(context);
-        //       }),
       ),
     );
+  }
+
+  void createCall() async {
+    // var result = await Get.dialog(AlertDialog(
+    //   title: Text("Arama İşlemi"),
+    //   content: Text(
+    //       "${userDetail.name} ${userDetail.surname} isimli kullanıcıyı aramak istediğinize emin misiniz?"),
+    //   actions: [
+    //     TextButton(
+    //         onPressed: () => Get.back(result: true), child: Text("Evet")),
+    //     TextButton(
+    //         onPressed: () => Get.back(result: false), child: Text("Hayır")),
+    //   ],
+    // ));
+
+    // if (result) {
+    //   var apiResult = await API().createCall(Login().token, userDetail.id);
+
+    //   if (apiResult.keys.first) {
+    //     callingController.isCurrentCallerMe = true;
+    //     callingController.callResult = apiResult.values.first;
+    //     Get.to(() => CallPage(userDetail));
+    //   } else {
+    //     failureSnackbar(apiResult.values.first);
+    //   }
+    // }
+
+    callingController.stopwatch.value.start();
+    Get.to(() => CallPage(userDetail));
   }
 }
