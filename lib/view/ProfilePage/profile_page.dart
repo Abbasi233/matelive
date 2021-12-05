@@ -1,25 +1,19 @@
-import 'dart:io';
-
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/view/ProfilePage/utils/gallery_card.dart';
-import 'package:matelive/view/utils/footer.dart';
-import 'package:matelive/view/utils/show_image.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
-import 'package:matelive/view/utils/snackbar.dart';
-import 'package:matelive/view/utils/upload_image.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
-import 'utils/pictures_card.dart';
+import '/view/utils/footer.dart';
+import '/view/utils/snackbar.dart';
+import '/model/profile_detail.dart';
+import '/view/utils/show_image.dart';
 import 'utils/account_info_card.dart';
+import '/view/utils/upload_image.dart';
 import 'utils/change_password_card.dart';
 import '/view/utils/progressIndicator.dart';
 
@@ -29,13 +23,19 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  var profileFuture = API().getProfile(Login().token);
+  Future<Map<bool, dynamic>> profileFuture;
 
   final List<String> gender = [
     "Kadın",
     "Erkek",
     "Belirtilmemiş",
   ];
+  
+  @override
+  void initState() {
+    super.initState();
+    profileFuture = API().getProfile(Login().token);
+  }
 
   @override
   Widget build(BuildContext context) {

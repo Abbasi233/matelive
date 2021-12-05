@@ -38,7 +38,7 @@ class Person {
         name: json["name"],
         surname: json["surname"],
         type: json["type"],
-        currentStatus: json["current_status"],
+        currentStatus: json["current_status"].toString(),
         slug: json["slug"],
         gender: json["gender"] == null ? null : json["gender"],
         email: json["email"],

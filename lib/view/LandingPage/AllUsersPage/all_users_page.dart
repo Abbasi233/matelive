@@ -1,19 +1,16 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/paged_response.dart';
-import 'package:matelive/model/user_detail.dart';
-import 'package:matelive/view/utils/circularProgress.dart';
-import 'package:matelive/view/utils/progressIndicator.dart';
-import 'package:matelive/view/utils/progress_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
 import '/view/utils/appBar.dart';
 import '/view/utils/footer.dart';
+import '/model/paged_response.dart';
 import '/view/utils/primaryButton.dart';
+import '/view/utils/progressIndicator.dart';
 import '/view/HomePage/OnlineUsersPage/utils/user_card.dart';
 
 class AllUsersPage extends StatefulWidget {

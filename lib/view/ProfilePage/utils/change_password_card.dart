@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 
+import '/constant.dart';
+import '/model/login.dart';
 import 'my_text_input.dart';
-import '../../../constant.dart';
-import '../../utils/my_text.dart';
+import '/controller/api.dart';
+import '/view/utils/my_text.dart';
+import '/view/utils/snackbar.dart';
 import '/view/utils/primaryButton.dart';
 
 class ChangePasswordCard extends StatelessWidget {

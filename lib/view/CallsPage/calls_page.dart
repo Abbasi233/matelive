@@ -1,13 +1,12 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/view/utils/footer.dart';
-import 'package:matelive/view/utils/progressIndicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../constant.dart';
+import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
+import '/view/utils/footer.dart';
 import 'utils/expansion_panel.dart';
+import '/view/utils/progressIndicator.dart';
 
 class CallsPage extends StatefulWidget {
   @override

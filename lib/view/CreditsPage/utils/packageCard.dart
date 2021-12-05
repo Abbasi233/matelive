@@ -1,10 +1,9 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 
 import '/constant.dart';
+import '/view/utils/primaryButton.dart';
 
 Widget packageCard(
         {String title,

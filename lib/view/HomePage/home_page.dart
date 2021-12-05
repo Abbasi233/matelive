@@ -1,17 +1,17 @@
 import 'dart:developer';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/paged_response.dart';
-import 'package:matelive/view/utils/progressIndicator.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '/constant.dart';
-import '../utils/miniCard.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
+import '/view/utils/miniCard.dart';
+import '/model/paged_response.dart';
 import '/view/utils/primaryButton.dart';
 import '/view/LandingPage/controller.dart';
+import '/view/utils/progressIndicator.dart';
 import '/view/utils/notifications_card.dart';
 import 'OnlineUsersPage/online_users_page.dart';
 

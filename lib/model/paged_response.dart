@@ -1,6 +1,6 @@
-import 'package:matelive/model/Call/previous_call.dart';
-import 'package:matelive/model/notifications.dart';
-import 'package:matelive/model/user_detail.dart';
+import '/model/user_detail.dart';
+import '/model/notifications.dart';
+import '/model/Call/previous_call.dart';
 
 class PagedResponse {
   PagedResponse({

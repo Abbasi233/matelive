@@ -1,22 +1,16 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:get/get.dart';
-import 'package:matelive/constant.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/controller/getX/Agora/calling_controller.dart';
-import 'package:matelive/model/Call/call_result.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/model/user_detail.dart';
-import 'package:matelive/view/CallPage/call_page.dart';
-import 'package:matelive/view/utils/show_image.dart';
-import 'package:matelive/view/utils/appBar.dart';
-import 'package:matelive/view/utils/footer.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
-import 'package:matelive/view/utils/progressIndicator.dart';
-import 'package:matelive/view/utils/snackbar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import '/constant.dart';
+import '/model/user_detail.dart';
+import '/view/utils/appBar.dart';
+import '/view/utils/footer.dart';
+import '/model/profile_detail.dart';
+import '/view/utils/show_image.dart';
+import '/controller/getX/Agora/calling_controller.dart';
 
 class UserDetailPage extends StatefulWidget {
   final UserDetail userDetail;
@@ -122,7 +116,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               color: kWhiteColor, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      onTap: userDetail.isOnline ? createCall : null,
+                      onTap: () {
+                        if (userDetail.isOnline) {
+                          callingController.createCall(userDetail);
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -246,34 +244,5 @@ class _UserDetailPageState extends State<UserDetailPage> {
         ),
       ),
     );
-  }
-
-  void createCall() async {
-    // var result = await Get.dialog(AlertDialog(
-    //   title: Text("Arama İşlemi"),
-    //   content: Text(
-    //       "${userDetail.name} ${userDetail.surname} isimli kullanıcıyı aramak istediğinize emin misiniz?"),
-    //   actions: [
-    //     TextButton(
-    //         onPressed: () => Get.back(result: true), child: Text("Evet")),
-    //     TextButton(
-    //         onPressed: () => Get.back(result: false), child: Text("Hayır")),
-    //   ],
-    // ));
-
-    // if (result) {
-    //   var apiResult = await API().createCall(Login().token, userDetail.id);
-
-    //   if (apiResult.keys.first) {
-    //     callingController.isCurrentCallerMe = true;
-    //     callingController.callResult = apiResult.values.first;
-    //     Get.to(() => CallPage(userDetail));
-    //   } else {
-    //     failureSnackbar(apiResult.values.first);
-    //   }
-    // }
-
-    callingController.stopwatch.value.start();
-    Get.to(() => CallPage(userDetail));
   }
 }

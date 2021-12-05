@@ -1,9 +1,6 @@
-import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:workmanager/workmanager.dart';
-import 'package:matelive/model/profile_detail.dart';
 
 import 'constant.dart';
 import '/model/login.dart';
@@ -19,25 +16,7 @@ void main() async {
   await GetStorage.init();
   _firstPage = await initFirstPage();
 
-  // Workmanager().initialize(
-  //   backgroundTask, // The top level function, aka callbackDispatcher
-  // );
-  // Workmanager().registerPeriodicTask(
-  //   "1",
-  //   "mateliveTask",
-  //   frequency: Duration(minutes: 1),
-  //   initialDelay: Duration(seconds: 15),
-  //   existingWorkPolicy: ExistingWorkPolicy.replace,
-  // );
-
   runApp(MyApp());
-}
-
-void backgroundTask() {
-  Workmanager().executeTask((task, inputData) {
-    log("Activity sent.", name: "Matelive");
-    return Future.value(true);
-  });
 }
 
 Future<Widget> initFirstPage() async {

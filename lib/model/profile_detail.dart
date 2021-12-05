@@ -1,4 +1,4 @@
-import 'package:matelive/model/user_detail.dart';
+import '/model/user_detail.dart';
 
 class ProfileDetail implements UserDetail {
   ProfileDetail.instance();

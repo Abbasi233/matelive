@@ -1,16 +1,15 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/controller/getX/notifications_controller.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/notifications.dart' as app;
-import 'package:matelive/model/paged_response.dart';
-import 'package:matelive/view/utils/progressIndicator.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
 import 'notification_item.dart';
+import '/view/utils/snackbar.dart';
+import '/model/notifications.dart' as app;
 import '/view/LandingPage/controller.dart';
+import '/view/utils/progressIndicator.dart';
+import '/controller/getX/notifications_controller.dart';
 
 class NotificationsCard extends StatelessWidget {
   NotificationsCard({
@@ -120,7 +119,7 @@ class NotificationsCard extends StatelessWidget {
             Divider(),
             Obx(
               () {
-                var data = _notificationsController.pagedResponse.value.data;
+                var data = _notificationsController.pagedResponse.value.data ?? [];
                 int endRange = showThree && data.length > 3 ? 3 : data.length;
                 return data != null
                     ? data.isNotEmpty

@@ -2,21 +2,19 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:laravel_echo/laravel_echo.dart';
-import 'package:matelive/controller/getX/Agora/calling_controller.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/view/CreditsPage/credits_page.dart';
-import 'package:matelive/view/utils/drawer.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pusher_client/pusher_client.dart';
 
-import 'controller.dart';
 import '/constant.dart';
-import '../utils/appBar.dart';
-import '../HomePage/home_page.dart';
+import 'controller.dart';
+import '/model/login.dart';
+import '/view/utils/drawer.dart';
+import '/view/utils/appBar.dart';
+import '/model/profile_detail.dart';
+import '/view/HomePage/home_page.dart';
 import '/view/CallsPage/calls_page.dart';
+import '/view/CreditsPage/credits_page.dart';
 import '/view/ProfilePage/profile_page.dart';
+import '/controller/getX/Agora/calling_controller.dart';
 import '/view/NotificationsPage/notifications_page.dart';
 
 class LandingPage extends StatefulWidget {
@@ -31,6 +29,7 @@ class _LandingPageState extends State<LandingPage>
 
   PusherClient pusher;
   TabController _tabController;
+  var profileInitialized = ProfileDetail().id.obs;
 
   @override
   void initState() {
@@ -45,16 +44,6 @@ class _LandingPageState extends State<LandingPage>
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        floatingActionButton: Column(mainAxisSize: MainAxisSize.min, children: [
-          FloatingActionButton(
-            heroTag: "1",
-            child: Container(),
-            onPressed: () async {
-              pusher.unsubscribe("private-user.call.${ProfileDetail().id}");
-              pusher.disconnect();
-            },
-          ),
-        ]),
         key: _landingPageController.scaffoldKey,
         appBar: MyAppBar(
           elevation: 2,
@@ -107,9 +96,8 @@ class _LandingPageState extends State<LandingPage>
         'Content-Type': 'application/json',
       }),
     );
-    pusher = PusherClient("4247212f2d5fe9f991e6", options, autoConnect: false);
+    pusher = PusherClient("4247212f2d5fe9f991e6", options, autoConnect: true);
 
-    pusher.connect();
     pusher.onConnectionStateChange((state) {
       log("previousState: ${state.previousState}, currentState: ${state.currentState}");
     });
@@ -117,21 +105,23 @@ class _LandingPageState extends State<LandingPage>
     pusher.onConnectionError((error) {
       log("error: ${error.exception}");
     });
+    pusher.connect();
 
-    pusher
-        .subscribe("private-user.call.${ProfileDetail().id}")
-        .bind("App\\Events\\callUser", (PusherEvent event) {
-      var data = jsonDecode(event.data);
-      switch (data["type"]) {
-        case "calling":
-          _callingController.callingByRequestStatus(data);
-          break;
-        case "action":
-          _callingController.actionByRequestStatus(
-              data["webCallDetails"]["status"], data["actionerDetails"]);
-          break;
-      }
-    });
+    pusher.subscribe("private-user.call.${ProfileDetail().id}").bind(
+      "App\\Events\\callUser",
+      (PusherEvent event) {
+        var data = jsonDecode(event.data);
+        switch (data["type"]) {
+          case "calling":
+            _callingController.callingByRequestStatus(data);
+            break;
+          case "action":
+            _callingController.actionByRequestStatus(
+                data["webCallDetails"]["status"].toString(), data["actionerDetails"]);
+            break;
+        }
+      },
+    );
   }
 
   Tab _tab(IconData icon) => Tab(

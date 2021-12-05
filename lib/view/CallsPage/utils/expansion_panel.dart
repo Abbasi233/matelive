@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:matelive/model/Call/previous_call.dart';
-import 'package:matelive/model/paged_response.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/view/utils/my_text.dart';
-import 'package:matelive/extensions.dart';
+
+import '/extensions.dart';
+import '/view/utils/my_text.dart';
+import '/model/profile_detail.dart';
+import '/model/paged_response.dart';
+import '/model/Call/previous_call.dart';
 
 class CallsExpansionPanel extends StatefulWidget {
   final PagedResponse pagedResponse;

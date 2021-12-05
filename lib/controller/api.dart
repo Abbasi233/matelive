@@ -1,17 +1,15 @@
 import 'dart:convert' as convert;
-import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:matelive/model/Call/call_result.dart';
-import 'package:matelive/model/Call/previous_call.dart';
 
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/notifications.dart';
-import 'package:matelive/model/paged_response.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/model/total_notifications.dart';
-import 'package:matelive/model/user_detail.dart';
-import 'package:matelive/view/utils/progressIndicator.dart';
-import 'package:matelive/view/utils/progress_dialog.dart';
+import '/model/login.dart';
+import '/model/user_detail.dart';
+import '/model/notifications.dart';
+import '/model/paged_response.dart';
+import '/model/profile_detail.dart';
+import '/model/Call/call_result.dart';
+import '/model/Call/previous_call.dart';
+import '/model/total_notifications.dart';
+import '/view/utils/progress_dialog.dart';
 
 class API {
   API.instance();

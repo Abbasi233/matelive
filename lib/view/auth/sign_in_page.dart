@@ -1,17 +1,17 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/getX/notifications_controller.dart';
-import 'package:matelive/controller/getX/storage_controller.dart';
-import 'package:matelive/view/auth/reset_password.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 
-import 'sign_up_page.dart';
 import '/constant.dart';
+import 'sign_up_page.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
+import 'utils/text_input.dart';
+import '/view/utils/snackbar.dart';
+import '/view/auth/reset_password.dart';
 import '/view/utils/primaryButton.dart';
 import '/view/LandingPage/landing_page.dart';
-import 'utils/text_input.dart';
+import '/controller/getX/storage_controller.dart';
+import '/controller/getX/notifications_controller.dart';
 
 class SignInPage extends StatelessWidget {
   final storageController = Get.find<StorageController>();
@@ -122,10 +122,10 @@ class SignInPage extends StatelessWidget {
                                 storageController.saveLogin(Login().toJson());
                               }
 
-                              var result = await API()
-                                  .getNotificationsByType(Login().token, "all");
+                              var result = await _api.getNotificationsByType(
+                                  Login().token, "all",);
                               if (result.keys.first) {
-                                API().getProfile(Login().token);
+                                await _api.getProfile(Login().token);
                                 Get.put(NotificationsController())
                                     .pagedResponse
                                     .value = result.values.first;
@@ -134,7 +134,8 @@ class SignInPage extends StatelessWidget {
                                 failureSnackbar(result[false]);
                               }
                             } else {
-                              failureSnackbar("Kullanıcı adı veya şifre yanlış.");
+                              failureSnackbar(
+                                  "Kullanıcı adı veya şifre yanlış.");
                             }
                           }
                         },

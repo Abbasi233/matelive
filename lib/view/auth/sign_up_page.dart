@@ -1,15 +1,13 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/view/auth/email_confirm_page.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
+import '/controller/api.dart';
 import 'utils/text_input.dart';
+import '/view/utils/snackbar.dart';
+import '/view/auth/email_confirm_page.dart';
 
 class SignUpPage extends StatelessWidget {
-  final _login = Login();
   final _policies = false.obs;
   final _formKey = GlobalKey<FormState>();
 

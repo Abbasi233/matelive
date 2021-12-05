@@ -1,20 +1,24 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/model/Call/call_result.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/model/user_detail.dart';
-import 'package:matelive/view/CallPage/call_page.dart';
-import 'package:matelive/view/utils/snackbar.dart';
-import 'package:matelive/controller/api.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
+
+import '/model/login.dart';
+import '/controller/api.dart';
+import '/model/user_detail.dart';
+import '/model/Call/webcall.dart';
+import '/view/utils/snackbar.dart';
+import '/model/profile_detail.dart';
+import '/model/Call/call_result.dart';
+import '/view/CallPage/call_page.dart';
 
 class CallingController extends GetxController {
-  RxBool speakerState = true.obs;
+  RxBool speakerState = false.obs;
   RxBool callingState = false.obs;
   RxBool microphoneState = true.obs;
-  Rx<Stopwatch> stopwatch = Stopwatch().obs;
+  StopWatchTimer stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
 
-  bool isCurrentCallerMe = false;
+  String agoraToken = "";
+  bool isCallerMe = false;
   CallResult callResult = CallResult();
 
   IconData get getCallingIcon =>
@@ -36,6 +40,13 @@ class CallingController extends GetxController {
     'not_answered': "7",
   };
 
+  Map<String, int> actions = {
+    'accepted': 2,
+    'declined_by_caller': 5,
+    'declined_by_answerer': 6,
+    'not_answered': 7,
+  };
+
   Map<String, int> endReasons = {
     'by_button': 1,
     'user_left': 2,
@@ -44,24 +55,32 @@ class CallingController extends GetxController {
   };
 
   void callingByRequestStatus(dynamic data) {
+    isCallerMe = false;
+    callResult = CallResult(
+        message: data["message"],
+        webcall: WebCall.fromJson(data["webCallDetails"]));
     UserDetail userDetail = UserDetail.fromJson(data["callerDetails"]);
     Get.to(() => CallPage(userDetail));
   }
 
   void actionByRequestStatus(String status, dynamic actionerDetails) {
     if (status == callStatus["accepted"]) {
-      stopwatch.value.start();
-      successSnackbar("Birazdan Yönlendirileceksiniz");
+      stopWatchTimer.onExecute.add(StopWatchExecute.start);
     } else if (status == callStatus["declined_by_caller"]) {
+      stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+      stopWatchTimer.onExecute.add(StopWatchExecute.reset);
       Get.back();
+
       failureSnackbar(
           "Arama ${actionerDetails['name']} tarafından iptal edilmiştir.");
     } else if (status == callStatus["declined_by_answerer"]) {
       Get.back();
-      failureSnackbar(
-          "Arama ${actionerDetails['name']} tarafından reddedilmiştir.");
+      if (isCallerMe) {
+        failureSnackbar(
+            "Arama ${actionerDetails['name']} tarafından reddedilmiştir.");
+      }
     } else if (status == callStatus["not_answered"]) {
-      if (isCurrentCallerMe) {
+      if (isCallerMe) {
         Get.back();
         failureSnackbar(
             "Aramanız herhangi bir cevap alınmadığı için iptal edilmiştir.");
@@ -71,26 +90,126 @@ class CallingController extends GetxController {
             "Gelen aramaya cevap vermediğiniz için arama iptal edilmiştir.");
       }
     }
-    isCurrentCallerMe = false;
   }
 
-  void finishCall(String endReason, int duration) async {
-    var finishCallBody = {
-      "reasoner_id": ProfileDetail().id,
-      "end_reason": endReasons[endReason],
-      "duration": duration,
-    };
-
-    var apiResult = await API().finishCall(
-      Login().token,
-      callResult.webcall.id,
-      finishCallBody,
+  void createCall(UserDetail userDetail) async {
+    var result = await Get.dialog(
+      AlertDialog(
+        title: Text("Arama İşlemi"),
+        content: Text(
+            "${userDetail.name} ${userDetail.surname} isimli kullanıcıyı aramak istediğinize emin misiniz?"),
+        actions: [
+          TextButton(
+              onPressed: () => Get.back(result: true), child: Text("Evet")),
+          TextButton(
+              onPressed: () => Get.back(result: false), child: Text("Hayır")),
+        ],
+      ),
     );
 
-    if (apiResult.keys.first) {
+    if (result) {
+      var apiResult = await API().createCall(Login().token, userDetail.id);
+
+      if (apiResult.keys.first) {
+        CallResult call = apiResult.values.first as CallResult;
+        var tokenResult = await API().generateToken(
+          Login().token,
+          {"channel_name": call.webcall.channelName, "role": 2},
+        );
+
+        if (tokenResult.keys.first) {
+          isCallerMe = true;
+          callResult = apiResult.values.first;
+          agoraToken = tokenResult.values.first;
+          Get.to(() => CallPage(userDetail));
+        } else {
+          failureSnackbar(tokenResult.values.first);
+        }
+      } else {
+        failureSnackbar(apiResult.values.first);
+      }
+    }
+
+    // callingController.stopwatch.value.start();
+    // Get.to(() => CallPage(userDetail));
+  }
+
+  Future<void> startCall() async {
+    var result = await API().startCall(
+      Login().token,
+      callResult.webcall.id,
+      {"channel_name": callResult.webcall.channelName, "role": 1},
+    );
+    var tokenResult = await API().generateToken(
+      Login().token,
+      {"channel_name": callResult.webcall.channelName, "role": 1},
+    );
+
+    if (result.keys.first) {
+      stopWatchTimer.onExecute.add(StopWatchExecute.start);
+      agoraToken = tokenResult.values.first;
+    }
+  }
+
+  void finishCall(int reasonerId, String endReason) async {
+    stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+
+    if (reasonerId == ProfileDetail().id) {
+      var finishCallBody = {
+        "reasoner_id": reasonerId,
+        "end_reason": endReasons[endReason],
+        "duration": stopWatchTimer.secondTime.value,
+      };
+
+      var apiResult = await API().finishCall(
+        Login().token,
+        callResult.webcall.id,
+        finishCallBody,
+      );
+
       Get.back();
+      if (!apiResult.keys.first) {
+        failureSnackbar(apiResult.values.first);
+      }
     } else {
       Get.back();
+    }
+
+    stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+  }
+
+  Future<void> acceptCall() async {
+    var declineCallBody = {"action": actions["accepted"]};
+
+    var apiResult = await API().callAction(
+      Login().token,
+      callResult.webcall.id,
+      declineCallBody,
+    );
+
+    if (!apiResult.keys.first) {
+      failureSnackbar(apiResult.values.first);
+    }
+  }
+
+  void declineCall(String action) async {
+    var declineCallBody = {"action": actions[action]};
+
+    var apiResult = await API().callAction(
+      Login().token,
+      callResult.webcall.id,
+      declineCallBody,
+    );
+
+    Get.back();
+
+    if (apiResult.keys.first) {
+      if (callResult.webcall.callerId == ProfileDetail().id) {
+        failureSnackbar("Aramayı iptal ettiniz.");
+      } else {
+        failureSnackbar("Aramayı reddettiniz.");
+      }
+    } else {
       failureSnackbar(apiResult.values.first);
     }
   }

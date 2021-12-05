@@ -6,6 +6,7 @@ const kTextColorSoft = Color(0xFF8d8d8d);
 const kTabBarColor = Color(0xFF1d1d1d);
 const kYellowColor = Color(0xFFffd54f);
 const kOrangeColor = Color(0xFFe74c0c);
+const kGreenColor = Colors.green;
 const kBlackColor = Colors.black;
 const kWhiteColor = Colors.white;
 

@@ -10,6 +10,7 @@ Widget primaryButton({
   double padding = 0,
   double borderRadius = kTextInputBorderRadius,
   Color backgroundColor = kPrimaryColor,
+  Color borderColor = kPrimaryColor,
   ImageIcon imageIcon,
   bool disabled = false,
 }) =>
@@ -34,7 +35,7 @@ Widget primaryButton({
           textStyle: MaterialStateProperty.all(styleH4()),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              side: BorderSide(color: disabled ? kTextColor : kPrimaryColor),
+              side: BorderSide(color: disabled ? kTextColor : borderColor),
               borderRadius: BorderRadius.circular(borderRadius),
             ),
           ),

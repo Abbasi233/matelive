@@ -1,12 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
+import '/controller/api.dart';
 import 'utils/text_input.dart';
+import '/view/utils/snackbar.dart';
+import '/view/utils/primaryButton.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   ResetPasswordPage({Key key}) : super(key: key);

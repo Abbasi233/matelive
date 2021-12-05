@@ -20,7 +20,7 @@ class WebCall {
   int answererId;
   dynamic callStartedAt;
   dynamic callEndedAt;
-  String status;
+  dynamic status;
   int durationSeconds;
   String channelName;
   dynamic endReason;

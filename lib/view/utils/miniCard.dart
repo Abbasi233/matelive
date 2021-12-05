@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:matelive/constant.dart';
+
+import '/constant.dart';
 
 Widget miniCard(String title, String value, Color lineColor) => Expanded(
       child: Card(

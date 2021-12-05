@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:math' as math;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/model/user_detail.dart';
-import 'package:matelive/view/utils/snackbar.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pusher_client/pusher_client.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '/constant.dart';
+import '/model/user_detail.dart';
+import '/model/profile_detail.dart';
 import '/view/utils/primaryButton.dart';
 import '/controller/getX/Agora/calling_controller.dart';
 
@@ -36,24 +34,19 @@ class _CallPageState extends State<CallPage>
   var callingController = Get.put(CallingController());
 
   RtcEngine engine;
-  UserDetail userDetail;
-  RtcEngineContext rtcContext;
-
-  bool value = true;
 
   PusherClient pusher;
-  String callTime = "Aranıyor...";
+  UserDetail userDetail;
 
-  final StopWatchTimer _stopWatchTimer =
-      StopWatchTimer(mode: StopWatchMode.countUp);
+  RxBool callAccepted;
 
   @override
   void initState() {
     super.initState();
-    //initPlatformState();
+    callAccepted = false.obs;
     userDetail = widget.userDetail;
 
-    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+    initAgora();
 
     // _controller = AnimationController(
     //   duration: const Duration(milliseconds: 2000),
@@ -68,28 +61,24 @@ class _CallPageState extends State<CallPage>
   @override
   void dispose() async {
     super.dispose();
-    // engine.destroy();
+    engine.destroy();
     // _controller.dispose();
-    await _stopWatchTimer.dispose();
   }
 
-  bool telefonuDondur = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Agora Audio'),
-      // ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             flex: 3,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   width: Get.width,
-                  height: Get.height / 4,
+                  height: Get.height / 5,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -100,10 +89,11 @@ class _CallPageState extends State<CallPage>
                       Padding(
                         padding: const EdgeInsets.only(bottom: 0),
                         child: StreamBuilder<int>(
-                          stream: _stopWatchTimer.rawTime,
-                          initialData: _stopWatchTimer.rawTime.value,
-                          builder: (context, snap) {
-                            final value = snap.data;
+                          stream: callingController.stopWatchTimer.rawTime,
+                          initialData:
+                              callingController.stopWatchTimer.rawTime.value,
+                          builder: (context, snapshot) {
+                            final value = snapshot.data;
                             return Column(
                               children: <Widget>[
                                 Padding(
@@ -112,11 +102,15 @@ class _CallPageState extends State<CallPage>
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4),
                                     child: Text(
-                                      StopWatchTimer.getDisplayTime(
-                                        value,
-                                        hours: false,
-                                        milliSecond: false,
-                                      ).toString(),
+                                      value == 0
+                                          ? callingController.isCallerMe
+                                              ? "Aranıyor..."
+                                              : "Sizi Arıyor"
+                                          : StopWatchTimer.getDisplayTime(
+                                              value,
+                                              hours: false,
+                                              milliSecond: false,
+                                            ).toString(),
                                       style: const TextStyle(
                                         fontSize: 30,
                                         fontFamily: 'Helvetica',
@@ -130,12 +124,6 @@ class _CallPageState extends State<CallPage>
                           },
                         ),
                       ),
-                      // Obx(() => Text(
-                      //     callingController.stopwatch.value.isRunning
-                      //         ? formatElapsedTime(
-                      //             callingController.stopwatch.value.elapsed)
-                      //         : callTime,
-                      //     style: styleH4())),
                     ],
                   ),
                 ),
@@ -157,61 +145,10 @@ class _CallPageState extends State<CallPage>
               ],
             ),
           ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Obx(
-                  () => IconButton(
-                    iconSize: 36,
-                    icon: Icon(callingController.getSpeakerIcon),
-                    onPressed: () {
-                      engine.setEnableSpeakerphone(
-                          !callingController.speakerState.value);
-                    },
-                  ),
-                ),
-                // Animasyon için bu formülü kullanabilirsin
-                // Transform.rotate(
-                //   angle: telefonuDondur ? math.pi / 2 : math.pi,
-                //   child:
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: kPrimaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    color: kWhiteColor,
-                    icon: Icon(Icons.call),
-                    onPressed: () {
-                      // await engine.joinChannel(Token, 'matelive_mobile', null, 0);
-                      // print("Joined!");
-
-                      _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-                      print(_stopWatchTimer.secondTime.value);
-                      // callingController.finishCall(
-                      //   "by_button",
-                      //   callingController.stopwatch.elapsed.inSeconds,
-                      // );
-                      // callingController.stopwatch.reset();
-                    },
-                  ),
-                ),
-
-                // ),
-                Obx(
-                  () => IconButton(
-                    iconSize: 36,
-                    icon: Icon(callingController.getMicrophoneIcon),
-                    onPressed: () {
-                      engine.enableLocalAudio(
-                          !callingController.microphoneState.value);
-                    },
-                  ),
-                ),
-              ],
-            ),
+          Obx(
+            () => callingController.isCallerMe || callAccepted.value
+                ? onConversationButtons()
+                : onCallReceiveButtons(),
           ),
         ],
       ),
@@ -229,50 +166,157 @@ class _CallPageState extends State<CallPage>
     return returnValue;
   }
 
-  Future<void> initPlatformState() async {
+  Future<void> initAgora() async {
     await [Permission.microphone].request();
-    rtcContext = RtcEngineContext(APP_ID);
-    engine = await RtcEngine.createWithContext(rtcContext);
+    engine = await RtcEngine.createWithContext(RtcEngineContext(APP_ID));
+
+    await engine.enableAudio();
+    await engine.setChannelProfile(ChannelProfile.Communication);
+    // await engine.setClientRole(ClientRole.Broadcaster);
+    // await engine.enableLocalAudio(true);
 
     engine.setEventHandler(
       RtcEngineEventHandler(
         activeSpeaker: (i) {
-          print("Aktive Speaker: $i");
+          log("Aktive Speaker: $i");
         },
         microphoneEnabled: (enable) {
-          print(enable);
+          log("Mikrofon: " + enable.toString());
           callingController.microphoneState.value = enable;
         },
         warning: (warningCode) {
           print(warningCode.toString());
         },
         rtcStats: (stats) {
-          print("Status: ${stats.userCount}");
+          log("User Count: ${stats.userCount}");
         },
         connectionStateChanged: (state, reason) {
-          print(
-              "Connection Changed : ${state.toString()}, ${reason.toString()}");
+          log("Connection Changed : ${state.toString()}, ${reason.toString()}");
         },
         joinChannelSuccess: (String channel, int uid, int elapsed) {
-          print('joinChannelSuccess $channel $uid');
-          Get.snackbar(
-              "Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
-          // setState(() {
-          //   _joined = true;
-          // });
+          log('joinChannelSuccess $channel $uid');
+          // Get.snackbar(
+          //     "Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
         },
         userJoined: (int uid, int elapsed) {
-          print('userJoined $uid');
-          // setState(() {
-          //   _remoteUid = uid;
-          // });
+          log('userJoined $uid');
         },
         userOffline: (int uid, UserOfflineReason reason) {
-          print('userOffline $uid');
-          // setState(() {
-          //   _remoteUid = 0;
-          // });
+          log('userOffline $uid');
+          callingController.finishCall(uid, "user_left");
         },
+        error: (error) {
+          log("ERROR: $error", name: "AGORA");
+        },
+      ),
+    );
+
+    if (callingController.isCallerMe) {
+      await joinChannel();
+    }
+  }
+
+  Future<void> joinChannel() async {
+    await engine
+        .joinChannel(
+      callingController.agoraToken,
+      callingController.callResult.webcall.channelName,
+      null,
+      ProfileDetail().id,
+      ChannelMediaOptions(autoSubscribeAudio: true, publishLocalAudio: true),
+    )
+        .then((value) async {
+      log("VOLUME : " +
+          (await engine.getAudioMixingPublishVolume()).toString());
+    });
+  }
+
+  Widget onCallReceiveButtons() {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          primaryButton(
+            text: Row(
+              children: [
+                Icon(Icons.call),
+                SizedBox(width: 5),
+                Text("Kabul Et"),
+              ],
+            ),
+            onPressed: () async {
+              await callingController.startCall();
+              await callingController.acceptCall();
+              await joinChannel();
+              callAccepted.value = true;
+            },
+            backgroundColor: kGreenColor,
+            borderColor: kGreenColor,
+            height: 70,
+          ),
+          primaryButton(
+            text: Row(
+              children: [
+                Icon(Icons.call_end),
+                SizedBox(width: 5),
+                Text("Reddet"),
+              ],
+            ),
+            onPressed: () {
+              callingController.declineCall("declined_by_answerer");
+            },
+            height: 70,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget onConversationButtons() {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+            iconSize: 36,
+            icon: Icon(callingController.getSpeakerIcon),
+            onPressed: () async {
+              await engine
+                  .setEnableSpeakerphone(!callingController.speakerState.value);
+              callingController
+                  .speakerState(!callingController.speakerState.value);
+            },
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: kPrimaryColor,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              color: kWhiteColor,
+              icon: Icon(Icons.call),
+              onPressed: () {
+                var callStarted = callingController.stopWatchTimer.isRunning;
+
+                if (callStarted) {
+                  callingController.finishCall(ProfileDetail().id, "by_button");
+                } else {
+                  callingController.declineCall("declined_by_caller");
+                }
+              },
+            ),
+          ),
+          IconButton(
+            iconSize: 36,
+            icon: Icon(callingController.getMicrophoneIcon),
+            onPressed: () {
+              engine.enableLocalAudio(!callingController.microphoneState.value);
+              callingController
+                  .microphoneState(!callingController.microphoneState.value);
+            },
+          ),
+        ],
       ),
     );
   }
