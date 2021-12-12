@@ -1,16 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:matelive/controller/in-app-purchase.dart';
+import 'package:matelive/model/credit.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 
 import '/constant.dart';
 import '/view/utils/primaryButton.dart';
 
-Widget packageCard(
-        {String title,
-        double price,
-        String packageName,
-        bool mostPopuler = false}) =>
-    Container(
+Widget packageCard({Credit credit, bool mostPopuler = false}) => Container(
       height: 300,
       margin: EdgeInsets.only(top: 30),
       child: Card(
@@ -39,25 +37,30 @@ Widget packageCard(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                title,
+                credit.title,
                 style:
                     styleH3(fontWeight: FontWeight.w600, color: kTextColorSoft),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 5),
               Text(
-                price.toStringAsFixed(2) + " TL",
+                credit.price,
                 style: styleH1(
-                  fontSize: 48,
+                  fontSize: 40,
                   fontWeight: FontWeight.w600,
                   color: kBlackColor,
                 ),
               ),
               Text(
-                packageName,
+                credit.description,
                 style: styleH5(fontWeight: FontWeight.w500),
               ),
-              primaryButton(text: Text("Paketi Seç"), onPressed: () {}),
+              primaryButton(
+                text: Text("Paketi Seç"),
+                onPressed: () {
+                  Get.find<IAPController>().buy(credit);
+                },
+              ),
             ],
           ),
         ),

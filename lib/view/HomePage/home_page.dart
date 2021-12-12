@@ -7,6 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '/constant.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
+import '/model/infographic.dart';
 import '/view/utils/miniCard.dart';
 import '/model/paged_response.dart';
 import '/view/utils/primaryButton.dart';
@@ -14,6 +15,9 @@ import '/view/LandingPage/controller.dart';
 import '/view/utils/progressIndicator.dart';
 import '/view/utils/notifications_card.dart';
 import 'OnlineUsersPage/online_users_page.dart';
+import '/controller/getX/calls_controller.dart';
+import '/view/CallsPage/utils/expansion_panel.dart';
+import '/controller/getX/notifications_controller.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,9 +26,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  final _landingPageController = Get.find<LandingPageController>();
-
   final _refreshController = RefreshController(initialRefresh: false);
+
+  final _callsController = Get.find<CallsController>();
+  final _landingPageController = Get.find<LandingPageController>();
+  final _notificationsController = Get.find<NotificationsController>();
 
   @override
   Widget build(BuildContext context) {
@@ -100,13 +106,7 @@ class _HomePageState extends State<HomePage>
                                         fontWeight: FontWeight.w500),
                                   ),
                                   onPressed: () {
-                                    // Get.to(()=> AgoraCall());
-                                    // Get.to(()=> OnlineUsers());
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                OnlineUsersPage()));
+                                    Get.to(() => OnlineUsersPage());
                                   },
                                 ),
                               ),
@@ -134,74 +134,168 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               fixedHeight,
-              // TODO METRİKLER
-              Row(
-                children: [
-                  miniCard("BAŞARILI GÖRÜŞME\nSAYISI", "0", kPrimaryColor),
-                  fixedWidth,
-                  miniCard("CEVAPSIZ ARAMA\nSAYISI", "0", Colors.lightGreen),
-                ],
-              ),
-              fixedHeight,
-              Row(
-                children: [
-                  miniCard(
-                      "TOPLAM KONUŞMA\nSÜRESİ", "0 Dk", Colors.yellow[700]),
-                  fixedWidth,
-                  miniCard("KALAN ARAMA\nKREDİSİ", "5 Dk", Colors.blue[900]),
-                ],
+              FutureBuilder<Map<bool, dynamic>>(
+                future: API().getInfographic(Login().token),
+                builder: (context, snapshot) {
+                  Infographic info;
+                  if (snapshot.hasData) {
+                    if (snapshot.data.keys.first) {
+                      info = snapshot.data.values.first;
+                    } else {
+                      return Center(
+                        child: Text(snapshot.data.values.first),
+                      );
+                    }
+                  }
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          miniCard(
+                            "BAŞARILI GÖRÜŞME\nSAYISI",
+                            info == null
+                                ? showProgressIndicator(context)
+                                : AutoSizeText(
+                                    info.successfullCallCount.toString(),
+                                    style: styleH3(
+                                        fontWeight: FontWeight.w600,
+                                        color: kBlackColor),
+                                    maxFontSize: 22,
+                                    textAlign: TextAlign.center,
+                                  ),
+                            Colors.lightGreen,
+                          ),
+                          fixedWidth,
+                          miniCard(
+                            "CEVAPSIZ ARAMA\nSAYISI",
+                            info == null
+                                ? showProgressIndicator(context)
+                                : AutoSizeText(
+                                    info.failedCallCount.toString(),
+                                    style: styleH3(
+                                        fontWeight: FontWeight.w600,
+                                        color: kBlackColor),
+                                    maxFontSize: 22,
+                                    textAlign: TextAlign.center,
+                                  ),
+                            kPrimaryColor,
+                          ),
+                        ],
+                      ),
+                      fixedHeight,
+                      Row(
+                        children: [
+                          miniCard(
+                            "TOPLAM KONUŞMA\nSÜRESİ",
+                            info == null
+                                ? showProgressIndicator(context)
+                                : AutoSizeText(
+                                    info.succesfullCallDurationFormattedShort,
+                                    style: styleH3(
+                                        fontWeight: FontWeight.w600,
+                                        color: kBlackColor),
+                                    maxFontSize: 23,
+                                    maxLines: 1,
+                                    // textAlign: TextAlign.center,
+                                  ),
+                            Colors.yellow[700],
+                          ),
+                          fixedWidth,
+                          miniCard(
+                            "KALAN ARAMA\nKREDİSİ",
+                            info == null
+                                ? showProgressIndicator(context)
+                                : AutoSizeText(
+                                    info.remainingCreditFormattedSort,
+                                    style: styleH3(
+                                        fontWeight: FontWeight.w600,
+                                        color: kBlackColor),
+                                    maxFontSize: 22,
+                                    textAlign: TextAlign.center,
+                                  ),
+                            Colors.blue[900],
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
               ),
               fixedHeight,
               Card(
                 shape: RoundedRectangleBorder(
                     side: BorderSide(color: kTextColor.withOpacity(0.5)),
                     borderRadius: BorderRadius.circular(kBorderRadius)),
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "GEÇMİŞ GÖRÜŞMELERİNİZ",
-                            style: styleH6(fontWeight: FontWeight.w600),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              _landingPageController.changeTab(1);
-                            },
-                            child: Text(
-                              "Tümünü Gör",
-                              style: customFont(
-                                18,
-                                color: kPrimaryColor,
-                                fontWeight: FontWeight.w500,
+                child: FutureBuilder<Map<bool, dynamic>>(
+                  future: API().getCalls(Login().token),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.keys.first) {
+                        _callsController.pagedResponse.value =
+                            snapshot.data.values.first;
+
+                        return Container(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "GEÇMİŞ GÖRÜŞMELERİNİZ",
+                                    style: styleH6(fontWeight: FontWeight.w600),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      _landingPageController.changeTab(1);
+                                    },
+                                    child: Text(
+                                      "Tümünü Gör",
+                                      style: customFont(
+                                        18,
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Divider(),
-                      // TODO GEÇMİŞ GÖRÜŞMELER
-                      Text(
-                        "Geçmiş görüşmeniz bulunmamaktadır.",
-                        style: styleH5(),
-                      ),
-                    ],
-                  ),
+                              Divider(),
+                              CallsExpansionPanel(showThree: true)
+                            ],
+                          ),
+                        );
+                      }
+                    }
+                    return showProgressIndicator(context);
+                  },
                 ),
               ),
               fixedHeight,
-              NotificationsCard(
-                showThree: true,
-                showSeeAll: true,
-                showDeleteAll: true,
-              ),
+              FutureBuilder<Map<bool, dynamic>>(
+                  future: API().getNotificationsByType(Login().token, "all"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.keys.first) {
+                        _notificationsController.pagedResponse.value =
+                            snapshot.data.values.first;
+                            
+                        return NotificationsCard(
+                          showThree: true,
+                          showSeeAll: true,
+                          showDeleteAll: true,
+                        );
+                      }
+                    }
+                    return showProgressIndicator(context);
+                  }),
               fixedHeight,
               Center(
-                  child: Text(
-                      "${DateTime.now().year} © Matelive Tüm Hakları Saklıdır.")),
+                child: Text(
+                    "${DateTime.now().year} © Matelive Tüm Hakları Saklıdır."),
+              ),
               fixedHeight,
             ],
           ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '/constant.dart';
-import '/extensions.dart';
 
 Widget notificationItem(
         {String message, String dateTime, Function onPressed}) =>

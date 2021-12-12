@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/constant.dart';
 
-Widget miniCard(String title, String value, Color lineColor) => Expanded(
+Widget miniCard(String title, Widget value, Color lineColor) => Expanded(
       child: Card(
         shape: RoundedRectangleBorder(
             side: BorderSide(color: kTextColor.withOpacity(0.5)),
@@ -17,10 +17,7 @@ Widget miniCard(String title, String value, Color lineColor) => Expanded(
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 5),
-              Text(
-                value.toString(),
-                style: styleH3(fontWeight: FontWeight.w600, color: kBlackColor),
-              ),
+              value,
               SizedBox(height: 5),
               Container(
                 height: 7,

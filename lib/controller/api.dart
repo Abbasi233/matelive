@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:matelive/model/infographic.dart';
 
 import '/model/login.dart';
 import '/model/user_detail.dart';
@@ -169,6 +170,21 @@ class API {
     return {true: jsonResponse["message"]};
   }
 
+  Future<Map<bool, dynamic>> getInfographic(String token) async {
+    Uri url = Uri.parse("$_URL/auth-user/infographic");
+    http.Response response = await http.get(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: Infographic.fromJson(jsonResponse["data"])};
+    }
+    return {true: jsonResponse["message"]};
+  }
+
   Future<Map<bool, String>> updatePassword(String token, dynamic body) async {
     showProgressDialog();
     Uri url = Uri.parse("$_URL/auth-user/update-password");
@@ -234,6 +250,36 @@ class API {
     closeProgressDialog();
 
     print(response.reasonPhrase);
+    if (response.statusCode < 400) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> clearProfileImage(String token) async {
+    Uri url = Uri.parse("$_URL/auth-user/profile/image/clear");
+    http.Response response = await http.delete(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> clearGalleryImage(String token, int index) async {
+    Uri url = Uri.parse("$_URL/auth-user/profile/gallery/$index");
+    http.Response response = await http.delete(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
     if (response.statusCode < 400) {
       return true;
     }
@@ -375,7 +421,7 @@ class API {
   }
 
   ////////////////////////////////////////////////////
-  /// CALLING 
+  /// CALLING
   ////////////////////////////////////////////////////
 
   Future<Map<bool, dynamic>> createCall(String token, int targetId) async {

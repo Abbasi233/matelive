@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
@@ -22,15 +23,17 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with SingleTickerProviderStateMixin {
   Future<Map<bool, dynamic>> profileFuture;
+  final _refreshController = RefreshController(initialRefresh: false);
 
   final List<String> gender = [
     "Kadın",
     "Erkek",
     "Belirtilmemiş",
   ];
-  
+
   @override
   void initState() {
     super.initState();
@@ -39,24 +42,20 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      //TextField dışında bir yere tıklayınca TextField'ın unfocus olması için
-      onTap: () {
-        // FocusScopeNode currentFocus = FocusScope.of(context);
-
-        // if (!currentFocus.hasPrimaryFocus &&
-        //     currentFocus.focusedChild != null) {
-        //   FocusManager.instance.primaryFocus.unfocus();
-        // }
-      },
-      child: Scaffold(
-        body: FutureBuilder(
-          future: profileFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return SizedBox(
-                width: Get.width,
-                height: Get.height,
+    return Scaffold(
+      body: FutureBuilder(
+        future: profileFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SizedBox(
+              width: Get.width,
+              height: Get.height,
+              child: SmartRefresher(
+                enablePullDown: true,
+                onRefresh: _onRefresh,
+                controller: _refreshController,
+                header: MaterialClassicHeader(),
+                physics: BouncingScrollPhysics(),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -94,6 +93,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     onTap: () {
                                       Get.dialog(showImage(
                                           imageUrl: ProfileDetail().image));
+                                    },
+                                    onLongPress: () {
+                                      deleteImageDialog();
                                     },
                                   ),
                                 ),
@@ -296,6 +298,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                               ),
                                             );
                                           },
+                                          onLongPress: () {
+                                            deleteImageDialog(
+                                                galleryIndex: index);
+                                          },
                                           child: CachedNetworkImage(
                                             imageUrl: ProfileDetail()
                                                 .gallery[index]
@@ -377,12 +383,59 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-              );
-            }
-            return showProgressIndicator(context);
-          },
-        ),
+              ),
+            );
+          }
+          return showProgressIndicator(context);
+        },
       ),
     );
+  }
+
+  void deleteImageDialog({int galleryIndex}) async {
+    var dialogResult = await Get.dialog(
+      AlertDialog(
+        content: Text(
+          "Seçtiğiniz görseli silmek istediğinize emin misiniz?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: Text("Evet"),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: Text("Hayır"),
+          ),
+        ],
+      ),
+    );
+    if (dialogResult) {
+      if (galleryIndex != null) {
+        var result = await API().clearGalleryImage(Login().token, galleryIndex);
+
+        if (result) {
+          successSnackbar("Galeri görseli başarıyla silinmiştir!");
+        } else {
+          failureSnackbar("Görsel bulunamadı!");
+        }
+      } else {
+        var result = await API().clearProfileImage(Login().token);
+
+        if (result) {
+          successSnackbar("Galeri görseli başarıyla silinmiştir!");
+        } else {
+          failureSnackbar("Görsel bulunamadı!");
+        }
+      }
+    }
+  }
+
+  void _onRefresh() async {
+    var result = await API().getProfile(Login().token);
+    setState(() {
+      profileFuture = Future.value(result);
+    });
+    _refreshController.refreshCompleted();
   }
 }

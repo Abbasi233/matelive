@@ -20,7 +20,6 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
-  Future<dynamic> _future;
   UserDetail userDetail;
 
   List<String> gender = [

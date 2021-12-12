@@ -1,40 +1,52 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import '/constant.dart';
 import '/extensions.dart';
 import '/view/utils/my_text.dart';
 import '/model/profile_detail.dart';
-import '/model/paged_response.dart';
 import '/model/Call/previous_call.dart';
+import '/controller/getX/calls_controller.dart';
 
 class CallsExpansionPanel extends StatefulWidget {
-  final PagedResponse pagedResponse;
-  CallsExpansionPanel(this.pagedResponse);
+  final bool showThree;
+  CallsExpansionPanel({this.showThree = false});
   @override
   _CallsExpansionPanelState createState() => _CallsExpansionPanelState();
 }
 
 class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
-  List<PreviousCall> _calls;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _calls = List.from(widget.pagedResponse.data);
-  }
+  var callsController = Get.find<CallsController>();
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          _calls[index].isExpanded = !isExpanded;
-        });
+    return Obx(
+      () {
+        var list = callsController.pagedResponse.value.data;
+
+        List<PreviousCall> _calls = widget.showThree
+            ? list.getRange(0, list.length > 3 ? 3 : list.length).toList()
+            : list;
+
+        return _calls.isNotEmpty
+            ? ExpansionPanelList(
+                expansionCallback: (int index, bool isExpanded) {
+                  setState(() {
+                    _calls[index].isExpanded = !isExpanded;
+                  });
+                },
+                children: _calls.map<ExpansionPanel>((PreviousCall item) {
+                  return _buildExpansionPanel(item);
+                }).toList(),
+                elevation: 0,
+              )
+            : Center(
+                child: Text(
+                  "Geçmiş görüşmeniz bulunmamaktadır.",
+                  style: styleH5(),
+                ),
+              );
       },
-      children: _calls.map<ExpansionPanel>((PreviousCall item) {
-        return _buildExpansionPanel(item);
-      }).toList(),
-      elevation: 0,
     );
   }
 

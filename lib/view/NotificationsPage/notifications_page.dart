@@ -6,9 +6,7 @@ import '/constant.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
 import '/view/utils/footer.dart';
-import '/model/notifications.dart';
 import '/view/utils/miniCard.dart';
-import '/model/paged_response.dart';
 import '/model/total_notifications.dart';
 import '/view/utils/progressIndicator.dart';
 import '/view/utils/notifications_card.dart';
@@ -63,13 +61,25 @@ class _NotificationsPageState extends State<NotificationsPage>
                       children: [
                         miniCard(
                           "SİSTEM\nBİLDİRİMLERİ",
-                          total.systemNotificationCount.toString(),
+                          Text(
+                            total.systemNotificationCount.toString(),
+                            style: styleH3(
+                                fontWeight: FontWeight.w600,
+                                color: kBlackColor),
+                            textAlign: TextAlign.center,
+                          ),
                           Colors.yellow[700],
                         ),
                         fixedWidth,
                         miniCard(
                           "BEĞENİ\nBİLDİRİMLERİ",
-                          total.likeNotificationCount.toString(),
+                          Text(
+                            total.likeNotificationCount.toString(),
+                            style: styleH3(
+                                fontWeight: FontWeight.w600,
+                                color: kBlackColor),
+                            textAlign: TextAlign.center,
+                          ),
                           Colors.yellow[700],
                         ),
                       ],
@@ -79,13 +89,25 @@ class _NotificationsPageState extends State<NotificationsPage>
                       children: [
                         miniCard(
                           "DÜRTME\nBİLDİRİMLERİ",
-                          total.snoozeNotificationCount.toString(),
+                          Text(
+                            total.snoozeNotificationCount.toString(),
+                            style: styleH3(
+                                fontWeight: FontWeight.w600,
+                                color: kBlackColor),
+                            textAlign: TextAlign.center,
+                          ),
                           Colors.yellow[700],
                         ),
                         fixedWidth,
                         miniCard(
                           "FAVORİ\nBİLDİRİMLERİ",
-                          total.favoriteNotificationCount.toString(),
+                          Text(
+                            total.favoriteNotificationCount.toString(),
+                            style: styleH3(
+                                fontWeight: FontWeight.w600,
+                                color: kBlackColor),
+                            textAlign: TextAlign.center,
+                          ),
                           Colors.yellow[700],
                         ),
                       ],

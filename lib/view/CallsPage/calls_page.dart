@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -7,6 +8,7 @@ import '/controller/api.dart';
 import '/view/utils/footer.dart';
 import 'utils/expansion_panel.dart';
 import '/view/utils/progressIndicator.dart';
+import '/controller/getX/calls_controller.dart';
 
 class CallsPage extends StatefulWidget {
   @override
@@ -16,6 +18,7 @@ class CallsPage extends StatefulWidget {
 class _CallsPageState extends State<CallsPage>
     with SingleTickerProviderStateMixin {
   var callsFuture = API().getCalls(Login().token);
+  var callsController = Get.find<CallsController>();
 
   final _refreshController = RefreshController(initialRefresh: false);
 
@@ -29,6 +32,11 @@ class _CallsPageState extends State<CallsPage>
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data.keys.first) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  callsController.pagedResponse.value =
+                      snapshot.data.values.first;
+                });
+
                 return SmartRefresher(
                   enablePullDown: true,
                   onRefresh: _onRefresh,
@@ -43,7 +51,7 @@ class _CallsPageState extends State<CallsPage>
                         fixedHeight,
                         Text("Başarılı Görüşmeler", style: styleH1()),
                         fixedHeight,
-                        CallsExpansionPanel(snapshot.data.values.first),
+                        CallsExpansionPanel(),
                         fixedHeight,
                         footer(),
                       ],

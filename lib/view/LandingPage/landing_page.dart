@@ -117,7 +117,8 @@ class _LandingPageState extends State<LandingPage>
             break;
           case "action":
             _callingController.actionByRequestStatus(
-                data["webCallDetails"]["status"].toString(), data["actionerDetails"]);
+                data["webCallDetails"]["status"].toString(),
+                data["actionerDetails"]);
             break;
         }
       },
@@ -125,12 +126,6 @@ class _LandingPageState extends State<LandingPage>
   }
 
   Tab _tab(IconData icon) => Tab(
-        child: Container(
-            child:
-                // icon != Icons.person ?
-                Icon(icon)
-            // : CircleAvatar(backgroundImage: ,),
-            // TODO Kullanıcı Profil Fotoğrafı Eklenecek
-            ),
+        child: Container(child: Icon(icon)),
       );
 }

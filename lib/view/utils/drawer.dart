@@ -55,7 +55,7 @@ class MyDrawer {
                       OutlinedButton(
                         child: Text('Evet'),
                         onPressed: () async {
-                          bool result = await API().logout(Login().token);
+                          await API().logout(Login().token);
                           // Token geçersizse mesaj dönüyor ama ekrana yazdırmaya gerek yok.
                           Get.find<StorageController>().saveLogin(null);
                           Get.offAll(() => SignInPage());

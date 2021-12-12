@@ -1,14 +1,36 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/controller/in-app-purchase.dart';
+import 'package:matelive/model/credit.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
 import 'utils/packageCard.dart';
 import '/view/utils/footer.dart';
 
-class CreditsPage extends StatelessWidget {
+class CreditsPage extends StatefulWidget {
+  @override
+  State<CreditsPage> createState() => _CreditsPageState();
+}
+
+class _CreditsPageState extends State<CreditsPage> {
+  List<Credit> products = [];
+  var iapController = Get.find<IAPController>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          iapController.loadPurchases();
+          failureSnackbar(iapController.products.length.toString());
+        },
+      ),
       body: Container(
         width: Get.width,
         height: Get.height,
@@ -35,42 +57,42 @@ class CreditsPage extends StatelessWidget {
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              // children: [10, 30, 60]
-              //     .map<Widget>((e) => packageCard(
-              //           title: "$e DAKİKA",
-              //           price: 10,
-              //           packageName: "Başlangıç Paketi",
-              //           mostPopuler: e == 30 ? true : false,
-              //         ))
-              //     .toList(),
-              children: [
-                packageCard(
-                  title: "10 DAKİKA",
-                  price: 10,
-                  packageName: "Başlangıç Paketi",
-                ),
-                packageCard(
-                  title: "30 DAKİKA",
-                  price: 25,
-                  packageName: "Yeni Gelen Paketi",
-                ),
-                packageCard(
-                  title: "60 DAKİKA",
-                  price: 45,
-                  packageName: "Avantaj Paketi",
-                  mostPopuler: true,
-                ),
-                packageCard(
-                  title: "100 DAKİKA",
-                  price: 80,
-                  packageName: "Süper Paketi",
-                ),
-                packageCard(
-                  title: "200 DAKİKA",
-                  price: 150,
-                  packageName: "Lüks Paketi",
-                ),
-              ],
+              children: iapController.products
+                  .map<Widget>(
+                    (e) => packageCard(
+                      credit: e,
+                      mostPopuler: e.title == "60 DAKİKA",
+                    ),
+                  )
+                  .toList(),
+              // [
+              // packageCard(
+              //   title: "10 DAKİKA",
+              //   price: 10,
+              //   packageName: "Başlangıç Paketi",
+              // ),
+              // packageCard(
+              //   title: "30 DAKİKA",
+              //   price: 25,
+              //   packageName: "Yeni Gelen Paketi",
+              // ),
+              // packageCard(
+              //   title: "60 DAKİKA",
+              //   price: 45,
+              //   packageName: "Avantaj Paketi",
+              //   mostPopuler: true,
+              // ),
+              // packageCard(
+              //   title: "100 DAKİKA",
+              //   price: 80,
+              //   packageName: "Süper Paketi",
+              // ),
+              // packageCard(
+              //   title: "200 DAKİKA",
+              //   price: 150,
+              //   packageName: "Lüks Paketi",
+              // ),
+              // ],
             ),
             footer(),
           ],

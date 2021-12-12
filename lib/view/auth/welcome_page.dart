@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 import '/constant.dart';
 import 'sign_in_page.dart';
-import '../utils/welcomePageItems.dart';
-import '../../controller/getX/storage_controller.dart';
-import '../../controller/getX/welcome_page_controller.dart';
+import '/view/utils/welcomePageItems.dart';
+import '/controller/getX/storage_controller.dart';
+import '/controller/getX/welcome_page_controller.dart';
 
 class WelcomePage extends StatelessWidget {
-  final _storage = Get.find<StorageController>();
   final _pageController = PageController();
+  final _storage = Get.find<StorageController>();
   final _welcomePageController = Get.put(WelcomePageController());
 
   @override
@@ -22,7 +22,6 @@ class WelcomePage extends StatelessWidget {
             controller: _pageController,
             itemCount: welcomePageItems.length,
             itemBuilder: (context, i) {
-              print("Drawed");
               _pageController.addListener(() {
                 _welcomePageController.emitPageNumber(_pageController);
               });

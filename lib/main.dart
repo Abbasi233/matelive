@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:matelive/controller/getX/calls_controller.dart';
+import 'package:matelive/controller/in-app-purchase.dart';
 
 import 'constant.dart';
 import '/model/login.dart';
@@ -36,6 +39,7 @@ Future<Widget> initFirstPage() async {
 Future<bool> initApp() async {
   var futureList = await Future.wait([
     getProfile(),
+    getCalls(),
     getNofitications(),
   ]);
   return futureList.every((element) => element);
@@ -56,12 +60,23 @@ Future<bool> getNofitications() async {
   return false;
 }
 
+Future<bool> getCalls() async {
+  var result = await API().getCalls(Login().token);
+  if (result.keys.first) {
+    Get.put(CallsController()).pagedResponse.value = result.values.first;
+    return true;
+  }
+  return false;
+}
+
 class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  var iapController = Get.put(IAPController());
+
   @override
   void initState() {
     super.initState();

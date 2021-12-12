@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/controller/getX/calls_controller.dart';
 
 import '/constant.dart';
 import 'sign_up_page.dart';
@@ -123,12 +124,20 @@ class SignInPage extends StatelessWidget {
                               }
 
                               var result = await _api.getNotificationsByType(
-                                  Login().token, "all",);
+                                Login().token,
+                                "all",
+                              );
                               if (result.keys.first) {
                                 await _api.getProfile(Login().token);
                                 Get.put(NotificationsController())
                                     .pagedResponse
                                     .value = result.values.first;
+
+                                var callsResult =
+                                    await _api.getCalls(Login().token);
+                                Get.put(CallsController()).pagedResponse.value =
+                                    callsResult.values.first;
+                                    
                                 Get.off(() => LandingPage());
                               } else {
                                 failureSnackbar(result[false]);
