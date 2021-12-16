@@ -16,7 +16,7 @@ class CallsExpansionPanel extends StatefulWidget {
 }
 
 class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
-  var callsController = Get.find<CallsController>();
+  var callsController = Get.put(CallsController());
 
   @override
   Widget build(BuildContext context) {

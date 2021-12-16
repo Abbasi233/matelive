@@ -41,7 +41,7 @@ class API {
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     closeProgressDialog();
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       print(jsonResponse["data"]);
       Login.fromJson(jsonResponse["data"]);
       return true;
@@ -50,7 +50,7 @@ class API {
     return false;
   }
 
-  Future<bool> register(Map<String, dynamic> body) async {
+  Future<Map<bool, String>> register(Map<String, dynamic> body) async {
     showProgressDialog();
     Uri url = Uri.parse("$_URL/auth/register");
     http.Response response = await http.post(
@@ -66,10 +66,10 @@ class API {
     closeProgressDialog();
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
-      return true;
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["token"].toString()};
     }
-    return false;
+    return {false: ""};
   }
 
   Future<String> sendResetPasswordMail(Map<String, dynamic> body) async {
@@ -105,7 +105,7 @@ class API {
     closeProgressDialog();
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       return true;
     }
     return false;
@@ -414,7 +414,7 @@ class API {
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     print(jsonResponse);
 
-    if (jsonResponse.containsKey("data")) {
+    if (response.statusCode < 400) {
       return UserDetail.fromJson(jsonResponse["data"]);
     }
     return jsonResponse["message"];
@@ -543,6 +543,27 @@ class API {
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["token"]};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> buyCredit(
+      String token, Map<String, dynamic> body) async {
+    /*
+    base64_encode(base64_encode(($user->id * 27) * 13) . base64_encode($bearer) . base64_encode(base64_encode($creditAppId)) . base64_encode($user->id * ($user->id + 15122021)))
+    */
+    Uri url = Uri.parse("$_URL/auth-user/buy-credit");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    print(body);
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["message"]};
     }
     return {false: jsonResponse["message"]};
   }

@@ -65,12 +65,15 @@ class UserDetail {
 
 class Gallery {
   Gallery({
+    this.id,
     this.image,
   });
 
+  int id;
   String image;
 
   factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
+        id: json["id"],
         image: json["image"],
       );
 }

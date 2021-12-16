@@ -152,10 +152,15 @@ class SignUpPage extends StatelessWidget {
 
                         var result = await API().register(body);
 
-                        if (result) {
+                        if (result.keys.first) {
                           Get.back();
                           successSnackbar(
                               "Kaydolma işlemi başarıyla tamamlandı. E-posta hesabınıza gelen posta ile doğrulama işlemini gerçekleştirerek uygulamaya giriş yapabilirsiniz.");
+
+                          var resultVerify =
+                              await API().sendVerifyEmail(result.values.first);
+                          normalSnackbar(resultVerify);
+
                           Get.off(() => EmailConfirmPage());
                         } else {
                           failureSnackbar(

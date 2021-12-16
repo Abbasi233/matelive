@@ -122,13 +122,8 @@ class _ProfilePageState extends State<ProfilePage>
                                           (image as XFile).path,
                                           "profile-image",
                                         );
-                                        var newProfileResult = await API()
-                                            .getProfile(Login().token);
+                                        refreshPage();
 
-                                        setState(() {
-                                          profileFuture =
-                                              Future.value(newProfileResult);
-                                        });
                                         if (result) {
                                           successSnackbar(
                                               "Profil resminiz başarıyla güncellenmiştir.");
@@ -183,21 +178,21 @@ class _ProfilePageState extends State<ProfilePage>
                             //     ),
                             //   ],
                             // )
-                            Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: kPrimaryColor,
-                                  borderRadius: BorderRadius.circular(30)),
-                              width: Get.width * 0.50,
-                              child: Center(
-                                child: AutoSizeText(
-                                  "Şu An Çevrimiçi",
-                                  style: styleH4(
-                                      color: kWhiteColor,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ),
+                            // Container(
+                            //   height: 50,
+                            //   decoration: BoxDecoration(
+                            //       color: kPrimaryColor,
+                            //       borderRadius: BorderRadius.circular(30)),
+                            //   width: Get.width * 0.50,
+                            //   child: Center(
+                            //     child: AutoSizeText(
+                            //       "Şu An Çevrimiçi",
+                            //       style: styleH4(
+                            //           color: kWhiteColor,
+                            //           fontWeight: FontWeight.w400),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -300,7 +295,10 @@ class _ProfilePageState extends State<ProfilePage>
                                           },
                                           onLongPress: () {
                                             deleteImageDialog(
-                                                galleryIndex: index);
+                                              galleryIndex: ProfileDetail()
+                                                  .gallery[index]
+                                                  .id,
+                                            );
                                           },
                                           child: CachedNetworkImage(
                                             imageUrl: ProfileDetail()
@@ -346,13 +344,8 @@ class _ProfilePageState extends State<ProfilePage>
                                               (image as XFile).path,
                                               "profile-gallery",
                                             );
-                                            var newProfileResult = await API()
-                                                .getProfile(Login().token);
+                                            refreshPage();
 
-                                            setState(() {
-                                              profileFuture = Future.value(
-                                                  newProfileResult);
-                                            });
                                             if (result) {
                                               successSnackbar(
                                                   "Galeri fotoğrafınız başarıyla yüklendi.");
@@ -413,6 +406,7 @@ class _ProfilePageState extends State<ProfilePage>
     if (dialogResult) {
       if (galleryIndex != null) {
         var result = await API().clearGalleryImage(Login().token, galleryIndex);
+        refreshPage(); 
 
         if (result) {
           successSnackbar("Galeri görseli başarıyla silinmiştir!");
@@ -431,11 +425,16 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
-  void _onRefresh() async {
-    var result = await API().getProfile(Login().token);
+  void refreshPage() async {
+    var newProfileResult = await API().getProfile(Login().token);
+
     setState(() {
-      profileFuture = Future.value(result);
+      profileFuture = Future.value(newProfileResult);
     });
+  }
+
+  void _onRefresh() async {
+    refreshPage();
     _refreshController.refreshCompleted();
   }
 }

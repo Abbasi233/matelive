@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:matelive/controller/api.dart';
 import 'package:matelive/model/credit.dart';
+import 'package:matelive/model/login.dart';
 
 import '/view/utils/snackbar.dart';
 
 class IAPController extends GetxController {
   List<Credit> products = [];
+  ProductDetailsResponse response;
   InAppPurchase iapConnection = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
 
-  ProductDetailsResponse response;
+  // String creditToken;
+  Map<String, dynamic> requestBody;
 
   @override
   void onInit() {
@@ -38,12 +42,16 @@ class IAPController extends GetxController {
             failureSnackbar(
                 "Purchase Error. " + purchaseDetails.error.toString());
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-              purchaseDetails.status == PurchaseStatus.restored) {
-            successSnackbar("Purchase Successful");
-          }
+              purchaseDetails.status == PurchaseStatus.restored) {}
           if (purchaseDetails.pendingCompletePurchase) {
             await InAppPurchase.instance.completePurchase(purchaseDetails);
-            successSnackbar("Purchase Completed!");
+
+            var result = await API().buyCredit(Login().token, requestBody);
+            if (result.keys.first) {
+              successSnackbar(result.values.first);
+            } else {
+              failureSnackbar(result.values.first);
+            }
           }
         }
       },

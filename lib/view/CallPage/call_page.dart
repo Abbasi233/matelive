@@ -3,7 +3,10 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:matelive/view/CallPage/utils/screen_off.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pusher_client/pusher_client.dart';
+import 'package:proximity_sensor/proximity_sensor.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -40,6 +43,8 @@ class _CallPageState extends State<CallPage>
 
   RxBool callAccepted;
 
+  StreamSubscription<dynamic> _proximityStreamSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +52,7 @@ class _CallPageState extends State<CallPage>
     userDetail = widget.userDetail;
 
     initAgora();
-
+    listenSensor();
     // _controller = AnimationController(
     //   duration: const Duration(milliseconds: 2000),
     //   vsync: this,
@@ -59,9 +64,10 @@ class _CallPageState extends State<CallPage>
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     super.dispose();
     engine.destroy();
+    _proximityStreamSubscription.cancel();
     // _controller.dispose();
   }
 
@@ -168,51 +174,54 @@ class _CallPageState extends State<CallPage>
 
   Future<void> initAgora() async {
     await [Permission.microphone].request();
-    engine = await RtcEngine.createWithContext(RtcEngineContext(APP_ID));
+    try {
+      engine = await RtcEngine.createWithContext(RtcEngineContext(APP_ID));
 
-    await engine.enableAudio();
-    await engine.setChannelProfile(ChannelProfile.Communication);
-    // await engine.setClientRole(ClientRole.Broadcaster);
-    // await engine.enableLocalAudio(true);
+      await engine.enableAudio();
+      await engine.setChannelProfile(ChannelProfile.Communication);
 
-    engine.setEventHandler(
-      RtcEngineEventHandler(
-        activeSpeaker: (i) {
-          log("Aktive Speaker: $i");
-        },
-        microphoneEnabled: (enable) {
-          log("Mikrofon: " + enable.toString());
-          callingController.microphoneState.value = enable;
-        },
-        warning: (warningCode) {
-          print(warningCode.toString());
-        },
-        rtcStats: (stats) {
-          log("User Count: ${stats.userCount}");
-        },
-        connectionStateChanged: (state, reason) {
-          log("Connection Changed : ${state.toString()}, ${reason.toString()}");
-        },
-        joinChannelSuccess: (String channel, int uid, int elapsed) {
-          log('joinChannelSuccess $channel $uid');
-          // Get.snackbar(
-          //     "Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
-        },
-        userJoined: (int uid, int elapsed) {
-          log('userJoined $uid');
-        },
-        userOffline: (int uid, UserOfflineReason reason) {
-          log('userOffline $uid');
-          callingController.finishCall(uid, "user_left");
-        },
-        error: (error) {
-          log("ERROR: $error", name: "AGORA");
-        },
-      ),
-    );
+      engine.setEventHandler(
+        RtcEngineEventHandler(
+          activeSpeaker: (i) {
+            log("Aktive Speaker: $i");
+          },
+          microphoneEnabled: (enable) {
+            log("Mikrofon: " + enable.toString());
+            callingController.microphoneState.value = enable;
+          },
+          warning: (warningCode) {
+            print(warningCode.toString());
+          },
+          rtcStats: (stats) {
+            log("User Count: ${stats.userCount}");
+          },
+          connectionStateChanged: (state, reason) {
+            log("Connection Changed : ${state.toString()}, ${reason.toString()}");
+          },
+          joinChannelSuccess: (String channel, int uid, int elapsed) {
+            log('joinChannelSuccess $channel $uid');
+            // Get.snackbar(
+            //     "Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
+          },
+          userJoined: (int uid, int elapsed) {
+            log('userJoined $uid');
+          },
+          userOffline: (int uid, UserOfflineReason reason) {
+            log('userOffline $uid');
+            callingController.finishCall(uid, "user_left");
+          },
+          error: (error) {
+            log("ERROR: $error", name: "AGORA");
+          },
+        ),
+      );
 
-    if (callingController.isCallerMe) {
-      await joinChannel();
+      if (callingController.isCallerMe) {
+        await joinChannel();
+      }
+    } catch (e) {
+      print(e);
+      failureSnackbar(e.toString());
     }
   }
 
@@ -319,5 +328,17 @@ class _CallPageState extends State<CallPage>
         ],
       ),
     );
+  }
+
+  Future<void> listenSensor() async {
+    _proximityStreamSubscription =
+        ProximitySensor.events.listen((int event) async {
+      print(event);
+      if (event > 0) {
+        Get.dialog(ScreenOff());
+      } else {
+        Get.back();
+      }
+    });
   }
 }

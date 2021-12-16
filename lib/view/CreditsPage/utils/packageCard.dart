@@ -1,14 +1,18 @@
 import 'dart:ui';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:matelive/controller/in-app-purchase.dart';
-import 'package:matelive/model/credit.dart';
+import 'package:flutter/material.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/model/profile_detail.dart';
+import 'package:matelive/view/CreditsPage/utils/base64.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 
 import '/constant.dart';
+import '/model/credit.dart';
 import '/view/utils/primaryButton.dart';
+import '/controller/in-app-purchase.dart';
 
-Widget packageCard({Credit credit, bool mostPopuler = false}) => Container(
+Widget creditCard({Credit credit, bool mostPopuler = false}) => Container(
       height: 300,
       margin: EdgeInsets.only(top: 30),
       child: Card(
@@ -58,7 +62,18 @@ Widget packageCard({Credit credit, bool mostPopuler = false}) => Container(
               primaryButton(
                 text: Text("Paketi Seç"),
                 onPressed: () {
-                  Get.find<IAPController>().buy(credit);
+                  var iapController = Get.find<IAPController>();
+                  var userId = ProfileDetail().id;
+                  var creditToken = toBase64(
+                      toBase64((userId * 27 * 13).toString()) +
+                          toBase64(Login().token) +
+                          toBase64(toBase64(credit.id)) +
+                          toBase64((userId * (userId + 15122021)).toString()));
+                  iapController.requestBody = {
+                    "token": creditToken,
+                    "credit_pack_id": credit.id,
+                  };
+                  iapController.buy(credit);
                 },
               ),
             ],
