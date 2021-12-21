@@ -24,6 +24,9 @@ class ProfileDetail implements UserDetail {
   List<Gallery> gallery;
   Map<String, int> settings;
 
+  @override // UserDetail implement ettiğim için gerekli 
+  UserPermissions userPermissions; 
+
   ProfileDetail.fromJson(Map<String, dynamic> json) {
     _profileDetail.id = json["id"];
     _profileDetail.name = json["name"];

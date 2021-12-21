@@ -17,6 +17,7 @@ class UserDetail {
     this.isOnline,
     this.socialMedias,
     this.gallery,
+    this.userPermissions,
   });
 
   int id;
@@ -36,6 +37,7 @@ class UserDetail {
   bool isOnline;
   SocialMedias socialMedias;
   List<Gallery> gallery;
+  UserPermissions userPermissions;
 
   factory UserDetail.fromJson(Map<String, dynamic> json) => UserDetail(
         id: json["id"],
@@ -60,6 +62,9 @@ class UserDetail {
             : null,
         gallery: List<Gallery>.from(
             json["gallery"]?.map((x) => Gallery.fromJson(x)) ?? []),
+        userPermissions: json["can_auth_see_details"] != null
+            ? UserPermissions.fromJson(json["can_auth_see_details"])
+            : null,
       );
 }
 
@@ -99,5 +104,24 @@ class SocialMedias {
         twitter: json["twitter"] ?? "",
         pinterest: json["pinterest"] ?? "",
         website: json["website"] ?? "",
+      );
+}
+
+class UserPermissions {
+  UserPermissions({
+    this.gallery,
+    this.socialMedias,
+    this.description,
+  });
+
+  bool gallery;
+  bool socialMedias;
+  bool description;
+
+  factory UserPermissions.fromJson(Map<String, dynamic> json) =>
+      UserPermissions(
+        gallery: json["gallery"] ?? true,
+        socialMedias: json["social_medias"] ?? true,
+        description: json["description"] ?? true,
       );
 }

@@ -19,6 +19,7 @@ class CallingController extends GetxController {
 
   String agoraToken = "";
   bool isCallerMe = false;
+  bool screenClosed = false;
   CallResult callResult = CallResult();
 
   IconData get getCallingIcon =>
@@ -69,12 +70,21 @@ class CallingController extends GetxController {
     } else if (status == callStatus["declined_by_caller"]) {
       stopWatchTimer.onExecute.add(StopWatchExecute.stop);
       stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+      if (screenClosed) {
+        screenClosed = false;
+        Get.back(); // for closing screen close dialog
+      }
       Get.back();
 
       failureSnackbar(
           "Arama ${actionerDetails['name']} tarafından iptal edilmiştir.");
     } else if (status == callStatus["declined_by_answerer"]) {
+      if (screenClosed) {
+        screenClosed = false;
+        Get.back(); // for closing screen close dialog
+      }
       Get.back();
+
       if (isCallerMe) {
         failureSnackbar(
             "Arama ${actionerDetails['name']} tarafından reddedilmiştir.");

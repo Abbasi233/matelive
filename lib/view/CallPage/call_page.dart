@@ -53,6 +53,7 @@ class _CallPageState extends State<CallPage>
 
     initAgora();
     listenSensor();
+
     // _controller = AnimationController(
     //   duration: const Duration(milliseconds: 2000),
     //   vsync: this,
@@ -64,10 +65,12 @@ class _CallPageState extends State<CallPage>
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     super.dispose();
-    engine.destroy();
+    await engine?.leaveChannel();
+    await engine?.destroy();
     _proximityStreamSubscription.cancel();
+
     // _controller.dispose();
   }
 
@@ -335,9 +338,15 @@ class _CallPageState extends State<CallPage>
         ProximitySensor.events.listen((int event) async {
       print(event);
       if (event > 0) {
-        Get.dialog(ScreenOff());
+        if (!callingController.screenClosed) {
+          Get.dialog(ScreenOff());
+          callingController.screenClosed = true;
+        }
       } else {
-        Get.back();
+        if (callingController.screenClosed) {
+          Get.back();
+          callingController.screenClosed = false;
+        }
       }
     });
   }

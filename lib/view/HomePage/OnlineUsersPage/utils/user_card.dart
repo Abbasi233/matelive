@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:matelive/controller/api.dart';
+import 'package:matelive/model/login.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
 import '/model/user_detail.dart';
@@ -9,7 +12,10 @@ import '/view/UserPage/user_page.dart';
 import '/view/utils/primaryButton.dart';
 import '/controller/getX/Agora/calling_controller.dart';
 
-Widget userCard({UserDetail userDetail, bool online = false}) {
+Widget userCard(
+    {UserDetail userDetail,
+    bool online = false,
+    bool showActionButtons = true}) {
   const double _fixedSize = 40;
   Widget actionButton = online
       ? primaryButton(
@@ -40,6 +46,7 @@ Widget userCard({UserDetail userDetail, bool online = false}) {
             Get.to(() => UserDetailPage(userDetail));
           },
         );
+
   return Card(
     margin: const EdgeInsets.only(bottom: 30),
     shape: RoundedRectangleBorder(
@@ -95,51 +102,93 @@ Widget userCard({UserDetail userDetail, bool online = false}) {
               child: Column(
                 children: [
                   Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Center(
-                            child: Icon(LineAwesomeIcons.hand_pointing_right_1),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(55, _fixedSize),
-                            fixedSize: Size(_fixedSize, _fixedSize),
-                            shape: CircleBorder(),
-                            primary: kWhiteColor, // <-- Button color
-                            onPrimary: kBlackColor, // <-- Splash color
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Center(
-                            child: Icon(LineAwesomeIcons.heart),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(55, _fixedSize),
-                            fixedSize: Size(_fixedSize, _fixedSize),
-                            shape: CircleBorder(),
-                            primary: kWhiteColor, // <-- Button color
-                            onPrimary: kBlackColor, // <-- Splash color
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Center(
-                            child: Icon(LineAwesomeIcons.bookmark),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(55, _fixedSize),
-                            fixedSize: Size(_fixedSize, _fixedSize),
-                            shape: CircleBorder(),
-                            primary: kWhiteColor, // <-- Button color
-                            onPrimary: kBlackColor, // <-- Splash color
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: showActionButtons
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                child: Center(
+                                  child: Icon(
+                                      LineAwesomeIcons.hand_pointing_right_1),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(55, _fixedSize),
+                                  fixedSize: Size(_fixedSize, _fixedSize),
+                                  shape: CircleBorder(),
+                                  primary: kWhiteColor, // <-- Button color
+                                  onPrimary: kBlackColor, // <-- Splash color
+                                ),
+                                onPressed: () async {
+                                  var result = await API().setAction(
+                                    Login().token,
+                                    {
+                                      "type": 4,
+                                      "related_user_id": userDetail.id
+                                    },
+                                  );
+
+                                  if (result) {
+                                    successSnackbar(
+                                        "Kullanıcı dürtme işlemi başarılı!");
+                                  }
+                                },
+                              ),
+                              ElevatedButton(
+                                child: Center(
+                                  child: Icon(LineAwesomeIcons.heart),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(55, _fixedSize),
+                                  fixedSize: Size(_fixedSize, _fixedSize),
+                                  shape: CircleBorder(),
+                                  primary: kWhiteColor, // <-- Button color
+                                  onPrimary: kBlackColor, // <-- Splash color
+                                ),
+                                onPressed: () async {
+                                  var result = await API().setAction(
+                                    Login().token,
+                                    {
+                                      "type": 3,
+                                      "related_user_id": userDetail.id
+                                    },
+                                  );
+
+                                  if (result) {
+                                    successSnackbar(
+                                        "Kullanıcı beğenme işlemi başarılı!");
+                                  }
+                                },
+                              ),
+                              ElevatedButton(
+                                child: Center(
+                                  child: Icon(LineAwesomeIcons.bookmark),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(55, _fixedSize),
+                                  fixedSize: Size(_fixedSize, _fixedSize),
+                                  shape: CircleBorder(),
+                                  primary: kWhiteColor, // <-- Button color
+                                  onPrimary: kBlackColor, // <-- Splash color
+                                ),
+                                onPressed: () async {
+                                  var result = await API().setAction(
+                                    Login().token,
+                                    {
+                                      "type": 2,
+                                      "related_user_id": userDetail.id
+                                    },
+                                  );
+
+                                  if (result) {
+                                    successSnackbar(
+                                        "Kullanıcıyı favoriye alma işlemi başarılı!");
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                        : Container(),
                   ),
                   Expanded(
                     flex: 3,

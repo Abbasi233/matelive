@@ -22,10 +22,10 @@ class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        var list = callsController.pagedResponse.value.data;
+        var list = callsController.pagedResponse.value.data ?? <PreviousCall>[];
 
         List<PreviousCall> _calls = widget.showThree
-            ? list.getRange(0, list.length > 3 ? 3 : list.length).toList()
+            ? list.getRange(0, list.length > 3 ? 3 : list?.length).toList()
             : list;
 
         return _calls.isNotEmpty

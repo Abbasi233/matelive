@@ -1,3 +1,4 @@
+import '/model/action.dart';
 import '/model/user_detail.dart';
 import '/model/notifications.dart';
 import '/model/Call/previous_call.dart';
@@ -29,6 +30,11 @@ class PagedResponse {
       case PreviousCall:
         data = List<PreviousCall>.from(
           json["data"].map((x) => PreviousCall.fromJson(x)).toList(),
+        );
+        break;
+      case Action:
+        data = List<Action>.from(
+          json["data"].map((x) => Action.fromJson(x)).toList(),
         );
         break;
     }

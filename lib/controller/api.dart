@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:matelive/model/action.dart';
 import 'package:matelive/model/infographic.dart';
 
 import '/model/login.dart';
@@ -167,7 +168,7 @@ class API {
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, PreviousCall)};
     }
-    return {true: jsonResponse["message"]};
+    return {false: jsonResponse["message"]};
   }
 
   Future<Map<bool, dynamic>> getInfographic(String token) async {
@@ -182,7 +183,63 @@ class API {
     if (response.statusCode < 400) {
       return {true: Infographic.fromJson(jsonResponse["data"])};
     }
-    return {true: jsonResponse["message"]};
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<bool> setAction(String token, dynamic body) async {
+    // 'actions' => [
+    //     'favorite' => 2,
+    //     'like' => 3,
+    //     'snooze' => 4,
+    // ],
+    Uri url = Uri.parse("$_URL/auth-user/action");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<Map<bool, dynamic>> getActions(String token, String type) async {
+    // 'actions' => [
+    //     'favorite' => 2,
+    //     'like' => 3,
+    //     'snooze' => 4,
+    // ],
+    Uri url = Uri.parse("$_URL/auth-user/actions?type=$type");
+    http.Response response = await http.get(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: PagedResponse.fromJson(jsonResponse, Action)};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> getFavorites(String token) async {
+    Uri url = Uri.parse("$_URL/auth-user/favorite-users");
+    http.Response response = await http.get(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: PagedResponse.fromJson(jsonResponse, UserDetail)};
+    }
+    return {false: jsonResponse["message"]};
   }
 
   Future<Map<bool, String>> updatePassword(String token, dynamic body) async {

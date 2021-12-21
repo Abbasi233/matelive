@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '/constant.dart';
 import '/model/user_detail.dart';
@@ -122,6 +123,16 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       },
                     ),
                   ),
+                  fixedHeight,
+                  userDetail?.userPermissions?.socialMedias == null ||
+                          userDetail.userPermissions.socialMedias == false
+                      ? Center(
+                          child: notHavePermission(),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: socialMediaButtons(),
+                        ),
                 ],
               ),
             ),
@@ -147,36 +158,46 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       children: [
                         Text("HAKKINDA",
                             style: styleH4(fontWeight: FontWeight.w600)),
-                        Text.rich(
-                          TextSpan(
-                            text: "Cinsiyet: ",
-                            children: [
-                              TextSpan(
-                                text: userDetail.gender == null
-                                    ? "Belirtilmemiş"
-                                    : gender[userDetail.gender],
-                                style: styleH4(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        userDetail?.userPermissions?.description == null ||
+                                userDetail.userPermissions.description == false
+                            ? Center(
+                                child: notHavePermission(),
                               )
-                            ],
-                          ),
-                          style: styleH4(),
-                        ),
-                        Text.rich(
-                          TextSpan(
-                            text: "Yaş: ",
-                            children: [
-                              TextSpan(
-                                text: userDetail.age,
-                                style: styleH4(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
-                            ],
-                          ),
-                          style: styleH4(),
-                        ),
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text.rich(
+                                    TextSpan(
+                                      text: "Cinsiyet: ",
+                                      children: [
+                                        TextSpan(
+                                          text: userDetail.gender == null
+                                              ? "Belirtilmemiş"
+                                              : gender[userDetail.gender],
+                                          style: styleH4(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    style: styleH4(),
+                                  ),
+                                  Text.rich(
+                                    TextSpan(
+                                      text: "Yaş: ",
+                                      children: [
+                                        TextSpan(
+                                          text: userDetail.age,
+                                          style: styleH4(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    style: styleH4(),
+                                  ),
+                                ],
+                              ),
                       ],
                     ),
                   ),
@@ -186,54 +207,61 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     style: styleH2(),
                   ),
                   fixedHeight,
-                  userDetail.gallery.isNotEmpty
-                      ? GridView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 3,
-                            mainAxisSpacing: 3,
-                          ),
-                          itemCount: userDetail.gallery.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Get.dialog(
-                                  showImage(
-                                    galleryIndex: index,
-                                    gallery: userDetail.gallery,
+                  userDetail?.userPermissions?.gallery == null ||
+                          userDetail.userPermissions.gallery == false
+                      ? Center(
+                          child: notHavePermission(),
+                        )
+                      : userDetail.gallery.isNotEmpty
+                          ? GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 3,
+                                mainAxisSpacing: 3,
+                              ),
+                              itemCount: userDetail.gallery.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Get.dialog(
+                                      showImage(
+                                        galleryIndex: index,
+                                        gallery: userDetail.gallery,
+                                      ),
+                                    );
+                                  },
+                                  child: CachedNetworkImage(
+                                    imageUrl: userDetail.gallery[index].image,
+                                    imageBuilder: (context, provider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: provider, fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            Center(
+                                      child: CircularProgressIndicator(
+                                        value: downloadProgress.progress,
+                                        color: kPrimaryColor,
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
                                   ),
                                 );
                               },
-                              child: CachedNetworkImage(
-                                imageUrl: userDetail.gallery[index].image,
-                                imageBuilder: (context, provider) => Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: provider, fit: BoxFit.cover),
-                                  ),
-                                ),
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) => Center(
-                                  child: CircularProgressIndicator(
-                                    value: downloadProgress.progress,
-                                    color: kPrimaryColor,
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Text(
-                              "Kullanıcı henüz bir fotoğraf paylaşmadı.",
-                              style: styleH4(color: kBlackColor),
-                              textAlign: TextAlign.center),
-                        ),
+                            )
+                          : Center(
+                              child: Text(
+                                  "Kullanıcı henüz bir fotoğraf paylaşmadı.",
+                                  style: styleH4(color: kBlackColor),
+                                  textAlign: TextAlign.center),
+                            ),
                 ],
               ),
             ),
@@ -243,5 +271,91 @@ class _UserDetailPageState extends State<UserDetailPage> {
         ),
       ),
     );
+  }
+
+  Text notHavePermission() {
+    return Text("Bu kısmı görüntülemek için yeterli izniniz yok.");
+  }
+
+  List<Widget> socialMediaButtons() {
+    List<Widget> returnList = [];
+
+    if (userDetail.socialMedias.facebook != null &&
+        userDetail.socialMedias.facebook != "") {
+      returnList.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(LineAwesomeIcons.facebook),
+            Text(
+              userDetail.socialMedias.facebook,
+              style: styleH5(),
+            )
+          ],
+        ),
+      );
+    }
+    if (userDetail.socialMedias.instagram != null &&
+        userDetail.socialMedias.instagram != "") {
+      returnList.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(LineAwesomeIcons.instagram),
+            Text(
+              userDetail.socialMedias.instagram,
+              style: styleH5(),
+            )
+          ],
+        ),
+      );
+    }
+    if (userDetail.socialMedias.pinterest != null &&
+        userDetail.socialMedias.pinterest != "") {
+      returnList.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(LineAwesomeIcons.pinterest),
+            Text(
+              userDetail.socialMedias.pinterest,
+              style: styleH5(),
+            )
+          ],
+        ),
+      );
+    }
+    if (userDetail.socialMedias.twitter != null &&
+        userDetail.socialMedias.twitter != "") {
+      returnList.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(LineAwesomeIcons.twitter),
+            Text(
+              userDetail.socialMedias.twitter,
+              style: styleH5(),
+            )
+          ],
+        ),
+      );
+    }
+    if (userDetail.socialMedias.website != null &&
+        userDetail.socialMedias.website != "") {
+      returnList.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(LineAwesomeIcons.internet_explorer),
+            Text(
+              userDetail.socialMedias.website,
+              style: styleH5(),
+            )
+          ],
+        ),
+      );
+    }
+
+    return returnList;
   }
 }

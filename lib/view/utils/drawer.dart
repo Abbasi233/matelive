@@ -6,10 +6,11 @@ import '/constant.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
 import '/view/auth/sign_in_page.dart';
-import '/view/HomePage/home_page.dart';
 import '/view/utils/primaryButton.dart';
 import '/controller/getX/storage_controller.dart';
+import '/view/LandingPage/actions_page/actions_page.dart';
 import '/view/LandingPage/AllUsersPage/all_users_page.dart';
+import '/view/LandingPage/favorites_page/favorites_page.dart';
 
 class MyDrawer {
   static ListTile _listTile(Text title, Widget page,
@@ -17,8 +18,10 @@ class MyDrawer {
     return ListTile(
       title: Text(title.data, style: styleH4(color: color)),
       onTap: () {
-        Get.back();
-        Get.to(() => page);
+        if (page != null) {
+          Get.back();
+          Get.to(() => page);
+        }
       },
     );
   }
@@ -29,11 +32,11 @@ class MyDrawer {
         child: Column(
           children: [
             _listTile(Text("Tüm Üyeler"), AllUsersPage()),
-            _listTile(Text("Beğenmeler"), HomePage()),
-            _listTile(Text("Dürtmeler"), HomePage()),
-            _listTile(Text("Favoriler"), HomePage()),
-            _listTile(Text("İletişim"), HomePage()),
-            _listTile(Text("Yardım"), HomePage()),
+            _listTile(Text("Beğenmeler"), ActionsPage("Beğenmeler", "3")),
+            _listTile(Text("Dürtmeler"), ActionsPage("Dürtmeler", "4")),
+            _listTile(Text("Favoriler"), FavoritesPage()),
+            _listTile(Text("İletişim"), null),
+            _listTile(Text("Yardım"), null),
             Divider(),
             SizedBox(height: 10),
             primaryButton(
