@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/view/utils/auto_size_text.dart';
 
 import '/constant.dart';
 import '/extensions.dart';
@@ -57,14 +58,20 @@ class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
       canTapOnHeader: true,
       headerBuilder: (BuildContext context, bool isExpanded) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MyText(
-                "${iCaller ? '${call.answerer.name} ${call.answerer.surname}' : '${call.caller.name} ${call.caller.surname}'} ",
-                fontSize: 19,
-                overflow: TextOverflow.fade,
+              Expanded(
+                child: autoSize(
+                    text:
+                        "${iCaller ? '${call.answerer.name} ${call.answerer.surname}' : '${call.caller.name} ${call.caller.surname}'} ",
+                    padding: 0),
+                // MyText(
+                //   "${iCaller ? '${call.answerer.name} ${call.answerer.surname}' : '${call.caller.name} ${call.caller.surname}'} ",
+                //   fontSize: 19,
+                //   overflow: TextOverflow.fade,
+                // ),
               ),
               Icon(
                 iCaller

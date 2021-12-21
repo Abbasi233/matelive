@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:matelive/controller/getX/calls_controller.dart';
@@ -92,6 +93,7 @@ class SignInPage extends StatelessWidget {
                     Expanded(
                       child: Obx(
                         () => Row(
+                          mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Checkbox(
@@ -100,17 +102,27 @@ class SignInPage extends StatelessWidget {
                               fillColor:
                                   MaterialStateProperty.all(kPrimaryColor),
                             ),
-                            Text("Beni Hatırla", style: styleH4()),
+                            Expanded(
+                              child: AutoSizeText(
+                                "Beni Hatırla",
+                                style: styleH4(),
+                                maxLines: 1,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
+                    SizedBox(width: 5),
                     Expanded(
                       child: primaryButton(
-                        text: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [Text('Giriş Yap'), Icon(Icons.person)],
+                        text: Expanded(
+                          child: AutoSizeText(
+                            'Giriş Yap',
+                            maxLines: 1,
+                          ),
                         ),
+                        imageIcon: Icon(Icons.person),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             var result = await _api.login({
@@ -137,7 +149,7 @@ class SignInPage extends StatelessWidget {
                                     await _api.getCalls(Login().token);
                                 Get.put(CallsController()).pagedResponse.value =
                                     callsResult.values.first;
-                                    
+
                                 Get.off(() => LandingPage());
                               } else {
                                 failureSnackbar(result[false]);

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:matelive/view/utils/auto_size_text.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
@@ -39,21 +40,30 @@ class NotificationsCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "BİLDİRİMLER",
-                    style: styleH5(fontWeight: FontWeight.w600),
+                  Expanded(
+                    child: autoSize(
+                      text: "BİLDİRİMLER",
+                      style: styleH5(fontWeight: FontWeight.w600),
+                    ),
                   ),
+                  // Text(
+                  //   "BİLDİRİMLER",
+                  //   style: styleH5(fontWeight: FontWeight.w600),
+                  // ),
                   showSeeAll
-                      ? TextButton(
-                          onPressed: () {
-                            _landingPageController.changeTab(2);
-                          },
-                          child: Text(
-                            "Tümünü Gör",
-                            style: customFont(
-                              16,
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.w500,
+                      ? Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              _landingPageController.changeTab(2);
+                            },
+                            child: autoSize(
+                              text: "Tümünü Gör",
+                              style: customFont(
+                                16,
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              padding: 0,
                             ),
                           ),
                         )
@@ -96,19 +106,20 @@ class NotificationsCard extends StatelessWidget {
                                     }
                                   }
                                 : null,
-                            child: Text(
-                              "Tümünü Sil",
+                            child: autoSize(
+                              text: "Tümünü Sil",
                               style: customFont(
                                 16,
                                 color: (_notificationsController
-                                            .pagedResponse.value.data !=
-                                        null &&
-                                    _notificationsController
-                                        .pagedResponse.value.data.isNotEmpty)
+                                                .pagedResponse.value.data !=
+                                            null &&
+                                        _notificationsController.pagedResponse
+                                            .value.data.isNotEmpty)
                                     ? kOrangeColor
                                     : kTextColor,
                                 fontWeight: FontWeight.w500,
                               ),
+                              padding: 0,
                             ),
                           ),
                         )
@@ -119,7 +130,8 @@ class NotificationsCard extends StatelessWidget {
             Divider(),
             Obx(
               () {
-                var data = _notificationsController.pagedResponse.value.data ?? [];
+                var data =
+                    _notificationsController.pagedResponse.value.data ?? [];
                 int endRange = showThree && data.length > 3 ? 3 : data.length;
                 return data != null
                     ? data.isNotEmpty

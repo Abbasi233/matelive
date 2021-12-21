@@ -11,7 +11,7 @@ Widget primaryButton({
   double borderRadius = kTextInputBorderRadius,
   Color backgroundColor = kPrimaryColor,
   Color borderColor = kPrimaryColor,
-  ImageIcon imageIcon,
+  Widget imageIcon,
   bool disabled = false,
 }) =>
     Container(
@@ -28,7 +28,7 @@ Widget primaryButton({
         onPressed: disabled ? null : onPressed,
         style: ButtonStyle(
           padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           ),
           backgroundColor: MaterialStateProperty.all(
               disabled ? kTextColor : backgroundColor),

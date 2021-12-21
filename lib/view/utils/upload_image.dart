@@ -41,28 +41,8 @@ dynamic selectImage({String klasorAdi, resimId}) async {
       }
     }
   } else {
-    // if (Platform.isIOS) {
-    //   buildSnackbar(
-    //       baslik: "kullaniciBilgileriResimYukleSnackBarBaslik2".tr,
-    //       icerik:
-    //          "kullaniciBilgileriResimYukleSnackBarIcerik2".tr,
-    //       snackBarRenk: anaTemaRengiKirmiziSnackBar(),
-    //       function: () async {
-    //         await openAppSettings();
-    //       });
-    // } else {
-    //   if (Platform.isIOS) {
-    //     buildSnackbar(
-    //         baslik: "kullaniciBilgileriResimYukleSnackBarBaslik2".tr,
-    //       icerik:
-    //          "kullaniciBilgileriResimYukleSnackBarIcerik2".tr,
-    //          snackBarRenk: anaTemaRengiKirmiziSnackBar(),
-    //         function: () async {
-    //           await openAppSettings();
-    //         });
-    //   } else {
-    //     print('yetki yok');
-    //   }
-    // }
+    if (Platform.isIOS) {
+      await openAppSettings();
+    }
   }
 }

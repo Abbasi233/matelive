@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:matelive/view/utils/auto_size_text.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '/constant.dart';
@@ -49,7 +50,10 @@ class _HomePageState extends State<HomePage>
             padding: EdgeInsets.symmetric(horizontal: 20),
             children: [
               fixedHeight,
-              Text("Merhaba, ${Login().user.name}", style: styleH1()),
+              autoSize(
+                text: "Merhaba, ${Login().user.name}",
+                style: styleH1(),
+              ),
               fixedHeight,
               Card(
                 color: kYellowColor,
@@ -72,10 +76,15 @@ class _HomePageState extends State<HomePage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Görüşmeye Başlayın!",
-                                  style: styleH3(fontWeight: FontWeight.w600)),
-                              Text.rich(
-                                TextSpan(
+                              autoSize(
+                                text: "Görüşmeye Başlayın!",
+                                style: styleH3(fontWeight: FontWeight.w600),
+                                padding: 0.05,
+                              ),
+                              // Text("Görüşmeye Başlayın!",
+                              //     style: styleH3(fontWeight: FontWeight.w600)),
+                              autoSize(
+                                textSpan: TextSpan(
                                   text: "Şu an ",
                                   children: [
                                     TextSpan(
@@ -91,19 +100,26 @@ class _HomePageState extends State<HomePage>
                                   ],
                                 ),
                                 style: styleH5(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: kBlackColor),
+                                  fontSize: 18,
+                                  color: kBlackColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 3,
+                                padding: 0.05,
                               ),
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: primaryButton(
-                                  text: Text(
-                                    "Online Kullanıcıları Göster",
-                                    style: styleH4(
+                                  text: Expanded(
+                                    child: autoSize(
+                                      text: "Online Kullanıcıları Göster",
+                                      style: styleH4(
                                         fontSize: 18,
                                         color: kWhiteColor,
-                                        fontWeight: FontWeight.w500),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      padding: 0,
+                                    ),
                                   ),
                                   onPressed: () {
                                     Get.to(() => OnlineUsersPage());
@@ -118,12 +134,13 @@ class _HomePageState extends State<HomePage>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AutoSizeText(
-                              "Çevrimiçi olan kullanıcılar bulunuyor...",
+                            autoSize(
+                              text: "Çevrimiçi olan kullanıcılar bulunuyor...",
                               style: styleH5(
                                 color: kBlackColor,
                                 fontWeight: FontWeight.w500,
                               ),
+                              padding: 0,
                             ),
                             showProgressIndicator(context),
                           ],
@@ -156,13 +173,13 @@ class _HomePageState extends State<HomePage>
                             "BAŞARILI GÖRÜŞME\nSAYISI",
                             info == null
                                 ? showProgressIndicator(context)
-                                : AutoSizeText(
-                                    info.successfullCallCount.toString(),
+                                : autoSize(
+                                    text: info.successfullCallCount.toString(),
                                     style: styleH3(
-                                        fontWeight: FontWeight.w600,
-                                        color: kBlackColor),
-                                    maxFontSize: 22,
-                                    textAlign: TextAlign.center,
+                                      fontWeight: FontWeight.w600,
+                                      color: kBlackColor,
+                                    ),
+                                    padding: 0,
                                   ),
                             Colors.lightGreen,
                           ),
@@ -171,13 +188,13 @@ class _HomePageState extends State<HomePage>
                             "CEVAPSIZ ARAMA\nSAYISI",
                             info == null
                                 ? showProgressIndicator(context)
-                                : AutoSizeText(
-                                    info.failedCallCount.toString(),
+                                : autoSize(
+                                    text: info.failedCallCount.toString(),
                                     style: styleH3(
-                                        fontWeight: FontWeight.w600,
-                                        color: kBlackColor),
-                                    maxFontSize: 22,
-                                    textAlign: TextAlign.center,
+                                      fontWeight: FontWeight.w600,
+                                      color: kBlackColor,
+                                    ),
+                                    padding: 0,
                                   ),
                             kPrimaryColor,
                           ),
@@ -190,29 +207,29 @@ class _HomePageState extends State<HomePage>
                             "TOPLAM KONUŞMA\nSÜRESİ",
                             info == null
                                 ? showProgressIndicator(context)
-                                : AutoSizeText(
-                                    info.succesfullCallDurationFormattedShort,
+                                : autoSize(
+                                    text: info
+                                        .succesfullCallDurationFormattedShort,
                                     style: styleH3(
-                                        fontWeight: FontWeight.w600,
-                                        color: kBlackColor),
-                                    maxFontSize: 23,
-                                    maxLines: 1,
-                                    // textAlign: TextAlign.center,
+                                      fontWeight: FontWeight.w600,
+                                      color: kBlackColor,
+                                    ),
+                                    padding: 0,
                                   ),
                             Colors.yellow[700],
                           ),
                           fixedWidth,
                           miniCard(
-                            "KALAN ARAMA\nKREDİSİ",
+                            "KALAN\nARAMA\nKREDİSİ",
                             info == null
                                 ? showProgressIndicator(context)
-                                : AutoSizeText(
-                                    info.remainingCreditFormattedSort,
+                                : autoSize(
+                                    text: info.remainingCreditFormattedSort,
                                     style: styleH3(
-                                        fontWeight: FontWeight.w600,
-                                        color: kBlackColor),
-                                    maxFontSize: 22,
-                                    textAlign: TextAlign.center,
+                                      fontWeight: FontWeight.w600,
+                                      color: kBlackColor,
+                                    ),
+                                    padding: 0,
                                   ),
                             Colors.blue[900],
                           ),
@@ -243,21 +260,27 @@ class _HomePageState extends State<HomePage>
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "GEÇMİŞ GÖRÜŞMELERİNİZ",
-                                    style: styleH6(fontWeight: FontWeight.w600),
+                                  Expanded(
+                                    flex: 2,
+                                    child: autoSize(
+                                      text: "GEÇMİŞ GÖRÜŞMELERİNİZ",
+                                      style: TextStyle(fontSize: 7),
+                                      //     styleH6(fontWeight: FontWeight.w600),
+                                      padding: 0,
+                                    ),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       _landingPageController.changeTab(1);
                                     },
-                                    child: Text(
-                                      "Tümünü Gör",
+                                    child: autoSize(
+                                      text: "Tümünü Gör",
                                       style: customFont(
                                         18,
                                         color: kPrimaryColor,
                                         fontWeight: FontWeight.w500,
                                       ),
+                                      padding: 0,
                                     ),
                                   )
                                 ],
@@ -281,7 +304,7 @@ class _HomePageState extends State<HomePage>
                       if (snapshot.data.keys.first) {
                         _notificationsController.pagedResponse.value =
                             snapshot.data.values.first;
-                            
+
                         return NotificationsCard(
                           showThree: true,
                           showSeeAll: true,

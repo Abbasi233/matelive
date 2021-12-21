@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
@@ -333,28 +333,32 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                         iconSize: 48,
                                         onPressed: () async {
-                                          var image = await selectImage();
+                                          try {
+                                            var image = await selectImage();
 
-                                          if (image != null) {
-                                            print((image as XFile).path);
-                                            var result =
-                                                await API().uploadImage(
-                                              Login().token,
-                                              (image as XFile).path,
-                                              "profile-gallery",
-                                            );
-                                            refreshPage();
+                                            if (image != null) {
+                                              print((image as XFile).path);
+                                              var result =
+                                                  await API().uploadImage(
+                                                Login().token,
+                                                (image as XFile).path,
+                                                "profile-gallery",
+                                              );
+                                              refreshPage();
 
-                                            if (result) {
-                                              successSnackbar(
-                                                  "Galeri fotoğrafınız başarıyla yüklendi.");
+                                              if (result) {
+                                                successSnackbar(
+                                                    "Galeri fotoğrafınız başarıyla yüklendi.");
+                                              } else {
+                                                failureSnackbar(
+                                                    "Galeri fotoğrafınız yüklenirken bir sorun yaşandı.");
+                                              }
                                             } else {
-                                              failureSnackbar(
-                                                  "Galeri fotoğrafınız yüklenirken bir sorun yaşandı.");
+                                              normalSnackbar(
+                                                  "Herhangi bir resim seçilmedi.");
                                             }
-                                          } else {
-                                            normalSnackbar(
-                                                "Herhangi bir resim seçilmedi.");
+                                          } catch (e) {
+                                            failureSnackbar(e.toString());
                                           }
                                         },
                                       );
@@ -405,7 +409,7 @@ class _ProfilePageState extends State<ProfilePage>
     if (dialogResult) {
       if (galleryIndex != null) {
         var result = await API().clearGalleryImage(Login().token, galleryIndex);
-        refreshPage(); 
+        refreshPage();
 
         if (result) {
           successSnackbar("Galeri görseli başarıyla silinmiştir!");

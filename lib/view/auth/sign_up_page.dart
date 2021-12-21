@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:matelive/view/utils/primaryButton.dart';
 
 import '/constant.dart';
 import '/controller/api.dart';
@@ -29,10 +31,7 @@ class SignUpPage extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.only(right: Get.size.width * 0.3),
-                child: Image.asset(
-                  "assets/images/logo.png",
-                  // width: Get.size.width * 0.6,
-                ),
+                child: Image.asset("assets/images/logo.png"),
               ),
               SizedBox(height: 30),
               Text("Matelive'a Kaydol", style: styleH1()),
@@ -116,27 +115,24 @@ class SignUpPage extends StatelessWidget {
                       onChanged: (value) => _policies.value = value,
                       fillColor: MaterialStateProperty.all(kPrimaryColor),
                     ),
-                    Text("Sözleşmeleri okudum, onaylıyorum.", style: styleH4()),
+                    Expanded(
+                      child: AutoSizeText(
+                        "Sözleşmeleri okudum, onaylıyorum.",
+                        style: styleH4(),
+                        maxLines: 1,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(
-                    top: 20, right: Get.size.width * 0.4, bottom: 30),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                    ),
-                    backgroundColor: MaterialStateProperty.all(kPrimaryColor),
-                    textStyle: MaterialStateProperty.all(styleH4()),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(kTextInputBorderRadius),
-                      ),
-                    ),
+              Padding(
+                padding: EdgeInsets.only(right: Get.size.width * 0.4),
+                child: primaryButton(
+                  text: AutoSizeText(
+                    'Kaydol',
+                    maxLines: 1,
                   ),
+                  imageIcon: Icon(Icons.person),
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       if (_policies.value) {
@@ -172,15 +168,9 @@ class SignUpPage extends StatelessWidget {
                       }
                     }
                   },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [Text('Kaydol'), Icon(Icons.person)],
-                    ),
-                  ),
                 ),
               ),
+              SizedBox(height: 30),
             ],
           ),
         ),
