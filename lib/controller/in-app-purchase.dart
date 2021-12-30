@@ -36,22 +36,22 @@ class IAPController extends GetxController {
     purchaseDetailsList.forEach(
       (PurchaseDetails purchaseDetails) async {
         if (purchaseDetails.status == PurchaseStatus.pending) {
-          normalSnackbar("Purchase Pending");
+          // normalSnackbar("Purchase Pending");
         } else {
           if (purchaseDetails.status == PurchaseStatus.error) {
             failureSnackbar(
                 "Purchase Error. " + purchaseDetails.error.toString());
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-              purchaseDetails.status == PurchaseStatus.restored) {}
-          if (purchaseDetails.pendingCompletePurchase) {
-            await InAppPurchase.instance.completePurchase(purchaseDetails);
-
+              purchaseDetails.status == PurchaseStatus.restored) {
             var result = await API().buyCredit(Login().token, requestBody);
             if (result.keys.first) {
               successSnackbar(result.values.first);
             } else {
               failureSnackbar(result.values.first);
             }
+          }
+          if (purchaseDetails.pendingCompletePurchase) {
+            await InAppPurchase.instance.completePurchase(purchaseDetails);
           }
         }
       },
