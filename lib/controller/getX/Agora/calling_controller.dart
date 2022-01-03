@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '/model/login.dart';
@@ -15,12 +17,6 @@ class CallingController extends GetxController {
   RxBool speakerState = false.obs;
   RxBool callingState = false.obs;
   RxBool microphoneState = true.obs;
-  StopWatchTimer stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
-
-  String agoraToken = "";
-  bool isCallerMe = false;
-  bool screenClosed = false;
-  CallResult callResult = CallResult();
 
   IconData get getCallingIcon =>
       callingState.value ? Icons.call : Icons.call_end;
@@ -30,6 +26,20 @@ class CallingController extends GetxController {
 
   IconData get getSpeakerIcon =>
       speakerState.value ? Icons.volume_up : Icons.volume_off;
+
+  AudioCache audioCache = AudioCache();
+  AudioPlayer audioPlayer = AudioPlayer();
+  final String callingSound = "sounds/calling.mp3";
+  final String receivingSound = "sounds/receiving.mp3";
+
+  String agoraToken = "";
+  int remainingCredit = 0;
+  bool isCallerMe = false;
+  bool screenClosed = false;
+  CallResult callResult = CallResult();
+  StopWatchTimer stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
+
+  StreamSubscription<int> listenSeconds;
 
   Map<String, String> callStatus = {
     'waiting': "1",
@@ -58,14 +68,21 @@ class CallingController extends GetxController {
   void callingByRequestStatus(dynamic data) {
     isCallerMe = false;
     callResult = CallResult(
-        message: data["message"],
-        webcall: WebCall.fromJson(data["webCallDetails"]));
+      message: data["message"],
+      webcall: WebCall.fromJson(data["webCallDetails"]),
+    );
+
     UserDetail userDetail = UserDetail.fromJson(data["callerDetails"]);
     Get.to(() => CallPage(userDetail));
+    playSound(receivingSound);
   }
 
   void actionByRequestStatus(String status, dynamic actionerDetails) {
     if (status == callStatus["accepted"]) {
+      if (isCallerMe) {
+        listenSeconds =
+            stopWatchTimer.secondTime.listen(calculateRemainingTime);
+      }
       stopWatchTimer.onExecute.add(StopWatchExecute.start);
     } else if (status == callStatus["declined_by_caller"]) {
       stopWatchTimer.onExecute.add(StopWatchExecute.stop);
@@ -76,8 +93,12 @@ class CallingController extends GetxController {
       }
       Get.back();
 
-      failureSnackbar(
-          "Arama ${actionerDetails['name']} tarafından iptal edilmiştir.");
+      if (isCallerMe) {
+        failureSnackbar("Aramayı iptal ettiniz.");
+      } else {
+        failureSnackbar(
+            "Arama ${actionerDetails['name']} tarafından iptal edilmiştir.");
+      }
     } else if (status == callStatus["declined_by_answerer"]) {
       if (screenClosed) {
         screenClosed = false;
@@ -88,6 +109,8 @@ class CallingController extends GetxController {
       if (isCallerMe) {
         failureSnackbar(
             "Arama ${actionerDetails['name']} tarafından reddedilmiştir.");
+      } else {
+        failureSnackbar("Aramayı reddettiniz.");
       }
     } else if (status == callStatus["not_answered"]) {
       if (isCallerMe) {
@@ -100,6 +123,8 @@ class CallingController extends GetxController {
             "Gelen aramaya cevap vermediğiniz için arama iptal edilmiştir.");
       }
     }
+
+    stopSound();
   }
 
   void createCall(UserDetail userDetail) async {
@@ -132,6 +157,7 @@ class CallingController extends GetxController {
           callResult = apiResult.values.first;
           agoraToken = tokenResult.values.first;
           Get.to(() => CallPage(userDetail));
+          playSound(callingSound);
         } else {
           failureSnackbar(tokenResult.values.first);
         }
@@ -211,16 +237,27 @@ class CallingController extends GetxController {
       declineCallBody,
     );
 
-    Get.back();
-
-    if (apiResult.keys.first) {
-      if (callResult.webcall.callerId == ProfileDetail().id) {
-        failureSnackbar("Aramayı iptal ettiniz.");
-      } else {
-        failureSnackbar("Aramayı reddettiniz.");
-      }
-    } else {
+    if (!apiResult.keys.first) {
       failureSnackbar(apiResult.values.first);
+    }
+  }
+
+  Future<void> playSound(String file) async {
+    audioPlayer = await audioCache.loop(file);
+  }
+
+  void stopSound() {
+    audioPlayer.stop();
+  }
+
+  void calculateRemainingTime(int time) async {
+    print("RemainingCredit: $remainingCredit");
+
+    if (remainingCredit > 0) {
+      remainingCredit--;
+    } else {
+      await listenSeconds.cancel();
+      finishCall(ProfileDetail().id, "user_credit");
     }
   }
 }

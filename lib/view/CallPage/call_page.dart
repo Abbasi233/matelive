@@ -45,6 +45,8 @@ class _CallPageState extends State<CallPage>
 
   StreamSubscription<dynamic> _proximityStreamSubscription;
 
+  Timer timeout;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +56,13 @@ class _CallPageState extends State<CallPage>
     initAgora();
     listenSensor();
 
+    if (callingController.isCallerMe) {
+      timeout = Timer(Duration(seconds: 10), () {
+        if (!callingController.stopWatchTimer.isRunning) {
+          callingController.declineCall("not_answered");
+        }
+      });
+    }
     // _controller = AnimationController(
     //   duration: const Duration(milliseconds: 2000),
     //   vsync: this,
@@ -67,6 +76,7 @@ class _CallPageState extends State<CallPage>
   @override
   void dispose() async {
     super.dispose();
+    timeout?.cancel();
     await engine?.leaveChannel();
     await engine?.destroy();
     _proximityStreamSubscription.cancel();

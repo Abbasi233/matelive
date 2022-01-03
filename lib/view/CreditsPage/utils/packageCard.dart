@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/model/login.dart';
-import 'package:matelive/model/profile_detail.dart';
-import 'package:matelive/view/CreditsPage/utils/base64.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 
 import '/constant.dart';
+import '/model/login.dart';
 import '/model/credit.dart';
+import '/model/profile_detail.dart';
 import '/view/utils/primaryButton.dart';
 import '/controller/in-app-purchase.dart';
+import '/view/CreditsPage/utils/base64.dart';
 
 Widget creditCard({Credit credit, bool mostPopuler = false}) => Container(
       height: 300,
@@ -46,7 +46,7 @@ Widget creditCard({Credit credit, bool mostPopuler = false}) => Container(
               ),
               SizedBox(height: 5),
               Text(
-                credit.price,
+                credit.price.split(String.fromCharCode(160))[1] + " TL",
                 style: styleH1(
                   fontSize: 40,
                   fontWeight: FontWeight.w600,

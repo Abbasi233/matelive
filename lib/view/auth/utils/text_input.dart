@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 import '/constant.dart';
 
-Widget textInput(
-    {String hintText,
-    TextEditingController controller,
-    bool password = false}) {
+Widget textInput({
+  String hintText,
+  TextEditingController controller,
+  bool password = false,
+  int maxLines = 1,
+}) {
   return TextFormField(
     style: styleH4(),
+    maxLines: maxLines,
     controller: controller,
     cursorColor: kPrimaryColor,
     decoration: InputDecoration(

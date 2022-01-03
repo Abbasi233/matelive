@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:matelive/view/LandingPage/about_page/about_page.dart';
+import 'package:matelive/view/LandingPage/contact_page/contact_page.dart';
+import 'package:matelive/view/LandingPage/faq_page/faq_page.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
@@ -9,7 +12,7 @@ import '/view/auth/sign_in_page.dart';
 import '/view/utils/primaryButton.dart';
 import '/controller/getX/storage_controller.dart';
 import '/view/LandingPage/actions_page/actions_page.dart';
-import '/view/LandingPage/AllUsersPage/all_users_page.dart';
+import '/view/LandingPage/all_users_page/all_users_page.dart';
 import '/view/LandingPage/favorites_page/favorites_page.dart';
 
 class MyDrawer {
@@ -35,8 +38,9 @@ class MyDrawer {
             _listTile(Text("Beğenmeler"), ActionsPage("Beğenmeler", "3")),
             _listTile(Text("Dürtmeler"), ActionsPage("Dürtmeler", "4")),
             _listTile(Text("Favoriler"), FavoritesPage()),
-            _listTile(Text("İletişim"), null),
-            _listTile(Text("Yardım"), null),
+            _listTile(Text("Hakkımızda"), AboutPage()),
+            _listTile(Text("İletişim"), ContactPage()),
+            _listTile(Text("S.S.S."), FaqPage()),
             Divider(),
             SizedBox(height: 10),
             primaryButton(

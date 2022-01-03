@@ -66,7 +66,7 @@ class _CallsExpansionPanelState extends State<CallsExpansionPanel> {
                 child: autoSize(
                     text:
                         "${iCaller ? '${call.answerer.name} ${call.answerer.surname}' : '${call.caller.name} ${call.caller.surname}'} ",
-                    padding: 0),
+                    paddingRight: 0),
                 // MyText(
                 //   "${iCaller ? '${call.answerer.name} ${call.answerer.surname}' : '${call.caller.name} ${call.caller.surname}'} ",
                 //   fontSize: 19,

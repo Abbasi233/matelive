@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:matelive/controller/getX/Agora/calling_controller.dart';
 import 'package:matelive/view/utils/auto_size_text.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage>
   final _refreshController = RefreshController(initialRefresh: false);
 
   final _callsController = Get.find<CallsController>();
+  final _callingController = Get.find<CallingController>();
   final _landingPageController = Get.find<LandingPageController>();
   final _notificationsController = Get.find<NotificationsController>();
 
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage>
                               autoSize(
                                 text: "Görüşmeye Başlayın!",
                                 style: styleH3(fontWeight: FontWeight.w600),
-                                padding: 0.05,
+                                paddingRight: 0.05,
                               ),
                               // Text("Görüşmeye Başlayın!",
                               //     style: styleH3(fontWeight: FontWeight.w600)),
@@ -105,21 +107,19 @@ class _HomePageState extends State<HomePage>
                                   fontWeight: FontWeight.w500,
                                 ),
                                 maxLines: 3,
-                                padding: 0.05,
+                                paddingRight: 0.05,
                               ),
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: primaryButton(
-                                  text: Expanded(
-                                    child: autoSize(
-                                      text: "Online Kullanıcıları Göster",
-                                      style: styleH4(
-                                        fontSize: 18,
-                                        color: kWhiteColor,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      padding: 0,
+                                  text: autoSize(
+                                    text: "Online Kullanıcıları Göster",
+                                    style: styleH4(
+                                      fontSize: 18,
+                                      color: kWhiteColor,
+                                      fontWeight: FontWeight.w500,
                                     ),
+                                    paddingRight: 0,
                                   ),
                                   onPressed: () {
                                     Get.to(() => OnlineUsersPage());
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage>
                                 color: kBlackColor,
                                 fontWeight: FontWeight.w500,
                               ),
-                              padding: 0,
+                              paddingRight: 0,
                             ),
                             showProgressIndicator(context),
                           ],
@@ -158,6 +158,7 @@ class _HomePageState extends State<HomePage>
                   if (snapshot.hasData) {
                     if (snapshot.data.keys.first) {
                       info = snapshot.data.values.first;
+                      _callingController.remainingCredit = info.remainingCredit;
                     } else {
                       return Center(
                         child: Text(snapshot.data.values.first),
@@ -179,7 +180,7 @@ class _HomePageState extends State<HomePage>
                                       fontWeight: FontWeight.w600,
                                       color: kBlackColor,
                                     ),
-                                    padding: 0,
+                                    paddingRight: 0,
                                   ),
                             Colors.lightGreen,
                           ),
@@ -194,7 +195,7 @@ class _HomePageState extends State<HomePage>
                                       fontWeight: FontWeight.w600,
                                       color: kBlackColor,
                                     ),
-                                    padding: 0,
+                                    paddingRight: 0,
                                   ),
                             kPrimaryColor,
                           ),
@@ -214,7 +215,7 @@ class _HomePageState extends State<HomePage>
                                       fontWeight: FontWeight.w600,
                                       color: kBlackColor,
                                     ),
-                                    padding: 0,
+                                    paddingRight: 0,
                                   ),
                             Colors.yellow[700],
                           ),
@@ -229,7 +230,7 @@ class _HomePageState extends State<HomePage>
                                       fontWeight: FontWeight.w600,
                                       color: kBlackColor,
                                     ),
-                                    padding: 0,
+                                    paddingRight: 0,
                                   ),
                             Colors.blue[900],
                           ),
@@ -266,7 +267,7 @@ class _HomePageState extends State<HomePage>
                                       text: "GEÇMİŞ GÖRÜŞMELERİNİZ",
                                       style: TextStyle(fontSize: 7),
                                       //     styleH6(fontWeight: FontWeight.w600),
-                                      padding: 0,
+                                      paddingRight: 0,
                                     ),
                                   ),
                                   TextButton(
@@ -280,7 +281,7 @@ class _HomePageState extends State<HomePage>
                                         color: kPrimaryColor,
                                         fontWeight: FontWeight.w500,
                                       ),
-                                      padding: 0,
+                                      paddingRight: 0,
                                     ),
                                   )
                                 ],

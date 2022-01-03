@@ -63,7 +63,7 @@ class NotificationsCard extends StatelessWidget {
                                 color: kPrimaryColor,
                                 fontWeight: FontWeight.w500,
                               ),
-                              padding: 0,
+                              paddingRight: 0,
                             ),
                           ),
                         )
@@ -119,7 +119,7 @@ class NotificationsCard extends StatelessWidget {
                                     : kTextColor,
                                 fontWeight: FontWeight.w500,
                               ),
-                              padding: 0,
+                              paddingRight: 0,
                             ),
                           ),
                         )

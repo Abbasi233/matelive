@@ -51,7 +51,7 @@ class API {
     return false;
   }
 
-  Future<Map<bool, String>> register(Map<String, dynamic> body) async {
+  Future<Map<bool, dynamic>> register(Map<String, dynamic> body) async {
     showProgressDialog();
     Uri url = Uri.parse("$_URL/auth/register");
     http.Response response = await http.post(
@@ -68,9 +68,10 @@ class API {
     print(jsonResponse);
 
     if (response.statusCode < 400) {
-      return {true: jsonResponse["token"].toString()};
+      Login.fromJson(jsonResponse["data"]);
+      return {true: jsonResponse["data"]["token"].toString()};
     }
-    return {false: ""};
+    return {false: jsonResponse["errors"].values.first};
   }
 
   Future<String> sendResetPasswordMail(Map<String, dynamic> body) async {
@@ -645,5 +646,33 @@ class API {
       return true; // Bildirim başarıyla gönderildi.
     }
     return false;
+  }
+
+  Future<Map<bool, dynamic>> contactSend(Map<String, dynamic> body) async {
+    /*
+      {
+          "name":"Hidayet",
+          "email":"info@hidayetarasan.com",
+          "phone":"5555555555",
+          "message":"test"
+      }
+    */
+    Uri url = Uri.parse("$_URL/contact/send");
+    http.Response response = await http.post(
+      url,
+      headers: {
+        "Accept": "Application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "Application/json",
+      },
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["message"]};
+    }
+    return {false: jsonResponse["errors"].values.first};
   }
 }

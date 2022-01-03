@@ -6,11 +6,16 @@ Widget autoSize({
   String text,
   TextSpan textSpan,
   TextStyle style,
-  double padding = 0.2,
+  double paddingRight = 0.2,
+  double paddingVertical = 0,
   int maxLines = 1,
 }) {
   return Padding(
-    padding: EdgeInsets.only(right: Get.width * padding),
+    padding: EdgeInsets.only(
+      right: Get.width * paddingRight,
+      top: paddingVertical,
+      bottom: paddingVertical,
+    ),
     child: text != null
         ? AutoSizeText(
             text,

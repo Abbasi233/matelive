@@ -12,6 +12,8 @@
         android:label="Matelive"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCMm3lhf1I3utG9nODTMtsreHODrpEjprs"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
