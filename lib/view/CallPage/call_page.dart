@@ -89,90 +89,93 @@ class _CallPageState extends State<CallPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: Get.width,
-                  height: Get.height / 5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "${userDetail.name} ${userDetail.surname}",
-                        style: styleH1(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 0),
-                        child: StreamBuilder<int>(
-                          stream: callingController.stopWatchTimer.rawTime,
-                          initialData:
-                              callingController.stopWatchTimer.rawTime.value,
-                          builder: (context, snapshot) {
-                            final value = snapshot.data;
-                            return Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4),
-                                    child: Text(
-                                      value == 0
-                                          ? callingController.isCallerMe
-                                              ? "Aranıyor..."
-                                              : "Sizi Arıyor"
-                                          : StopWatchTimer.getDisplayTime(
-                                              value,
-                                              hours: false,
-                                              milliSecond: false,
-                                            ).toString(),
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        fontFamily: 'Helvetica',
-                                        fontWeight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: Get.width,
+                    height: Get.height / 5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${userDetail.name} ${userDetail.surname}",
+                          style: styleH1(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 0),
+                          child: StreamBuilder<int>(
+                            stream: callingController.stopWatchTimer.rawTime,
+                            initialData:
+                                callingController.stopWatchTimer.rawTime.value,
+                            builder: (context, snapshot) {
+                              final value = snapshot.data;
+                              return Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: Text(
+                                        value == 0
+                                            ? callingController.isCallerMe
+                                                ? "Aranıyor..."
+                                                : "Sizi Arıyor"
+                                            : StopWatchTimer.getDisplayTime(
+                                                value,
+                                                hours: false,
+                                                milliSecond: false,
+                                              ).toString(),
+                                        style: const TextStyle(
+                                          fontSize: 30,
+                                          fontFamily: 'Helvetica',
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
+                                ],
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                CachedNetworkImage(
-                  imageUrl: userDetail.image,
-                  imageBuilder: (context, provider) => CircleAvatar(
-                    radius: Get.width / 3,
-                    foregroundImage: provider,
-                  ),
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Center(
-                    child: CircularProgressIndicator(
-                      value: downloadProgress.progress,
-                      color: kPrimaryColor,
+                      ],
                     ),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              ],
+                  CachedNetworkImage(
+                    imageUrl: userDetail.image,
+                    imageBuilder: (context, provider) => CircleAvatar(
+                      radius: Get.width / 3,
+                      foregroundImage: provider,
+                    ),
+                    progressIndicatorBuilder: (context, url, downloadProgress) =>
+                        Center(
+                      child: CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Obx(
-            () => callingController.isCallerMe || callAccepted.value
-                ? onConversationButtons()
-                : onCallReceiveButtons(),
-          ),
-        ],
+            Obx(
+              () => callingController.isCallerMe || callAccepted.value
+                  ? onConversationButtons()
+                  : onCallReceiveButtons(),
+            ),
+          ],
+        ),
       ),
     );
   }

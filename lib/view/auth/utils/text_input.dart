@@ -11,6 +11,7 @@ Widget textInput({
   return TextFormField(
     style: styleH4(),
     maxLines: maxLines,
+    keyboardType: TextInputType.emailAddress,
     controller: controller,
     cursorColor: kPrimaryColor,
     decoration: InputDecoration(
