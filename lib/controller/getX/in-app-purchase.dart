@@ -39,8 +39,9 @@ class IAPController extends GetxController {
           // normalSnackbar("Purchase Pending");
         } else {
           if (purchaseDetails.status == PurchaseStatus.error) {
+            print(purchaseDetails.error);
             failureSnackbar(
-                "Purchase Error. " + purchaseDetails.error.toString());
+                "Ürün satın alınırken bir sorun oluştu.\n" + purchaseDetails.error.toString());
           } else if (purchaseDetails.status == PurchaseStatus.purchased ||
               purchaseDetails.status == PurchaseStatus.restored) {
             var result = await API().buyCredit(Login().token, requestBody);

@@ -14,7 +14,7 @@ void successSnackbar(String content) {
   );
 }
 
-void failureSnackbar(String content) {
+void failureSnackbar(String content, {int timeout = 3}) {
   Get.snackbar(
     "İşlem Başarısız",
     content,
@@ -22,6 +22,7 @@ void failureSnackbar(String content) {
     colorText: Colors.white,
     snackPosition: SnackPosition.BOTTOM,
     margin: EdgeInsets.all(10),
+    duration: Duration(seconds: timeout),
   );
 }
 

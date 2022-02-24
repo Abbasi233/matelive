@@ -5,7 +5,7 @@ import '/constant.dart';
 import '/model/credit.dart';
 import 'utils/packageCard.dart';
 import '/view/utils/footer.dart';
-import '/controller/in-app-purchase.dart';
+import '../../controller/getX/in-app-purchase.dart';
 
 class CreditsPage extends StatefulWidget {
   @override

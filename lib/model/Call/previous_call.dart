@@ -27,7 +27,7 @@ class PreviousCall {
         caller: Person.fromJson(json["caller"]),
         answerer: Person.fromJson(json["answerer"]),
         callStartedAt: json["call_started_at"] == null
-            ? null
+            ? DateTime.parse(json["created_at"])
             : DateTime.parse(json["call_started_at"]),
         callEndedAt: json["call_ended_at"] == null
             ? null

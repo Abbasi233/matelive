@@ -6,11 +6,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
 import '/model/user_detail.dart';
 import '/view/utils/appBar.dart';
 import '/view/utils/footer.dart';
+import '/view/utils/snackbar.dart';
 import '/model/profile_detail.dart';
 import '/view/utils/show_image.dart';
+import '/view/UserPage/utils/block_dialog.dart';
+import '/view/UserPage/utils/report_dialog.dart';
 import '/controller/getX/Agora/calling_controller.dart';
 
 class UserDetailPage extends StatefulWidget {
@@ -50,89 +55,155 @@ class _UserDetailPageState extends State<UserDetailPage> {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20),
               color: Colors.grey[300],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Stack(
                 children: [
-                  GestureDetector(
-                    child: CachedNetworkImage(
-                      imageUrl: userDetail.image,
-                      imageBuilder: (context, provider) => CircleAvatar(
-                        radius: Get.width * 0.15,
-                        foregroundImage: provider,
-                      ),
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Center(
-                              child: CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                        color: kPrimaryColor,
-                      )),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    onTap: () {
-                      Get.dialog(showImage(imageUrl: userDetail.image));
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        "${userDetail.name} ${userDetail.surname}",
-                        style: styleH3().copyWith(),
+                      GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: userDetail.image,
+                          imageBuilder: (context, provider) => CircleAvatar(
+                            radius: Get.width * 0.15,
+                            foregroundImage: provider,
+                          ),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                                  child: CircularProgressIndicator(
+                            value: downloadProgress.progress,
+                            color: kPrimaryColor,
+                          )),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                        onTap: () {
+                          Get.dialog(showImage(imageUrl: userDetail.image));
+                        },
                       ),
-                      userDetail.emailVerified
-                          ? Icon(
-                              Icons.verified,
-                              color: Colors.blue,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "${userDetail.name} ${userDetail.surname}",
+                            style: styleH3().copyWith(),
+                          ),
+                          userDetail.emailVerified
+                              ? Icon(
+                                  Icons.verified,
+                                  color: Colors.blue,
+                                )
+                              : Container(),
+                        ],
+                      ),
+                      Html(
+                        data: "<p>${userDetail.description}<p>",
+                        style: {
+                          "p": Style(
+                            fontSize: FontSize.larger,
+                            color: kTextColor,
+                            // fontWeight: FontWeight.w600,
+                            textAlign: TextAlign.center,
+                          ),
+                        },
+                      ),
+                      Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: userDetail.isOnline
+                                ? kPrimaryColor
+                                : kTextColor,
+                            borderRadius: BorderRadius.circular(30)),
+                        width: Get.width * 0.50,
+                        child: InkWell(
+                          child: Center(
+                            child: AutoSizeText(
+                              userDetail.id == ProfileDetail().id
+                                  ? "Kendi Profiliniz"
+                                  : userDetail.isOnline
+                                      ? "Şu An Çevrimiçi"
+                                      : "Şu An Çevrimdışı",
+                              style: styleH4(
+                                  color: kWhiteColor,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          onTap: () {
+                            if (userDetail.isOnline) {
+                              callingController.createCall(userDetail);
+                            }
+                          },
+                        ),
+                      ),
+                      fixedHeight,
+                      userDetail?.userPermissions?.socialMedias == null ||
+                              userDetail.userPermissions.socialMedias == false
+                          ? Center(
+                              child: notHavePermission(),
                             )
-                          : Container(),
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: socialMediaButtons(),
+                            ),
                     ],
                   ),
-                  Html(
-                    data: "<p>${userDetail.description}<p>",
-                    style: {
-                      "p": Style(
-                        fontSize: FontSize.larger,
-                        color: kTextColor,
-                        // fontWeight: FontWeight.w600,
-                        textAlign: TextAlign.center,
-                      ),
-                    },
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: userDetail.isOnline ? kPrimaryColor : kTextColor,
-                        borderRadius: BorderRadius.circular(30)),
-                    width: Get.width * 0.50,
-                    child: InkWell(
-                      child: Center(
-                        child: AutoSizeText(
-                          userDetail.id == ProfileDetail().id
-                              ? "Kendi Profiliniz"
-                              : userDetail.isOnline
-                                  ? "Şu An Çevrimiçi"
-                                  : "Şu An Çevrimdışı",
-                          style: styleH4(
-                              color: kWhiteColor, fontWeight: FontWeight.w400),
+                  Positioned(
+                    top: 0,
+                    right: 5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.report),
+                          onPressed: () async {
+                            var dialogResult = await Get.dialog(ReportDialog());
+
+                            if (dialogResult != null) {
+                              var map = {
+                                "spam_user_id": userDetail.id,
+                                "message": dialogResult,
+                              };
+
+                              print(map);
+                              var result = await API().reportUser(
+                                Login().token,
+                                map,
+                              );
+
+                              if (result.keys.first) {
+                                successSnackbar(result.values.first);
+                              } else {
+                                failureSnackbar(result.values.first);
+                              }
+                            }
+                          },
                         ),
-                      ),
-                      onTap: () {
-                        if (userDetail.isOnline) {
-                          callingController.createCall(userDetail);
-                        }
-                      },
+                        IconButton(
+                          icon: Icon(Icons.block_outlined),
+                          onPressed: () async {
+                            var dialogResult = await Get.dialog(BlockDialog());
+
+                            if (dialogResult != null && dialogResult) {
+                              var map = {
+                                "type": 5,
+                                "related_user_id": userDetail.id,
+                              };
+                              var result = await API().setAction(
+                                Login().token,
+                                map,
+                              );
+
+                              if (result.keys.first) {
+                                Get.back();
+                                successSnackbar(result.values.first);
+                              } else {
+                                failureSnackbar(result.values.first);
+                              }
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  fixedHeight,
-                  userDetail?.userPermissions?.socialMedias == null ||
-                          userDetail.userPermissions.socialMedias == false
-                      ? Center(
-                          child: notHavePermission(),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: socialMediaButtons(),
-                        ),
                 ],
               ),
             ),

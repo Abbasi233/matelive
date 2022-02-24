@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/LandingPage/contact_page/contact_page.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pusher_client/pusher_client.dart';
 
 import '/constant.dart';
@@ -45,24 +45,6 @@ class _LandingPageState extends State<LandingPage>
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        // floatingActionButton: Column(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     FloatingActionButton(
-        //       heroTag: "1",
-        //       onPressed: () {
-        //         _callingController.playSound(_callingController.callingSound);
-        //         Get.to(() => ContactPage());
-        //       },
-        //     ),
-        //     FloatingActionButton(
-        //       heroTag: "2",
-        //       onPressed: () {
-        //         _callingController.stopSound();
-        //       },
-        //     ),
-        //   ],
-        // ),
         key: _landingPageController.scaffoldKey,
         appBar: MyAppBar(
           elevation: 2,
@@ -123,6 +105,10 @@ class _LandingPageState extends State<LandingPage>
 
     pusher.onConnectionError((error) {
       log("error: ${error.exception}");
+      failureSnackbar(
+        "Sunucuya bağlanırken bir sorun oluştu. Lütfen uygulamayı yeniden başlatınız.",
+        timeout: 10,
+      );
     });
     pusher.connect();
 

@@ -44,6 +44,7 @@ class NotificationsCard extends StatelessWidget {
                     child: autoSize(
                       text: "BİLDİRİMLER",
                       style: styleH5(fontWeight: FontWeight.w600),
+                      paddingRight: 0,
                     ),
                   ),
                   // Text(

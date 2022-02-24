@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -39,6 +40,7 @@ class CallingController extends GetxController {
   CallResult callResult = CallResult();
   StopWatchTimer stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
 
+  int sayac = 0;
   StreamSubscription<int> listenSeconds;
 
   Map<String, String> callStatus = {
@@ -79,14 +81,15 @@ class CallingController extends GetxController {
 
   void actionByRequestStatus(String status, dynamic actionerDetails) {
     if (status == callStatus["accepted"]) {
+      log("isCallerMe $isCallerMe");
       if (isCallerMe) {
         listenSeconds =
             stopWatchTimer.secondTime.listen(calculateRemainingTime);
       }
       stopWatchTimer.onExecute.add(StopWatchExecute.start);
     } else if (status == callStatus["declined_by_caller"]) {
-      stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-      stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+      resetTimer();
+      
       if (screenClosed) {
         screenClosed = false;
         Get.back(); // for closing screen close dialog
@@ -100,6 +103,8 @@ class CallingController extends GetxController {
             "Arama ${actionerDetails['name']} tarafından iptal edilmiştir.");
       }
     } else if (status == callStatus["declined_by_answerer"]) {
+      resetTimer();
+      
       if (screenClosed) {
         screenClosed = false;
         Get.back(); // for closing screen close dialog
@@ -165,9 +170,6 @@ class CallingController extends GetxController {
         failureSnackbar(apiResult.values.first);
       }
     }
-
-    // callingController.stopwatch.value.start();
-    // Get.to(() => CallPage(userDetail));
   }
 
   Future<void> startCall() async {
@@ -187,7 +189,21 @@ class CallingController extends GetxController {
     }
   }
 
-  void finishCall(int reasonerId, String endReason) async {
+  Future<void> acceptCall() async {
+    var acceptCallBody = {"action": actions["accepted"]};
+
+    var apiResult = await API().callAction(
+      Login().token,
+      callResult.webcall.id,
+      acceptCallBody,
+    );
+
+    if (!apiResult.keys.first) {
+      failureSnackbar(apiResult.values.first);
+    }
+  }
+
+  Future<void> finishCall(int reasonerId, String endReason) async {
     stopWatchTimer.onExecute.add(StopWatchExecute.stop);
 
     if (reasonerId == ProfileDetail().id) {
@@ -212,20 +228,7 @@ class CallingController extends GetxController {
     }
 
     stopWatchTimer.onExecute.add(StopWatchExecute.reset);
-  }
-
-  Future<void> acceptCall() async {
-    var declineCallBody = {"action": actions["accepted"]};
-
-    var apiResult = await API().callAction(
-      Login().token,
-      callResult.webcall.id,
-      declineCallBody,
-    );
-
-    if (!apiResult.keys.first) {
-      failureSnackbar(apiResult.values.first);
-    }
+    listenSeconds?.cancel();
   }
 
   void declineCall(String action) async {
@@ -246,18 +249,24 @@ class CallingController extends GetxController {
     audioPlayer = await audioCache.loop(file);
   }
 
-  void stopSound() {
-    audioPlayer.stop();
+  void stopSound() async {
+    await audioPlayer.stop();
   }
 
   void calculateRemainingTime(int time) async {
-    print("RemainingCredit: $remainingCredit");
+    print("Kalan Kredi: $remainingCredit");
 
     if (remainingCredit > 0) {
       remainingCredit--;
     } else {
-      await listenSeconds.cancel();
-      finishCall(ProfileDetail().id, "user_credit");
+      // await listenSeconds?.cancel();
+      await finishCall(ProfileDetail().id, "user_credit");
     }
+  }
+
+  void resetTimer() {
+    stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+    stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+    listenSeconds?.cancel();
   }
 }

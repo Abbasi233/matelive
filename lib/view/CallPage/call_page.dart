@@ -52,12 +52,14 @@ class _CallPageState extends State<CallPage>
     super.initState();
     callAccepted = false.obs;
     userDetail = widget.userDetail;
+    callingController.speakerState(false);
+    callingController.microphoneState(false);
 
     initAgora();
     listenSensor();
 
     if (callingController.isCallerMe) {
-      timeout = Timer(Duration(seconds: 10), () {
+      timeout = Timer(Duration(seconds: 15), () {
         if (!callingController.stopWatchTimer.isRunning) {
           callingController.declineCall("not_answered");
         }
@@ -79,9 +81,10 @@ class _CallPageState extends State<CallPage>
     timeout?.cancel();
     await engine?.leaveChannel();
     await engine?.destroy();
-    _proximityStreamSubscription.cancel();
 
-    // _controller.dispose();
+    callingController.stopSound();
+    callingController.resetTimer();
+    _proximityStreamSubscription?.cancel();
   }
 
   @override

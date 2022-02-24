@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:matelive/view/auth/utils/policy_page.dart';
 import 'package:matelive/view/utils/primaryButton.dart';
 
 import '/constant.dart';
@@ -10,7 +11,8 @@ import '/view/utils/snackbar.dart';
 import '/view/auth/email_confirm_page.dart';
 
 class SignUpPage extends StatelessWidget {
-  final _policies = false.obs;
+  final _userPolicy = false.obs;
+  final _secretPolicy = false.obs;
   final _formKey = GlobalKey<FormState>();
 
   final _adController = TextEditingController();
@@ -111,22 +113,80 @@ class SignUpPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Checkbox(
-                      value: _policies.value,
-                      onChanged: (value) => _policies.value = value,
+                      value: _userPolicy.value,
+                      onChanged: (value) => _userPolicy.value = value,
                       fillColor: MaterialStateProperty.all(kPrimaryColor),
                     ),
                     Expanded(
-                      child: AutoSizeText(
-                        "Sözleşmeleri okudum, onaylıyorum.",
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: InkWell(
+                                child: Text(
+                                  "Kullanıcı sözleşmesini ",
+                                  style: styleH4(color: kPrimaryColor),
+                                ),
+                                onTap: () {
+                                  Get.to(
+                                    () => PolicyPage(
+                                      "assets/documents/user_policy.pdf",
+                                      "Kullanıcı Sözleşmesi",
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            TextSpan(text: "okudum, onaylıyorum."),
+                          ],
+                        ),
                         style: styleH4(),
-                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Obx(
+                () => Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Checkbox(
+                      value: _secretPolicy.value,
+                      onChanged: (value) => _secretPolicy.value = value,
+                      fillColor: MaterialStateProperty.all(kPrimaryColor),
+                    ),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: InkWell(
+                                child: Text(
+                                  "Gizlilik ve güvenlik politikasını",
+                                  style: styleH4(color: kPrimaryColor),
+                                ),
+                                onTap: () {
+                                  Get.to(
+                                    () => PolicyPage(
+                                      "assets/documents/privacy_policy.pdf",
+                                      "Gizlilik ve Güvenlik Politikası",
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            TextSpan(text: "okudum, onaylıyorum."),
+                          ],
+                        ),
+                        style: styleH4(),
                       ),
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: Get.size.width * 0.4),
+                padding: EdgeInsets.only(top: 20, right: Get.size.width * 0.4),
                 child: primaryButton(
                   text: AutoSizeText(
                     'Kaydol',
@@ -135,7 +195,7 @@ class SignUpPage extends StatelessWidget {
                   imageIcon: Icon(Icons.person),
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                      if (_policies.value) {
+                      if (_secretPolicy.value) {
                         var body = {
                           "name": _adController.text,
                           "surname": _soyadController.text,

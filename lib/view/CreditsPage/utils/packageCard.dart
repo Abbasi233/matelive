@@ -7,7 +7,7 @@ import '/model/login.dart';
 import '/model/credit.dart';
 import '/model/profile_detail.dart';
 import '/view/utils/primaryButton.dart';
-import '/controller/in-app-purchase.dart';
+import '../../../controller/getX/in-app-purchase.dart';
 import '/view/CreditsPage/utils/base64.dart';
 
 Widget creditCard({Credit credit, bool mostPopuler = false}) => Container(
@@ -46,8 +46,9 @@ Widget creditCard({Credit credit, bool mostPopuler = false}) => Container(
               ),
               SizedBox(height: 5),
               Text(
-                credit.price.split(String.fromCharCode(160))[1] + " TL",
-                style: styleH1(
+                credit.price, //.split(String.fromCharCode(160))[1] + " TL",
+                style: TextStyle(
+                  fontFamily: "Roboto",
                   fontSize: 40,
                   fontWeight: FontWeight.w600,
                   color: kBlackColor,

@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:matelive/view/ProfilePage/utils/delete_account_dialog.dart';
+import 'package:matelive/view/auth/sign_in_page.dart';
+import 'package:matelive/view/utils/primaryButton.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -160,38 +163,10 @@ class _ProfilePageState extends State<ProfilePage>
                                 "p": Style(
                                   fontSize: FontSize.larger,
                                   color: kTextColor,
-                                  // fontWeight: FontWeight.w600,
                                   textAlign: TextAlign.center,
                                 ),
                               },
                             ),
-                            // TextSpan(
-                            //   text: "Toplam Başarılı Görüşme Sayısı: ",
-                            //   style: styleH5(),
-                            //   children: [
-                            //     TextSpan(
-                            //       text: "0",
-                            //       style: styleH4(
-                            //           color: kBlackColor,
-                            //           fontWeight: FontWeight.w600),
-                            //     ),
-                            //   ],
-                            // )
-                            // Container(
-                            //   height: 50,
-                            //   decoration: BoxDecoration(
-                            //       color: kPrimaryColor,
-                            //       borderRadius: BorderRadius.circular(30)),
-                            //   width: Get.width * 0.50,
-                            //   child: Center(
-                            //     child: AutoSizeText(
-                            //       "Şu An Çevrimiçi",
-                            //       style: styleH4(
-                            //           color: kWhiteColor,
-                            //           fontWeight: FontWeight.w400),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -371,6 +346,35 @@ class _ProfilePageState extends State<ProfilePage>
                             AccountInfoCard(),
                             fixedHeight,
                             ChangePasswordCard(),
+                            fixedHeight,
+                            primaryButton(
+                              text: Text("Hesabımı Sil"),
+                              backgroundColor: Colors.red,
+                              imageIcon: Icon(Icons.delete),
+                              onPressed: () async {
+                                var dialogResult =
+                                    await Get.dialog(DeleteAccountDialog());
+
+                                if (dialogResult != null) {
+                                  var map = {
+                                    "password": dialogResult,
+                                  };
+
+                                  print(map);
+                                  var result = await API().deleteAccount(
+                                    Login().token,
+                                    map,
+                                  );
+
+                                  if (result.keys.first) {
+                                    Get.offAll(() => SignInPage());
+                                    successSnackbar(result.values.first);
+                                  } else {
+                                    failureSnackbar(result.values.first);
+                                  }
+                                }
+                              },
+                            ),
                             fixedHeight,
                             footer(),
                           ],

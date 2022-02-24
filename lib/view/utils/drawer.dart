@@ -2,8 +2,10 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:matelive/view/LandingPage/about_page/about_page.dart';
+import 'package:matelive/view/LandingPage/blocks_page/blocks_page.dart';
 import 'package:matelive/view/LandingPage/contact_page/contact_page.dart';
 import 'package:matelive/view/LandingPage/faq_page/faq_page.dart';
+import 'package:matelive/view/auth/utils/policy_page.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
@@ -38,8 +40,23 @@ class MyDrawer {
             _listTile(Text("Beğenmeler"), ActionsPage("Beğenmeler", "3")),
             _listTile(Text("Dürtmeler"), ActionsPage("Dürtmeler", "4")),
             _listTile(Text("Favoriler"), FavoritesPage()),
+            _listTile(Text("Engellenenler"), BlocksPage()),
             _listTile(Text("Hakkımızda"), AboutPage()),
             _listTile(Text("İletişim"), ContactPage()),
+            _listTile(
+              Text("Kullanıcı Sözleşmesi"),
+              PolicyPage(
+                "assets/documents/user_policy.pdf",
+                "Kullanıcı Sözleşmesi",
+              ),
+            ),
+            _listTile(
+              Text("Gizlilik Politikası"),
+              PolicyPage(
+                "assets/documents/privacy_policy.pdf",
+                "Gizlilik ve Güvenlik Politikası",
+              ),
+            ),
             _listTile(Text("S.S.S."), FaqPage()),
             Divider(),
             SizedBox(height: 10),

@@ -128,9 +128,10 @@ Widget userCard(
                                     },
                                   );
 
-                                  if (result) {
-                                    successSnackbar(
-                                        "Kullanıcı dürtme işlemi başarılı!");
+                                  if (result.keys.first) {
+                                    successSnackbar(result.values.first);
+                                  } else {
+                                    failureSnackbar(result.values.first);
                                   }
                                 },
                               ),
@@ -154,9 +155,10 @@ Widget userCard(
                                     },
                                   );
 
-                                  if (result) {
-                                    successSnackbar(
-                                        "Kullanıcı beğenme işlemi başarılı!");
+                                  if (result.keys.first) {
+                                    successSnackbar(result.values.first);
+                                  } else {
+                                    failureSnackbar(result.values.first);
                                   }
                                 },
                               ),
@@ -180,9 +182,10 @@ Widget userCard(
                                     },
                                   );
 
-                                  if (result) {
-                                    successSnackbar(
-                                        "Kullanıcıyı favoriye alma işlemi başarılı!");
+                                  if (result.keys.first) {
+                                    successSnackbar(result.values.first);
+                                  } else {
+                                    failureSnackbar(result.values.first);
                                   }
                                 },
                               ),

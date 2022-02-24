@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:matelive/controller/getX/Agora/calling_controller.dart';
 import 'package:matelive/view/utils/auto_size_text.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

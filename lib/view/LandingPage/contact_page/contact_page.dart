@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:matelive/constant.dart';
-import 'package:matelive/controller/api.dart';
-import 'package:matelive/view/auth/utils/text_input.dart';
 
-import 'package:matelive/view/utils/appBar.dart';
-import 'package:matelive/view/utils/auto_size_text.dart';
-import 'package:matelive/view/utils/footer.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
-import 'package:matelive/view/utils/snackbar.dart';
+import '/constant.dart';
+import '/controller/api.dart';
+import '/view/utils/appBar.dart';
+import '/view/utils/footer.dart';
+import '/view/utils/snackbar.dart';
+import '/view/utils/primaryButton.dart';
+import '/view/utils/auto_size_text.dart';
+import '/view/auth/utils/text_input.dart';
 
 class ContactPage extends StatelessWidget {
   ContactPage({Key key}) : super(key: key);

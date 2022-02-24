@@ -187,11 +187,12 @@ class API {
     return {false: jsonResponse["message"]};
   }
 
-  Future<bool> setAction(String token, dynamic body) async {
+  Future<Map<bool, String>> setAction(String token, dynamic body) async {
     // 'actions' => [
     //     'favorite' => 2,
     //     'like' => 3,
     //     'snooze' => 4,
+    //     'block' => 5,
     // ],
     Uri url = Uri.parse("$_URL/auth-user/action");
     http.Response response = await http.post(
@@ -203,9 +204,25 @@ class API {
     print(jsonResponse);
 
     if (response.statusCode < 400) {
-      return true;
+      return {true: jsonResponse["message"]};
     }
-    return false;
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, String>> deleteAccount(String token, dynamic body) async {
+    Uri url = Uri.parse("$_URL/auth-user/delete-account");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["message"]};
+    }
+    return {false: jsonResponse["message"]};
   }
 
   Future<Map<bool, dynamic>> getActions(String token, String type) async {
@@ -230,6 +247,21 @@ class API {
 
   Future<Map<bool, dynamic>> getFavorites(String token) async {
     Uri url = Uri.parse("$_URL/auth-user/favorite-users");
+    http.Response response = await http.get(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: PagedResponse.fromJson(jsonResponse, UserDetail)};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> getBlockedUsers(String token) async {
+    Uri url = Uri.parse("$_URL/auth-user/blocked-users");
     http.Response response = await http.get(
       url,
       headers: _getHeader(token),
@@ -478,6 +510,23 @@ class API {
     return jsonResponse["message"];
   }
 
+  Future<Map<bool, dynamic>> reportUser(
+      String token, Map<String, dynamic> body) async {
+    Uri url = Uri.parse("$_URL/users/notify-as-spam");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["message"]};
+    }
+    return {true: jsonResponse["message"]};
+  }
+
   ////////////////////////////////////////////////////
   /// CALLING
   ////////////////////////////////////////////////////
@@ -574,7 +623,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    print("FinishCall: $jsonResponse");
 
     if (response.statusCode < 400) {
       return {true: CallResult.fromJson(jsonResponse)};
