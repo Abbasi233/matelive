@@ -49,6 +49,7 @@ class _LandingPageState extends State<LandingPage>
         appBar: MyAppBar(
           elevation: 2,
           centerTitle: true,
+          action: Obx(() => _landingPageController.getPusherConState),
         ),
         drawer: MyDrawer.build(),
         body: TabBarView(
@@ -101,6 +102,19 @@ class _LandingPageState extends State<LandingPage>
 
     pusher.onConnectionStateChange((state) {
       log("previousState: ${state.previousState}, currentState: ${state.currentState}");
+
+      switch (state.currentState) {
+        case "DISCONNECTED":
+          _landingPageController.pusherConStates.value = ConStates.DISCONNECTED;
+          break;
+        case "CONNECTING":
+          _landingPageController.pusherConStates.value = ConStates.CONNECTING;
+          break;
+        case "CONNECTED":
+          _landingPageController.pusherConStates.value = ConStates.CONNECTED;
+          break;
+        default:
+      }
     });
 
     pusher.onConnectionError((error) {

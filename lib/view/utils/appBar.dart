@@ -10,6 +10,7 @@ class MyAppBar extends AppBar {
     double elevation = 4,
     PreferredSizeWidget bottom,
     Widget leading,
+    Widget action,
   }) : super(
           backgroundColor: kWhiteColor,
           centerTitle: centerTitle,
@@ -18,14 +19,7 @@ class MyAppBar extends AppBar {
                 "assets/images/logo.png",
                 width: Get.width * 0.4,
               ),
-          // actions: [
-          //         IconButton(
-          //           onPressed: () {
-          //             Get.find<LandingPageController>().openDrawer();
-          //           },
-          //           icon: Icon(Icons.menu),
-          //         )
-          //       ],
+          actions: [action != null ? action : Container()],
           elevation: elevation,
           bottom: bottom,
           leading: leading,
