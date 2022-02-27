@@ -4,6 +4,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:matelive/view/LandingPage/about_page/about_page.dart';
 import 'package:matelive/view/LandingPage/blocks_page/blocks_page.dart';
 import 'package:matelive/view/LandingPage/contact_page/contact_page.dart';
+import 'package:matelive/view/LandingPage/controller.dart';
 import 'package:matelive/view/LandingPage/faq_page/faq_page.dart';
 import 'package:matelive/view/auth/utils/policy_page.dart';
 
@@ -32,6 +33,7 @@ class MyDrawer {
   }
 
   static Widget build() {
+    var landingPageController = Get.find<LandingPageController>();
     return Drawer(
       child: SafeArea(
         child: Column(
@@ -58,6 +60,9 @@ class MyDrawer {
               ),
             ),
             _listTile(Text("S.S.S."), FaqPage()),
+            Obx(() => Text("v"+landingPageController.appVersion.value +
+                "." +
+                landingPageController.appBuildNumber.value)),
             Divider(),
             SizedBox(height: 10),
             primaryButton(

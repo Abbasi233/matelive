@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 enum ConStates {
   DISCONNECTED,
@@ -11,7 +12,20 @@ class LandingPageController extends GetxController {
   TabController tabController;
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
+  RxString appVersion = "".obs;
+  RxString appBuildNumber = "".obs;
+
   var pusherConStates = ConStates.DISCONNECTED.obs;
+
+  @override
+  void onInit() {
+    PackageInfo.fromPlatform().then((packageInfo) {
+      appVersion.value = packageInfo.version;
+      appBuildNumber.value = packageInfo.buildNumber;
+    });
+
+    super.onInit();
+  }
 
   Widget get getPusherConState {
     Widget child;
