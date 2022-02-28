@@ -31,15 +31,34 @@ class LandingPageController extends GetxController {
     Widget child;
     switch (pusherConStates.value) {
       case ConStates.DISCONNECTED:
-        child = Icon(Icons.swap_vertical_circle_rounded, color: Colors.red);
+        child = Tooltip(
+          message: "Sunucuya bağlı değil",
+          triggerMode: TooltipTriggerMode.tap,
+          child: Icon(
+            Icons.swap_vertical_circle_rounded,
+            color: Colors.red,
+          ),
+        );
         break;
       case ConStates.CONNECTING:
-        child =
-            Icon(Icons.swap_vertical_circle_rounded, color: Colors.yellow[700]);
+        child = Tooltip(
+          message: "Sunucuya bağlanıyor...",
+          triggerMode: TooltipTriggerMode.tap,
+          child: Icon(
+            Icons.swap_vertical_circle_rounded,
+            color: Colors.yellow[700],
+          ),
+        );
         break;
       case ConStates.CONNECTED:
-        child = Icon(Icons.swap_vertical_circle_rounded,
-            color: Colors.lightGreen[700]);
+        child = Tooltip(
+          message: "Sunucuya bağlı",
+          triggerMode: TooltipTriggerMode.tap,
+          child: Icon(
+            Icons.swap_vertical_circle_rounded,
+            color: Colors.lightGreen[700],
+          ),
+        );
         break;
     }
 
