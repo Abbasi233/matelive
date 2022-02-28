@@ -118,13 +118,20 @@ class _AccountInfoCardState extends State<AccountInfoCard> {
                   MyText('Doğum Tarihiniz'),
                   GestureDetector(
                     onTap: () async {
+                      DateTime lastDate = DateTime.now().subtract(
+                        Duration(days: 365 * 18),
+                      );
+
+                      DateTime initialDate = dogumController.text == "" ||
+                              dogumController.text == null
+                          ? lastDate
+                          : dogumController.text.formatToDate();
+
                       var result = await Get.dialog(
                         DatePickerDialog(
-                          initialDate: dogumController.text.formatToDate(),
+                          initialDate: initialDate,
                           firstDate: DateTime(1960),
-                          lastDate: DateTime.now().subtract(
-                            Duration(days: 365 * 18),
-                          ),
+                          lastDate: lastDate,
                         ),
                       );
 
