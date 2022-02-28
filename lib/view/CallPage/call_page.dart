@@ -82,7 +82,7 @@ class _CallPageState extends State<CallPage>
     await engine?.leaveChannel();
     await engine?.destroy();
 
-    callingController.stopSound();
+    await callingController.stopSound();
     callingController.resetTimer();
     _proximityStreamSubscription?.cancel();
   }
@@ -157,8 +157,8 @@ class _CallPageState extends State<CallPage>
                       radius: Get.width / 3,
                       foregroundImage: provider,
                     ),
-                    progressIndicatorBuilder: (context, url, downloadProgress) =>
-                        Center(
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Center(
                       child: CircularProgressIndicator(
                         value: downloadProgress.progress,
                         color: kPrimaryColor,
@@ -211,16 +211,14 @@ class _CallPageState extends State<CallPage>
           warning: (warningCode) {
             print(warningCode.toString());
           },
-          rtcStats: (stats) {
-            log("User Count: ${stats.userCount}");
-          },
+          // rtcStats: (stats) {
+          //   log("User Count: ${stats.userCount}");
+          // },
           connectionStateChanged: (state, reason) {
             log("Connection Changed : ${state.toString()}, ${reason.toString()}");
           },
           joinChannelSuccess: (String channel, int uid, int elapsed) {
             log('joinChannelSuccess $channel $uid');
-            // Get.snackbar(
-            //     "Bağlantı Başarılı", "Artık görüşmeye başlayabilirsiniz.");
           },
           userJoined: (int uid, int elapsed) {
             log('userJoined $uid');
@@ -273,6 +271,7 @@ class _CallPageState extends State<CallPage>
               ],
             ),
             onPressed: () async {
+              await callingController.stopSound();
               await callingController.startCall();
               await callingController.acceptCall();
               await joinChannel();
@@ -290,8 +289,9 @@ class _CallPageState extends State<CallPage>
                 Text("Reddet"),
               ],
             ),
-            onPressed: () {
-              callingController.declineCall("declined_by_answerer");
+            onPressed: () async {
+              await callingController.stopSound();
+              await callingController.declineCall("declined_by_answerer");
             },
             height: 70,
           ),

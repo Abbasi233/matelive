@@ -79,7 +79,9 @@ class CallingController extends GetxController {
     playSound(receivingSound);
   }
 
-  void actionByRequestStatus(String status, dynamic actionerDetails) {
+  void actionByRequestStatus(String status, dynamic actionerDetails) async {
+    await stopSound();
+
     if (status == callStatus["accepted"]) {
       log("isCallerMe $isCallerMe");
       if (isCallerMe) {
@@ -89,7 +91,7 @@ class CallingController extends GetxController {
       stopWatchTimer.onExecute.add(StopWatchExecute.start);
     } else if (status == callStatus["declined_by_caller"]) {
       resetTimer();
-      
+
       if (screenClosed) {
         screenClosed = false;
         Get.back(); // for closing screen close dialog
@@ -104,7 +106,7 @@ class CallingController extends GetxController {
       }
     } else if (status == callStatus["declined_by_answerer"]) {
       resetTimer();
-      
+
       if (screenClosed) {
         screenClosed = false;
         Get.back(); // for closing screen close dialog
@@ -128,8 +130,6 @@ class CallingController extends GetxController {
             "Gelen aramaya cevap vermediğiniz için arama iptal edilmiştir.");
       }
     }
-
-    stopSound();
   }
 
   void createCall(UserDetail userDetail) async {
@@ -228,10 +228,10 @@ class CallingController extends GetxController {
     }
 
     stopWatchTimer.onExecute.add(StopWatchExecute.reset);
-    listenSeconds?.cancel();
+    await listenSeconds?.cancel();
   }
 
-  void declineCall(String action) async {
+  Future<void> declineCall(String action) async {
     var declineCallBody = {"action": actions[action]};
 
     var apiResult = await API().callAction(
@@ -249,12 +249,14 @@ class CallingController extends GetxController {
     audioPlayer = await audioCache.loop(file);
   }
 
-  void stopSound() async {
-    await audioPlayer.stop();
+  Future<void> stopSound() async {
+    if (audioPlayer.state == PlayerState.PLAYING) {
+      await audioPlayer.stop();
+    }
   }
 
   void calculateRemainingTime(int time) async {
-    print("Kalan Kredi: $remainingCredit");
+    log("Kalan Kredi: $remainingCredit");
 
     if (remainingCredit > 0) {
       remainingCredit--;
