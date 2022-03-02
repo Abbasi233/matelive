@@ -1,14 +1,15 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:matelive/view/auth/utils/policy_page.dart';
-import 'package:matelive/view/utils/primaryButton.dart';
 
 import '/constant.dart';
 import '/controller/api.dart';
 import 'utils/text_input.dart';
 import '/view/utils/snackbar.dart';
-import '/view/auth/email_confirm_page.dart';
+import '/view/utils/primaryButton.dart';
+import '/view/auth/utils/policy_page.dart';
+// // import '/view/auth/email_confirm_page.dart';
+// // import 'package:matelive/view/auth/sign_in_page.dart';
 
 class SignUpPage extends StatelessWidget {
   final _userPolicy = false.obs;
@@ -210,11 +211,12 @@ class SignUpPage extends StatelessWidget {
 
                         if (result.keys.first) {
                           Get.back();
-                          var resultVerify =
-                              await API().sendVerifyEmail(result.values.first);
-                          normalSnackbar(resultVerify);
+                          // var resultVerify =
+                          //     await API().sendVerifyEmail(result.values.first);
+                          // normalSnackbar(resultVerify);
+                          normalSnackbar(result.values.first[0]);
 
-                          Get.off(() => EmailConfirmPage());
+                          // // Get.off(() => SignInPage());
                         } else {
                           failureSnackbar(result.values.first[0]);
                         }
