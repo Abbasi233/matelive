@@ -76,7 +76,7 @@ class CallingController extends GetxController {
 
     UserDetail userDetail = UserDetail.fromJson(data["callerDetails"]);
     Get.to(() => CallPage(userDetail));
-    playSound(receivingSound);
+    // playSound(receivingSound);
   }
 
   void actionByRequestStatus(String status, dynamic actionerDetails) async {
