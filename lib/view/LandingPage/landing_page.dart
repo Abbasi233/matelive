@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pusher_client/pusher_client.dart';
 
 import '/constant.dart';
@@ -119,10 +118,10 @@ class _LandingPageState extends State<LandingPage>
 
     pusher.onConnectionError((error) {
       log("error: ${error.exception}");
-      failureSnackbar(
-        "Sunucuya bağlanırken bir sorun oluştu. Lütfen uygulamayı yeniden başlatınız.",
-        timeout: 10,
-      );
+      // failureSnackbar(
+      //   "Sunucuya bağlanırken bir sorun oluştu. Lütfen uygulamayı yeniden başlatınız.",
+      //   timeout: 10,
+      // );
     });
     pusher.connect();
 

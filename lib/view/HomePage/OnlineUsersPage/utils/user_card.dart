@@ -43,6 +43,7 @@ Widget userCard(
             ],
           ),
           onPressed: () {
+            print(userDetail.id);
             Get.to(() => UserDetailPage(userDetail));
           },
         );
