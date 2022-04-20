@@ -104,12 +104,15 @@ class _LandingPageState extends State<LandingPage>
 
       switch (state.currentState) {
         case "DISCONNECTED":
+        case "disconnected":
           _landingPageController.pusherConStates.value = ConStates.DISCONNECTED;
           break;
         case "CONNECTING":
+        case "connecting":
           _landingPageController.pusherConStates.value = ConStates.CONNECTING;
           break;
         case "CONNECTED":
+        case "connected":
           _landingPageController.pusherConStates.value = ConStates.CONNECTED;
           break;
         default:

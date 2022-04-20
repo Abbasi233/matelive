@@ -29,6 +29,18 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Fotoğraf yükleyebilmek için galerinizi kullanmamıza ihtiyacımız var.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Fotoğraf çekebilmek için kameranızı kullanmamıza ihtiyacımız var.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Görüşme yapabilmek için mikrofonu kullanmamıza ihtiyacımız var.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Görüşme esnasında ekranınızın pasif olması için sensörlerinizi kullanmamıza ihtiyacımız var.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Fotoğraf yükleyebilmek için galerinizi kullanmamıza ihtiyacımız var.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Konum izni.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -52,15 +64,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSCameraUsageDescription</key>
-	<string>Fotoğraf çekebilmek için kameranızı kullanmamıza ihtiyacımız var.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Görüşme yapabilmek için mikrofonu kullanmamıza ihtiyacımız var.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Fotoğraf yükleyebilmek için galerinizi kullanmamıza ihtiyacımız var.</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>Fotoğraf yükleyebilmek için galerinizi kullanmamıza ihtiyacımız var.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Görüşme esnasında ekranınızın pasif olması için sensörlerinizi kullanmamıza ihtiyacımız var.</string>
 </dict>
 </plist>
