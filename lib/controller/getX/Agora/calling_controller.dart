@@ -85,6 +85,7 @@ class CallingController extends GetxController {
     if (status == callStatus["accepted"]) {
       log("isCallerMe $isCallerMe");
       if (isCallerMe) {
+        log("LISTEN SECONDS STATE: ${listenSeconds.toString()}");
         listenSeconds =
             stopWatchTimer.secondTime.listen(calculateRemainingTime);
       }
@@ -227,6 +228,7 @@ class CallingController extends GetxController {
       Get.back();
     }
 
+    log("FINISH CALL------");
     stopWatchTimer.onExecute.add(StopWatchExecute.reset);
     await listenSeconds?.cancel();
   }
@@ -262,7 +264,7 @@ class CallingController extends GetxController {
       remainingCredit--;
     } else {
       // await listenSeconds?.cancel();
-      await finishCall(ProfileDetail().id, "user_credit");
+      await finishCall(ProfileDetail().id, "by_button");
     }
   }
 

@@ -83,9 +83,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            "${userDetail.name} ${userDetail.surname}",
-                            style: styleH3().copyWith(),
+                          Tooltip(
+                            child: Text(
+                              "${userDetail.name} ${userDetail.surname}",
+                              style: styleH3().copyWith(),
+                            ),
+                            message: userDetail.id.toString(),
                           ),
                           userDetail.emailVerified
                               ? Icon(
