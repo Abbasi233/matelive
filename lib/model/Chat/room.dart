@@ -21,7 +21,6 @@ class Room {
   int messageCount;
   DateTime createdAt;
   DateTime updatedAt;
-
   bool isRead;
 
   factory Room.fromJson(Map<String, dynamic> json) => Room(

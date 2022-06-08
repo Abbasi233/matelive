@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:matelive/controller/getX/chat_controller.dart';
 import 'package:matelive/view/LandingPage/about_page/about_page.dart';
 import 'package:matelive/view/LandingPage/blocks_page/blocks_page.dart';
 import 'package:matelive/view/LandingPage/contact_page/contact_page.dart';
@@ -89,6 +90,7 @@ class MyDrawer {
                         onPressed: () async {
                           await API().logout(Login().token);
                           // Token geçersizse mesaj dönüyor ama ekrana yazdırmaya gerek yok.
+                          Get.find<ChatController>().dispose();
                           Get.find<StorageController>().saveLogin(null);
                           Get.offAll(() => SignInPage());
                         },

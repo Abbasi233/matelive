@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:get/get.dart';
-import 'package:matelive/controller/getX/Agora/calling_controller.dart';
-import 'package:matelive/controller/getX/chat_controller.dart';
-import 'package:matelive/view/LandingPage/controller.dart';
-import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pusher_client/pusher_client.dart';
+
+import '/view/LandingPage/controller.dart';
+import '/controller/getX/chat_controller.dart';
+import '/controller/getX/Agora/calling_controller.dart';
 
 class PusherController {
   PusherClient _pusher;
@@ -84,11 +83,9 @@ class PusherController {
         if (Get.currentRoute != "/RoomsPage" &&
             activeChatId != map["room_id"]) {
           _chatController.showNewMessageSnackbar(map);
-        } else {}
+        }
 
-        // var message = Message.fromJson(map["message"]);
-        // messageList.insert(0, message);
-        // streamController.sink.add([message]);
+        _chatController.onNewMessage(map);
       },
     );
   }

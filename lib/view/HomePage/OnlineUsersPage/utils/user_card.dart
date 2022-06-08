@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:matelive/controller/api.dart';
+import 'package:matelive/controller/getX/chat_controller.dart';
 import 'package:matelive/model/login.dart';
+import 'package:matelive/view/chats_page/message_page.dart';
 import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
@@ -43,8 +45,13 @@ Widget userCard(
             ],
           ),
           onPressed: () {
-            print(userDetail.id);
-            // Get.to(() => UserDetailPage(userDetail));
+            var result =
+                Get.find<ChatController>().getExistRoomId(userDetail.id);
+
+            Get.to(() => MessagePage(
+                  roomId: result,
+                  receiver: userDetail,
+                ));
           },
         );
 

@@ -8,6 +8,7 @@ import 'package:matelive/view/utils/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../../controller/getX/chat_controller.dart';
 import '/constant.dart';
 import '/model/login.dart';
 import '/controller/api.dart';
@@ -83,15 +84,25 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         GestureDetector(
                           child: CachedNetworkImage(
                             imageUrl: userDetail.image,
-                            imageBuilder: (context, provider) => CircleAvatar(
-                              radius: Get.width * 0.15,
-                              foregroundImage: provider,
+                            imageBuilder: (context, provider) => Container(
+                              width: Get.width * .35,
+                              height: Get.width * .35,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: provider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Center(
-                              child: CircularProgressIndicator(
-                                value: downloadProgress.progress,
-                                color: kPrimaryColor,
+                            placeholder: (context, url) => Container(
+                              width: Get.width * .35,
+                              height: Get.width * .35,
+                              child: Center(
+                                child: CircularProgressIndicator(),
                               ),
                             ),
                             errorWidget: (context, url, error) =>
@@ -180,7 +191,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                         ],
                                       ),
                                 onTap: () {
+                                  var result = Get.find<ChatController>()
+                                      .getExistRoomId(userDetail.id);
+
                                   Get.to(() => MessagePage(
+                                        roomId: result,
                                         receiver: userDetail,
                                       ));
                                 },

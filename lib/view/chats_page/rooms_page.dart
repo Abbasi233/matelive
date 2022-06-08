@@ -23,7 +23,6 @@ class RoomsPage extends StatefulWidget {
 }
 
 class _RoomsPageState extends State<RoomsPage> {
-  var roomsFuture = API().getRooms(Login().token);
   final _refreshController = RefreshController(initialRefresh: false);
 
   var chatController = Get.find<ChatController>();
@@ -31,7 +30,7 @@ class _RoomsPageState extends State<RoomsPage> {
   @override
   void initState() {
     super.initState();
-    print(Get.currentRoute);
+    chatController.loadRooms();
   }
 
   @override
@@ -58,95 +57,85 @@ class _RoomsPageState extends State<RoomsPage> {
         physics: BouncingScrollPhysics(),
         child: Container(
           constraints: BoxConstraints.expand(),
-          child: FutureBuilder<Map<bool, dynamic>>(
-            future: roomsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var mapData = snapshot.data;
+          child: Obx(() {
+            if (chatController.rooms.isEmpty) {
+              return Center(
+                child: autoSize(
+                  text: "Henüz kimseyle mesajlaşmadınız.",
+                  paddingRight: 0,
+                ),
+              );
+            }
 
-                if (mapData.keys.first) {
-                  var pagedResponse = mapData.values.first as PagedResponse;
-                  var data = pagedResponse.data as List<Room>;
-
-                  if (data.isEmpty) {
-                    return Center(
-                      child: autoSize(
-                        text: "Henüz Kimseyle Mesajlaşmadınız...",
-                        paddingRight: 0,
-                      ),
-                    );
-                  }
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(top: 10),
-                    physics: const BouncingScrollPhysics(),
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemCount: data.length,
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text(
-                        "${data[index].user.name} ${data[index].user.surname}",
-                      ),
-                      leading: CachedNetworkImage(
-                        imageUrl: data[index].user.image,
-                        imageBuilder: (context, provider) => Container(
-                          width: 70.0,
-                          height: 70.0,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: provider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+            return ListView.separated(
+              padding: const EdgeInsets.only(top: 10),
+              physics: const BouncingScrollPhysics(),
+              separatorBuilder: (context, index) => const Divider(),
+              itemCount: chatController.rooms.length,
+              itemBuilder: (context, index) {
+                var room = chatController.rooms[index];
+                return ListTile(
+                  title: Text(
+                    "${room.user.name} ${room.user.surname}",
+                  ),
+                  leading: CachedNetworkImage(
+                    imageUrl: room.user.image,
+                    imageBuilder: (context, provider) => Container(
+                      width: 70.0,
+                      height: 70.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: provider,
+                          fit: BoxFit.cover,
                         ),
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
                       ),
-                      subtitle: data[index].lastMessage != ""
-                          ? Row(
-                              children: [
-                                data[index].user.id == Login().user.id
-                                    ? Icon(Icons.check)
-                                    : !data[index].isRead
-                                        ? Icon(
-                                            Icons.circle,
-                                            color: kPrimaryColor,
-                                          )
-                                        : Container(),
-                                Text(data[index].lastMessage.toString()),
-                              ],
-                            )
-                          : const Text(
-                              "Henüz mesaj yok.",
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
-                      onTap: () {
-                        print("Tap");
-                        Get.to(() => MessagePage(
-                              roomId: data[index].id,
-                              receiver: data[index].user,
-                            ));
-                        // chatController.selectedChat.value = data[index];
-                        // chatController.chatId.value = data[index].docId.toString();
-                      },
                     ),
-                  );
-                }
-              }
-
-              return showProgressIndicator(context);
-            },
-          ),
+                    placeholder: (context, url) => Container(
+                      width: 70.0,
+                      height: 70.0,
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+                  subtitle: room.lastMessage != ""
+                      ? Row(
+                          children: [
+                            room.user.id == Login().user.id
+                                ? Icon(Icons.check)
+                                : !room.isRead
+                                    ? Icon(
+                                        Icons.circle,
+                                        color: kPrimaryColor,
+                                      )
+                                    : Container(),
+                            Text(room.lastMessage.toString()),
+                          ],
+                        )
+                      : const Text(
+                          "Henüz mesaj yok.",
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                  onTap: () async {
+                    print("Tap");
+                    await Get.to(() => MessagePage(
+                          roomId: room.id,
+                          receiver: room.user,
+                        ));
+                    // setState(() {});
+                  },
+                );
+              },
+            );
+          }),
         ),
       ),
     );
   }
 
   void _onRefresh() async {
+    await chatController.loadRooms();
     _refreshController.refreshCompleted();
-    setState(() {
-      roomsFuture = API().getRooms(Login().token);
-    });
   }
 }

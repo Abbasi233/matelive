@@ -78,17 +78,27 @@ class _ProfilePageState extends State<ProfilePage>
                                     child: CachedNetworkImage(
                                       imageUrl: ProfileDetail().image,
                                       imageBuilder: (context, provider) =>
-                                          CircleAvatar(
-                                        radius: Get.width * 0.15,
-                                        foregroundImage: provider,
+                                          Container(
+                                        width: Get.width * .35,
+                                        height: Get.width * .35,
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: provider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ),
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          Center(
-                                              child: CircularProgressIndicator(
-                                        value: downloadProgress.progress,
-                                        color: kPrimaryColor,
-                                      )),
+                                      placeholder: (context, url) => Container(
+                                        width: Get.width * .35,
+                                        height: Get.width * .35,
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.error),
                                     ),
@@ -282,8 +292,9 @@ class _ProfilePageState extends State<ProfilePage>
                                                 Container(
                                               decoration: BoxDecoration(
                                                 image: DecorationImage(
-                                                    image: provider,
-                                                    fit: BoxFit.cover),
+                                                  image: provider,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
                                             progressIndicatorBuilder: (context,

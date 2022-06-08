@@ -321,7 +321,7 @@ class API {
       url,
       headers: _getHeader(token),
     );
-    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    // Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     // print(jsonResponse);
 
     if (response.statusCode < 400) {
@@ -355,7 +355,7 @@ class API {
       url,
       headers: _getHeader(token),
     );
-    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    // Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     // print(jsonResponse);
 
     if (response.statusCode < 400) {
@@ -370,7 +370,7 @@ class API {
       url,
       headers: _getHeader(token),
     );
-    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    // Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     // print(jsonResponse);
 
     if (response.statusCode < 400) {
@@ -741,23 +741,16 @@ class API {
     return {false: null};
   }
 
-  Future<Map<bool, dynamic>> getMessages(String token, String id,
-      {bool includeDeleted = false}) async {
-    // Uri url = Uri.http(
-    //   "matelive.net",
-    //   "/api/chat/messages/$id",
-    //   {"include_deleted_messages": includeDeleted},
-    // );
-    var request = http.Request('GET', Uri.parse("$_URL/chat/messages/$id"));
+  Future<Map<bool, dynamic>> getMessages(String token, int id,
+      {int page = 1, bool includeDeleted = false}) async {
+    var request = http.Request(
+      'GET',
+      Uri.parse("$_URL/chat/messages/$id?page=$page"),
+    );
     request.body = convert.jsonEncode({"include_deleted_messages": false});
     request.headers.addAll(_getHeader(token));
-    // Uri url = Uri.parse("$_URL/chat/messages/2");
 
     http.StreamedResponse response = await request.send();
-    // http.Response response = await http.get(
-    //   url,
-    //   headers: _getHeader(token),
-    // );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(
       await response.stream.bytesToString(),
     );

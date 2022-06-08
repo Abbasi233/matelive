@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:matelive/model/Chat/message.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '/constant.dart';
 
@@ -41,7 +40,8 @@ void normalSnackbar(String content) {
   );
 }
 
-void newMessageSnackbar(String username, String content, String imageUrl) {
+void newMessageSnackbar(
+    String username, String content, String imageUrl, Function onTap) {
   Get.snackbar(
     "",
     "",
@@ -84,8 +84,9 @@ void newMessageSnackbar(String username, String content, String imageUrl) {
       ),
       errorWidget: (context, url, error) => const Icon(Icons.error),
     ),
-    // onTap: (getSnackBar) {
-    // Get.offAndToNamed();  BURADA ROUTE'LARI TANIMLAMADIĞIM İÇİN BU METODU KULLANAMIYORUM VE BİLDİRİME TIKLAYINCA MEVCUT CHAT SAYFASINA YENİDEN YÖNLENDİREMİYORUM
-    // },
+    onTap: (getSnackBar) {
+      onTap();
+      //Get.offAndToNamed();  //BURADA ROUTE'LARI TANIMLAMADIĞIM İÇİN BU METODU KULLANAMIYORUM VE BİLDİRİME TIKLAYINCA MEVCUT CHAT SAYFASINA YENİDEN YÖNLENDİREMİYORUM
+    },
   );
 }
