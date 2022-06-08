@@ -34,7 +34,7 @@ class _CallPageState extends State<CallPage>
   // AnimationController _controller;
   // Animation<double> _animation;
 
-  var callingController = Get.put(CallingController());
+  var callingController = Get.find<CallingController>();
 
   RtcEngine engine;
 
@@ -229,6 +229,7 @@ class _CallPageState extends State<CallPage>
           },
           error: (error) {
             log("ERROR: $error", name: "AGORA");
+            callingController.stopSound();
           },
         ),
       );

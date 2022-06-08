@@ -2,17 +2,17 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:matelive/controller/getX/calls_controller.dart';
-import 'package:matelive/controller/getX/in-app-purchase.dart';
 
 import 'constant.dart';
-import '/model/login.dart';
-import '/controller/api.dart';
+import 'model/login.dart';
+import 'controller/api.dart';
 import 'view/auth/sign_in_page.dart';
 import 'view/auth/welcome_page.dart';
-import '/view/LandingPage/landing_page.dart';
+import 'view/LandingPage/landing_page.dart';
+import 'controller/getX/in-app-purchase.dart';
+import 'controller/getX/calls_controller.dart';
 import 'controller/getX/storage_controller.dart';
-import '/controller/getX/notifications_controller.dart';
+import 'controller/getX/notifications_controller.dart';
 
 Widget _firstPage;
 void main() async {

@@ -60,9 +60,12 @@ class MyDrawer {
               ),
             ),
             _listTile(Text("S.S.S."), FaqPage()),
-            Obx(() => Text("v"+landingPageController.appVersion.value +
-                "." +
-                landingPageController.appBuildNumber.value)),
+            Obx(() {
+              return Text("v" +
+                  landingPageController.appVersion.value +
+                  "." +
+                  landingPageController.appBuildNumber.value);
+            }),
             Divider(),
             SizedBox(height: 10),
             primaryButton(
@@ -98,7 +101,7 @@ class MyDrawer {
                   ),
                 );
               },
-            )
+            ),
           ],
         ),
       ),

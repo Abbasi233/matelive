@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:matelive/controller/getX/Agora/calling_controller.dart';
 import 'package:matelive/view/utils/auto_size_text.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '/constant.dart';
@@ -82,8 +83,6 @@ class _HomePageState extends State<HomePage>
                                 style: styleH3(fontWeight: FontWeight.w600),
                                 paddingRight: 0.05,
                               ),
-                              // Text("Görüşmeye Başlayın!",
-                              //     style: styleH3(fontWeight: FontWeight.w600)),
                               autoSize(
                                 textSpan: TextSpan(
                                   text: "Şu an ",

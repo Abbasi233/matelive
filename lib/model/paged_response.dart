@@ -1,3 +1,6 @@
+import 'package:matelive/model/Chat/message.dart';
+import 'package:matelive/model/Chat/room.dart';
+
 import '/model/action.dart';
 import '/model/user_detail.dart';
 import '/model/notifications.dart';
@@ -35,6 +38,16 @@ class PagedResponse {
       case Action:
         data = List<Action>.from(
           json["data"].map((x) => Action.fromJson(x)).toList(),
+        );
+        break;
+      case Room:
+        data = List<Room>.from(
+          json["data"].map((x) => Room.fromJson(x)).toList(),
+        );
+        break;
+      case Message:
+        data = List<Message>.from(
+          json["data"].map((x) => Message.fromJson(x)).toList(),
         );
         break;
     }

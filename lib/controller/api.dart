@@ -1,5 +1,7 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:matelive/model/Chat/message.dart';
+import 'package:matelive/model/Chat/room.dart';
 import 'package:matelive/model/action.dart';
 import 'package:matelive/model/infographic.dart';
 
@@ -137,6 +139,7 @@ class API {
     print(jsonResponse);
 
     if (response.statusCode < 400) {
+      Login().user.id = jsonResponse["data"]["id"];
       return {true: ProfileDetail.fromJson(jsonResponse["data"])};
     }
     return {false: jsonResponse["message"]};
@@ -164,7 +167,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, PreviousCall)};
@@ -179,7 +182,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: Infographic.fromJson(jsonResponse["data"])};
@@ -201,7 +204,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["message"]};
@@ -217,7 +220,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["message"]};
@@ -237,7 +240,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, Action)};
@@ -252,7 +255,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, UserDetail)};
@@ -267,7 +270,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, UserDetail)};
@@ -285,7 +288,7 @@ class API {
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     closeProgressDialog();
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (jsonResponse["status"] == "success") {
       return {true: jsonResponse["message"]};
@@ -303,7 +306,7 @@ class API {
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     closeProgressDialog();
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       UserDetail.fromJson(jsonResponse["data"]);
@@ -319,7 +322,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return true; // tam olarak ne dönüleceğine karar veremedim
@@ -353,7 +356,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return true;
@@ -368,7 +371,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return true;
@@ -383,7 +386,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: TotalNotifications.fromJson(jsonResponse["data"])};
@@ -405,7 +408,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, Notification)};
@@ -421,7 +424,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return PagedResponse.fromJson(jsonResponse["data"], Notification);
@@ -487,7 +490,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: PagedResponse.fromJson(jsonResponse, UserDetail)};
@@ -519,7 +522,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["message"]};
@@ -549,7 +552,7 @@ class API {
       headers: _getHeader(token),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: CallResult.fromJson(jsonResponse)};
@@ -578,7 +581,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: CallResult.fromJson(jsonResponse)};
@@ -599,7 +602,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: CallResult.fromJson(jsonResponse)};
@@ -646,7 +649,7 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["token"]};
@@ -667,7 +670,7 @@ class API {
     );
     print(body);
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["message"]};
@@ -688,8 +691,8 @@ class API {
       headers: _getHeader(token),
       body: convert.jsonEncode(body),
     );
-    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return true; // Bildirim başarıyla gönderildi.
@@ -717,11 +720,88 @@ class API {
       body: convert.jsonEncode(body),
     );
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (response.statusCode < 400) {
       return {true: jsonResponse["message"]};
     }
     return {false: jsonResponse["errors"].values.first};
+  }
+
+  /// CHAT
+  Future<Map<bool, dynamic>> getRooms(String token) async {
+    Uri url = Uri.parse("$_URL/chat/rooms");
+    http.Response response = await http.get(url, headers: _getHeader(token));
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    // print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: PagedResponse.fromJson(jsonResponse, Room)};
+    }
+    return {false: null};
+  }
+
+  Future<Map<bool, dynamic>> getMessages(String token, String id,
+      {bool includeDeleted = false}) async {
+    // Uri url = Uri.http(
+    //   "matelive.net",
+    //   "/api/chat/messages/$id",
+    //   {"include_deleted_messages": includeDeleted},
+    // );
+    var request = http.Request('GET', Uri.parse("$_URL/chat/messages/$id"));
+    request.body = convert.jsonEncode({"include_deleted_messages": false});
+    request.headers.addAll(_getHeader(token));
+    // Uri url = Uri.parse("$_URL/chat/messages/2");
+
+    http.StreamedResponse response = await request.send();
+    // http.Response response = await http.get(
+    //   url,
+    //   headers: _getHeader(token),
+    // );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(
+      await response.stream.bytesToString(),
+    );
+    // print(jsonResponse);
+
+    if (response.statusCode == 200) {
+      return {true: PagedResponse.fromJson(jsonResponse, Message)};
+    } else if (response.statusCode == 404) {
+      return {true: PagedResponse()};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<Map<bool, dynamic>> sendMessage(Map<String, dynamic> body) async {
+    Uri url = Uri.parse("$_URL/chat/send-message");
+    http.Response response = await http.post(
+      url,
+      headers: _getHeader(Login().token),
+      body: convert.jsonEncode(body),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: null};
+    }
+    return {false: jsonResponse["message"]};
+  }
+
+  Future<bool> sendImage(String token, String filename, String type) async {
+    showProgressDialog();
+
+    Uri url = Uri.parse("$_URL/chat/upload");
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll(_getHeader(token));
+    request.files.add(await http.MultipartFile.fromPath("file", filename));
+    var response = await request.send();
+
+    closeProgressDialog();
+
+    print(response.reasonPhrase);
+    if (response.statusCode < 400) {
+      return true;
+    }
+    return false;
   }
 }

@@ -10,7 +10,7 @@ class MyAppBar extends AppBar {
     double elevation = 4,
     PreferredSizeWidget bottom,
     Widget leading,
-    Widget action,
+    List<Widget> action,
   }) : super(
           backgroundColor: kWhiteColor,
           centerTitle: centerTitle,
@@ -19,7 +19,8 @@ class MyAppBar extends AppBar {
                 "assets/images/logo.png",
                 width: Get.width * 0.4,
               ),
-          actions: [action != null ? action : Container()],
+          // actions: [action != null ? action : Container()],
+          actions: action,
           elevation: elevation,
           bottom: bottom,
           leading: leading,

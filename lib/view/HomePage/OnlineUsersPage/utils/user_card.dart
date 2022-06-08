@@ -37,14 +37,14 @@ Widget userCard(
           text: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(LineAwesomeIcons.user),
+              Icon(Icons.message),
               SizedBox(width: 5),
-              Text("Profile Git"),
+              Text("Mesaj Gönder"),
             ],
           ),
           onPressed: () {
             print(userDetail.id);
-            Get.to(() => UserDetailPage(userDetail));
+            // Get.to(() => UserDetailPage(userDetail));
           },
         );
 
@@ -79,26 +79,25 @@ Widget userCard(
               imageUrl: userDetail.image,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   Center(
-                      child: CircularProgressIndicator(
-                value: downloadProgress.progress,
-                color: kPrimaryColor,
-              )),
+                child: CircularProgressIndicator(
+                  value: downloadProgress.progress,
+                  color: kPrimaryColor,
+                ),
+              ),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(kBorderRadius),
                 gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      Colors.black87,
-                      Colors.transparent,
-                    ],
-                    stops: [
-                      0.03,
-                      0.9
-                    ]),
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black87,
+                    Colors.transparent,
+                  ],
+                  stops: [0.03, 0.9],
+                ),
               ),
               child: Column(
                 children: [

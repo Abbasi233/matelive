@@ -26,12 +26,14 @@ class PreviousCall {
   factory PreviousCall.fromJson(Map<String, dynamic> json) => PreviousCall(
         caller: Person.fromJson(json["caller"]),
         answerer: Person.fromJson(json["answerer"]),
-        callStartedAt: json["call_started_at"] == null
-            ? DateTime.parse(json["created_at"])
-            : DateTime.parse(json["call_started_at"]),
-        callEndedAt: json["call_ended_at"] == null
-            ? null
-            : DateTime.parse(json["call_ended_at"]),
+        callStartedAt:
+            json["call_started_at"] == null || json["call_started_at"] == ""
+                ? DateTime.parse(json["created_at"])
+                : DateTime.parse(json["call_started_at"]),
+        callEndedAt:
+            json["call_ended_at"] == null || json["call_ended_at"] == ""
+                ? null
+                : DateTime.parse(json["call_ended_at"]),
         status: json["status"],
         durationSeconds: json["duration_seconds"],
         channelName: json["channel_name"],

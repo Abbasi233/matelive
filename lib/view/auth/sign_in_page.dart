@@ -147,10 +147,14 @@ class SignInPage extends StatelessWidget {
 
                                 var callsResult =
                                     await _api.getCalls(Login().token);
-                                Get.put(CallsController()).pagedResponse.value =
-                                    callsResult.values.first;
-
-                                Get.off(() => LandingPage());
+                                if (callsResult.keys.first) {
+                                  Get.put(CallsController())
+                                      .pagedResponse
+                                      .value = callsResult.values.first;
+                                  Get.off(() => LandingPage());
+                                } else {
+                                  failureSnackbar(callsResult.values.first);
+                                }
                               } else {
                                 failureSnackbar(result[false]);
                               }

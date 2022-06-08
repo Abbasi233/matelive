@@ -25,18 +25,21 @@ class Login {
 
 class User {
   User({
+    this.id,
     this.name,
     this.surname,
     this.email,
     this.emailVerified,
   });
 
+  int id;
   String name;
   String surname;
   String email;
   bool emailVerified;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
         name: json["name"],
         surname: json["surname"],
         email: json["email"],
@@ -44,6 +47,7 @@ class User {
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "name": name,
         "surname": surname,
         "email": email,

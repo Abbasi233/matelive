@@ -2,6 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:matelive/view/chats_page/message_page.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:matelive/view/utils/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -26,6 +29,8 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
+  final _refreshController = RefreshController(initialRefresh: false);
+
   UserDetail userDetail;
 
   List<String> gender = [
@@ -47,301 +52,391 @@ class _UserDetailPageState extends State<UserDetailPage> {
     return Scaffold(
       appBar: MyAppBar(
         centerTitle: true,
+        action: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Icon(
+              Icons.circle,
+              color: userDetail.isOnline ? kGreenColor : kPrimaryColor,
+            ),
+          )
+        ],
       ),
       body: Container(
         constraints: BoxConstraints.expand(),
-        child: ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              color: Colors.grey[300],
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        child: CachedNetworkImage(
-                          imageUrl: userDetail.image,
-                          imageBuilder: (context, provider) => CircleAvatar(
-                            radius: Get.width * 0.15,
-                            foregroundImage: provider,
-                          ),
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) => Center(
-                                  child: CircularProgressIndicator(
-                            value: downloadProgress.progress,
-                            color: kPrimaryColor,
-                          )),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
-                        onTap: () {
-                          Get.dialog(showImage(imageUrl: userDetail.image));
-                        },
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Tooltip(
-                            child: Text(
-                              "${userDetail.name} ${userDetail.surname}",
-                              style: styleH3().copyWith(),
+        child: SmartRefresher(
+          enablePullDown: true,
+          onRefresh: _onRefresh,
+          controller: _refreshController,
+          header: MaterialClassicHeader(),
+          physics: BouncingScrollPhysics(),
+          child: ListView(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                color: Colors.grey[300],
+                child: Stack(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          child: CachedNetworkImage(
+                            imageUrl: userDetail.image,
+                            imageBuilder: (context, provider) => CircleAvatar(
+                              radius: Get.width * 0.15,
+                              foregroundImage: provider,
                             ),
-                            message: userDetail.id.toString(),
-                          ),
-                          userDetail.emailVerified
-                              ? Icon(
-                                  Icons.verified,
-                                  color: Colors.blue,
-                                )
-                              : Container(),
-                        ],
-                      ),
-                      Html(
-                        data: "<p>${userDetail.description}<p>",
-                        style: {
-                          "p": Style(
-                            fontSize: FontSize.larger,
-                            color: kTextColor,
-                            // fontWeight: FontWeight.w600,
-                            textAlign: TextAlign.center,
-                          ),
-                        },
-                      ),
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: userDetail.isOnline
-                                ? kPrimaryColor
-                                : kTextColor,
-                            borderRadius: BorderRadius.circular(30)),
-                        width: Get.width * 0.50,
-                        child: InkWell(
-                          child: Center(
-                            child: AutoSizeText(
-                              userDetail.id == ProfileDetail().id
-                                  ? "Kendi Profiliniz"
-                                  : userDetail.isOnline
-                                      ? "Şu An Çevrimiçi"
-                                      : "Şu An Çevrimdışı",
-                              style: styleH4(
-                                  color: kWhiteColor,
-                                  fontWeight: FontWeight.w400),
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Center(
+                              child: CircularProgressIndicator(
+                                value: downloadProgress.progress,
+                                color: kPrimaryColor,
+                              ),
                             ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                           onTap: () {
-                            if (userDetail.isOnline) {
-                              callingController.createCall(userDetail);
-                            }
+                            Get.dialog(showImage(imageUrl: userDetail.image));
                           },
                         ),
-                      ),
-                      fixedHeight,
-                      userDetail?.userPermissions?.socialMedias == null ||
-                              userDetail.userPermissions.socialMedias == false
-                          ? Center(
-                              child: notHavePermission(),
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: socialMediaButtons(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Tooltip(
+                              child: Text(
+                                "${userDetail.name} ${userDetail.surname}",
+                                style: styleH3().copyWith(),
+                              ),
+                              message: userDetail.id.toString(),
                             ),
-                    ],
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 5,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.report),
-                          onPressed: () async {
-                            var dialogResult = await Get.dialog(ReportDialog());
-
-                            if (dialogResult != null) {
-                              var map = {
-                                "spam_user_id": userDetail.id,
-                                "message": dialogResult,
-                              };
-
-                              print(map);
-                              var result = await API().reportUser(
-                                Login().token,
-                                map,
-                              );
-
-                              if (result.keys.first) {
-                                successSnackbar(result.values.first);
-                              } else {
-                                failureSnackbar(result.values.first);
-                              }
-                            }
-                          },
+                            userDetail.emailVerified
+                                ? Icon(
+                                    Icons.verified,
+                                    color: Colors.blue,
+                                  )
+                                : Container(),
+                          ],
                         ),
-                        IconButton(
-                          icon: Icon(Icons.block_outlined),
-                          onPressed: () async {
-                            var dialogResult = await Get.dialog(BlockDialog());
-
-                            if (dialogResult != null && dialogResult) {
-                              var map = {
-                                "type": 5,
-                                "related_user_id": userDetail.id,
-                              };
-                              var result = await API().setAction(
-                                Login().token,
-                                map,
-                              );
-
-                              if (result.keys.first) {
-                                Get.back();
-                                successSnackbar(result.values.first);
-                              } else {
-                                failureSnackbar(result.values.first);
-                              }
-                            }
-                          },
+                        userDetail.description != null
+                            ? Html(
+                                data: "<p>${userDetail.description}<p>",
+                                style: {
+                                  "p": Style(
+                                    fontSize: FontSize.larger,
+                                    color: kTextColor,
+                                    // fontWeight: FontWeight.w600,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                },
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  "Henüz açıklama girilmemiş",
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              width: Get.width * 0.40,
+                              padding: const EdgeInsets.all(10),
+                              child: InkWell(
+                                child: userDetail.id == ProfileDetail().id
+                                    ? Center(
+                                        child: autoSize(
+                                          text: "Kendi Profiliniz",
+                                        ),
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.message_outlined,
+                                            color: kWhiteColor,
+                                          ),
+                                          Expanded(
+                                            child: AutoSizeText(
+                                              "Mesaj Gönder",
+                                              style: styleH4(
+                                                color: kWhiteColor,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                onTap: () {
+                                  Get.to(() => MessagePage(
+                                        receiver: userDetail,
+                                      ));
+                                },
+                              ),
+                            ),
+                            userDetail.isOnline &&
+                                    userDetail.id != ProfileDetail().id
+                                ? Container(
+                                    height: 50,
+                                    margin: const EdgeInsets.only(left: 10),
+                                    decoration: BoxDecoration(
+                                      color: kGreenColor,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    width: Get.width * 0.40,
+                                    child: InkWell(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.phone_outlined,
+                                            color: kWhiteColor,
+                                          ),
+                                          AutoSizeText(
+                                            "Şimdi Ara",
+                                            style: styleH4(
+                                              color: kWhiteColor,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        if (userDetail.isOnline) {
+                                          callingController
+                                              .createCall(userDetail);
+                                        }
+                                      },
+                                    ),
+                                  )
+                                : Container(),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            fixedHeight,
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 150,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(kBorderRadius),
-                      border: Border.all(
-                        width: 1,
-                        color: kTextColor,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text("HAKKINDA",
-                            style: styleH4(fontWeight: FontWeight.w600)),
-                        userDetail?.userPermissions?.description == null ||
-                                userDetail.userPermissions.description == false
+                        fixedHeight,
+                        userDetail?.userPermissions?.socialMedias == null ||
+                                userDetail.userPermissions.socialMedias == false
                             ? Center(
                                 child: notHavePermission(),
                               )
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text.rich(
-                                    TextSpan(
-                                      text: "Cinsiyet: ",
-                                      children: [
-                                        TextSpan(
-                                          text: userDetail.gender == null
-                                              ? "Belirtilmemiş"
-                                              : gender[userDetail.gender],
-                                          style: styleH4(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    style: styleH4(),
-                                  ),
-                                  Text.rich(
-                                    TextSpan(
-                                      text: "Yaş: ",
-                                      children: [
-                                        TextSpan(
-                                          text: userDetail.age,
-                                          style: styleH4(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    style: styleH4(),
-                                  ),
-                                ],
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: socialMediaButtons(),
                               ),
                       ],
                     ),
-                  ),
-                  fixedHeight,
-                  Text(
-                    "Fotoğraf Galerisi",
-                    style: styleH2(),
-                  ),
-                  fixedHeight,
-                  userDetail?.userPermissions?.gallery == null ||
-                          userDetail.userPermissions.gallery == false
-                      ? Center(
-                          child: notHavePermission(),
-                        )
-                      : userDetail.gallery.isNotEmpty
-                          ? GridView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 3,
-                                mainAxisSpacing: 3,
-                              ),
-                              itemCount: userDetail.gallery.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Get.dialog(
-                                      showImage(
-                                        galleryIndex: index,
-                                        gallery: userDetail.gallery,
-                                      ),
-                                    );
-                                  },
-                                  child: CachedNetworkImage(
-                                    imageUrl: userDetail.gallery[index].image,
-                                    imageBuilder: (context, provider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: provider, fit: BoxFit.cover),
-                                      ),
-                                    ),
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            Center(
-                                      child: CircularProgressIndicator(
-                                        value: downloadProgress.progress,
-                                        color: kPrimaryColor,
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
+                    Positioned(
+                      top: 0,
+                      right: 5,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.report),
+                            onPressed: () async {
+                              var dialogResult =
+                                  await Get.dialog(ReportDialog());
+
+                              if (dialogResult != null) {
+                                var map = {
+                                  "spam_user_id": userDetail.id,
+                                  "message": dialogResult,
+                                };
+
+                                print(map);
+                                var result = await API().reportUser(
+                                  Login().token,
+                                  map,
                                 );
-                              },
-                            )
-                          : Center(
-                              child: Text(
+
+                                if (result.keys.first) {
+                                  successSnackbar(result.values.first);
+                                } else {
+                                  failureSnackbar(result.values.first);
+                                }
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.block_outlined),
+                            onPressed: () async {
+                              var dialogResult =
+                                  await Get.dialog(BlockDialog());
+
+                              if (dialogResult != null && dialogResult) {
+                                var map = {
+                                  "type": 5,
+                                  "related_user_id": userDetail.id,
+                                };
+                                var result = await API().setAction(
+                                  Login().token,
+                                  map,
+                                );
+
+                                if (result.keys.first) {
+                                  Get.back();
+                                  successSnackbar(result.values.first);
+                                } else {
+                                  failureSnackbar(result.values.first);
+                                }
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              fixedHeight,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 150,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(kBorderRadius),
+                        border: Border.all(
+                          width: 1,
+                          color: kTextColor,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text("HAKKINDA",
+                              style: styleH4(fontWeight: FontWeight.w600)),
+                          userDetail?.userPermissions?.description == null ||
+                                  userDetail.userPermissions.description ==
+                                      false
+                              ? Center(
+                                  child: notHavePermission(),
+                                )
+                              : Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text.rich(
+                                      TextSpan(
+                                        text: "Cinsiyet: ",
+                                        children: [
+                                          TextSpan(
+                                            text: userDetail.gender == null
+                                                ? "Belirtilmemiş"
+                                                : gender[userDetail.gender],
+                                            style: styleH4(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      style: styleH4(),
+                                    ),
+                                    Text.rich(
+                                      TextSpan(
+                                        text: "Yaş: ",
+                                        children: [
+                                          TextSpan(
+                                            text: userDetail.age,
+                                            style: styleH4(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      style: styleH4(),
+                                    ),
+                                  ],
+                                ),
+                        ],
+                      ),
+                    ),
+                    fixedHeight,
+                    Text(
+                      "Fotoğraf Galerisi",
+                      style: styleH2(),
+                    ),
+                    fixedHeight,
+                    userDetail?.userPermissions?.gallery == null ||
+                            userDetail.userPermissions.gallery == false
+                        ? Center(
+                            child: notHavePermission(),
+                          )
+                        : userDetail.gallery.isNotEmpty
+                            ? GridView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 3,
+                                  mainAxisSpacing: 3,
+                                ),
+                                itemCount: userDetail.gallery.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Get.dialog(
+                                        showImage(
+                                          galleryIndex: index,
+                                          gallery: userDetail.gallery,
+                                        ),
+                                      );
+                                    },
+                                    child: CachedNetworkImage(
+                                      imageUrl: userDetail.gallery[index].image,
+                                      imageBuilder: (context, provider) =>
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: provider,
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              Center(
+                                        child: CircularProgressIndicator(
+                                          value: downloadProgress.progress,
+                                          color: kPrimaryColor,
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Text(
                                   "Kullanıcı henüz bir fotoğraf paylaşmadı.",
                                   style: styleH4(color: kBlackColor),
-                                  textAlign: TextAlign.center),
-                            ),
-                ],
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                  ],
+                ),
               ),
-            ),
-            fixedHeight,
-            footer(),
-          ],
+              fixedHeight,
+              footer(),
+            ],
+          ),
         ),
       ),
     );
@@ -431,5 +526,15 @@ class _UserDetailPageState extends State<UserDetailPage> {
     }
 
     return returnList;
+  }
+
+  void _onRefresh() async {
+    API().getUserDetail(Login().token, userDetail.id).then((newUserDetail) {
+      _refreshController.refreshCompleted();
+      setState(() {
+        // Future.delayed(Duration(milliseconds: 500));
+        userDetail = newUserDetail;
+      });
+    });
   }
 }
