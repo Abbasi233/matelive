@@ -7,7 +7,7 @@ import '/view/LandingPage/controller.dart';
 import '/controller/getX/chat_controller.dart';
 import '/controller/getX/Agora/calling_controller.dart';
 
-class PusherController {
+class PusherController extends GetxController{
   PusherClient _pusher;
 
   var _chatController = Get.find<ChatController>();

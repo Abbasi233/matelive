@@ -10,13 +10,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  get: ^4.3.8
+  get: ^4.6.5
   http: ^0.13.4
   get_storage: ^2.0.3
   flutter_html: ^2.1.5
   pusher_client: ^2.0.0
   audioplayers: ^0.20.1
-  image_picker: ^0.8.4+4
+  image_picker: ^0.8.5+3
   auto_size_text: ^3.0.0
   pull_to_refresh: ^2.0.0
   in_app_purchase: ^3.0.4
@@ -29,7 +29,7 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   line_awesome_flutter: ^2.0.0
   html_editor_enhanced: ^2.4.0+1
-  cached_network_image: ^3.1.0+1
+  cached_network_image: ^3.2.1
   rotated_corner_decoration: ^2.0.0
   syncfusion_flutter_pdfviewer: ^20.1.55-beta
   flutter_chat_bubble: ^2.0.0

@@ -33,10 +33,11 @@ class _LandingPageState extends State<LandingPage>
   void initState() {
     super.initState();
     // initPusher();
-    Get.lazyPut(() => ChatController());
+    Get.put(ChatController());
+    // Get.lazyPut(() => ChatController());
     Get.lazyPut(() => CallingController());
 
-    PusherController pusherController = PusherController(Login().token);
+    var pusherController = Get.put(PusherController(Login().token));
     pusherController.listenCall(Login().user.id);
     pusherController.listenChat(Login().user.id);
 
@@ -104,63 +105,6 @@ class _LandingPageState extends State<LandingPage>
         ),
       ),
     );
-  }
-
-  void initPusher() {
-    // PusherOptions options = PusherOptions(
-    //   wsPort: 6001,
-    //   cluster: "eu",
-    //   auth: PusherAuth(
-    //     "https://matelive.net/api/broadcasting/auth",
-    //     headers: {
-    //       'Authorization': 'Bearer ${Login().token}',
-    //       'Content-Type': 'application/json',
-    //     },
-    //   ),
-    // );
-    // pusher = PusherClient("4247212f2d5fe9f991e6", options, autoConnect: true);
-
-    // pusher.onConnectionStateChange((state) {
-    //   log("previousState: ${state.previousState}, currentState: ${state.currentState}");
-
-    //   switch (state.currentState) {
-    //     case "DISCONNECTED":
-    //     case "disconnected":
-    //       _landingPageController.pusherConStates.value = ConStates.DISCONNECTED;
-    //       break;
-    //     case "CONNECTING":
-    //     case "connecting":
-    //       _landingPageController.pusherConStates.value = ConStates.CONNECTING;
-    //       break;
-    //     case "CONNECTED":
-    //     case "connected":
-    //       _landingPageController.pusherConStates.value = ConStates.CONNECTED;
-    //       break;
-    //     default:
-    //   }
-    // });
-
-    // pusher.onConnectionError((error) {
-    //   log("error: ${error.exception}");
-    // });
-    // pusher.connect();
-
-    // pusher.subscribe("private-user.call.${ProfileDetail().id}").bind(
-    //   "App\\Events\\callUser",
-    //   (PusherEvent event) {
-    //     var data = jsonDecode(event.data);
-    //     switch (data["type"]) {
-    //       case "calling":
-    //         _callingController.callingByRequestStatus(data);
-    //         break;
-    //       case "action":
-    //         _callingController.actionByRequestStatus(
-    //             data["webCallDetails"]["status"].toString(),
-    //             data["actionerDetails"]);
-    //         break;
-    //     }
-    //   },
-    // );
   }
 
   Tab _tab(IconData icon) => Tab(
