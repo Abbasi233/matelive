@@ -780,7 +780,8 @@ class API {
     return {false: jsonResponse["message"]};
   }
 
-  Future<bool> sendImage(String token, String filename, String type) async {
+  Future<Map<bool, String>> uploadChatImage(
+      String token, String filename) async {
     showProgressDialog();
 
     Uri url = Uri.parse("$_URL/chat/upload");
@@ -788,13 +789,15 @@ class API {
     request.headers.addAll(_getHeader(token));
     request.files.add(await http.MultipartFile.fromPath("file", filename));
     var response = await request.send();
+    var body = await response.stream.bytesToString();
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(body);
 
     closeProgressDialog();
 
     print(response.reasonPhrase);
     if (response.statusCode < 400) {
-      return true;
+      return {true: jsonResponse["file"]};
     }
-    return false;
+    return {false: jsonResponse["message"]};
   }
 }

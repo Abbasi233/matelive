@@ -5,15 +5,10 @@ import 'package:matelive/constant.dart';
 import 'package:matelive/controller/getX/chat_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '/model/Chat/room.dart';
-import '/view/utils/appBar.dart';
-import '/model/paged_response.dart';
-import '/view/utils/auto_size_text.dart';
-import '/view/utils/progressIndicator.dart';
-import '/view/chats_page/message_page.dart';
-
 import '/model/login.dart';
-import '/controller/api.dart';
+import '/view/utils/appBar.dart';
+import '/view/utils/auto_size_text.dart';
+import '/view/chats_page/message_page.dart';
 
 class RoomsPage extends StatefulWidget {
   const RoomsPage({Key key}) : super(key: key);
@@ -47,7 +42,6 @@ class _RoomsPageState extends State<RoomsPage> {
           "Mesajlaşmalar",
           style: TextStyle(color: Colors.black),
         ),
-        // centerTitle: true,
       ),
       body: SmartRefresher(
         enablePullDown: true,
@@ -101,6 +95,7 @@ class _RoomsPageState extends State<RoomsPage> {
                   ),
                   subtitle: room.lastMessage != ""
                       ? Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             room.user.id == Login().user.id
                                 ? Icon(Icons.check)
@@ -110,7 +105,13 @@ class _RoomsPageState extends State<RoomsPage> {
                                         color: kPrimaryColor,
                                       )
                                     : Container(),
-                            Text(room.lastMessage.toString()),
+                            Expanded(
+                              child: Text(
+                                room.lastMessage.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
                           ],
                         )
                       : const Text(

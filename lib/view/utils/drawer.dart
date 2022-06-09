@@ -92,7 +92,7 @@ class MyDrawer {
                           await API().logout(Login().token);
                           // Token geçersizse mesaj dönüyor ama ekrana yazdırmaya gerek yok.
                           Get.find<ChatController>().dispose();
-                          Get.find<PusherController>().dispose();
+                          Get.find<PusherController>().disconnect();
                           Get.find<StorageController>().saveLogin(null);
                           Get.offAll(() => SignInPage());
                         },

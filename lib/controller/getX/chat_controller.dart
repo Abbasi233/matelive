@@ -1,13 +1,15 @@
 // ignore_for_file: avoid_init_to_null
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:matelive/model/Chat/message.dart';
 import 'package:matelive/model/Chat/room.dart';
 import 'package:matelive/model/paged_response.dart';
-import 'package:matelive/model/user_detail.dart';
 import 'package:matelive/view/chats_page/message_page.dart';
+import 'package:matelive/view/chats_page/utils/image_preview.dart';
 
 import '../../model/login.dart';
 import '../../view/utils/snackbar.dart';
+import '../../view/utils/upload_image.dart';
 import '../api.dart';
 
 class ChatController extends GetxController {
@@ -16,6 +18,8 @@ class ChatController extends GetxController {
   RxBool messageLoading = false.obs;
 
   RxInt activeChatId = RxInt(null);
+  String imageUrl = "";
+  String imageText = "";
 
   Future<void> loadRooms() async {
     var result = await API().getRooms(Login().token);
@@ -73,5 +77,32 @@ class ChatController extends GetxController {
         isRead: true,
       ),
     );
+  }
+
+  Future<bool> uploadImage() async {
+    var image = await selectImage();
+
+    if (image == null) {
+      normalSnackbar("Herhangi bir resim seçilmedi.");
+      return false;
+    }
+
+    print((image as XFile).path);
+    var uploadResult = await API().uploadChatImage(
+      Login().token,
+      (image as XFile).path,
+    );
+
+    if (uploadResult.keys.first == false) {
+      normalSnackbar(uploadResult.values.first);
+      return false;
+    }
+
+    imageUrl = uploadResult.values.first;
+    var imageTextResult = await Get.to(() => ChatImagePreview(image));
+    if (imageTextResult == null) return false;
+
+    imageText = imageTextResult;
+    return true;
   }
 }

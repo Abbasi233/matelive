@@ -33,8 +33,9 @@ class _LandingPageState extends State<LandingPage>
   void initState() {
     super.initState();
     // initPusher();
-    Get.put(ChatController());
-    // Get.lazyPut(() => ChatController());
+    // Get.put(ChatController());
+
+    Get.lazyPut(() => ChatController());
     Get.lazyPut(() => CallingController());
 
     var pusherController = Get.put(PusherController(Login().token));

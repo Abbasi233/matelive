@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:matelive/controller/getX/chat_controller.dart';
 import 'package:matelive/model/profile_detail.dart';
 import 'package:matelive/view/UserPage/user_page.dart';
+import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../controller/api.dart';
@@ -170,44 +171,41 @@ class _MessagePageState extends State<MessagePage> {
                         )
                       ],
                       borderRadius: BorderRadius.horizontal(
-                          left: Radius.circular(25),
-                          right: Radius.circular(25)),
+                        left: Radius.circular(25),
+                        right: Radius.circular(25),
+                      ),
                       color: Colors.white,
                     ),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: TextField(
-                            controller: messageController,
-                            decoration: const InputDecoration(
-                              hintText: "Mesaj Giriniz...",
-                              hintStyle: TextStyle(
-                                fontStyle: FontStyle.italic,
+                    child: Material(
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(25),
+                        right: Radius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: TextField(
+                              controller: messageController,
+                              decoration: const InputDecoration(
+                                hintText: "Mesaj Giriniz...",
+                                hintStyle: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                border: InputBorder.none,
                               ),
-                              border: InputBorder.none,
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.image,
-                            color: Colors.grey,
+                          IconButton(
+                            icon: const Icon(
+                              Icons.image,
+                              color: Colors.grey,
+                            ),
+                            splashRadius: 24,
+                            onPressed: sendImage,
                           ),
-                          onPressed: () {
-                            // chatController.uploadFile("photo");
-                          },
-                        ),
-                        // IconButton(
-                        //   icon: const Icon(
-                        //     Icons.attach_file,
-                        //     color: Colors.grey,
-                        //   ),
-                        //   onPressed: () {
-                        //     // chatController.uploadFile("document");
-                        //   },
-                        // ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -271,6 +269,9 @@ class _MessagePageState extends State<MessagePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            message.attachments.isNotEmpty
+                ? imageContent(message.attachments.first)
+                : SizedBox(),
             Container(
               constraints: BoxConstraints(
                 maxWidth: Get.width * 0.60,
@@ -340,6 +341,9 @@ class _MessagePageState extends State<MessagePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              message.attachments.isNotEmpty
+                  ? imageContent(message.attachments.first)
+                  : SizedBox(),
               Container(
                 constraints: BoxConstraints(
                   maxWidth: Get.width * 0.60,
@@ -389,6 +393,37 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
+  Widget imageContent(String imageUrl) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        imageBuilder: (context, imageProvider) => GestureDetector(
+          onTap: () => Get.dialog(showImage(imageUrl: imageUrl)),
+          child: Container(
+            height: 200,
+            width: Get.width * .60,
+            child: Image(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        progressIndicatorBuilder: (context, url, downloadProgress) => Container(
+          height: 200,
+          width: Get.width * .60,
+          color: Colors.white60,
+          child: Center(
+            child: CircularProgressIndicator(
+              value: downloadProgress.progress,
+              color: kWhiteColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   String twoDigits(int n) => n.toString().padLeft(2, "0");
 
   void sendMessage() async {
@@ -399,14 +434,48 @@ class _MessagePageState extends State<MessagePage> {
       var messageData = {
         "receiver_id": receiver.id,
         "message": messageText,
-        "attachments": [
-          // "https://matelive.test/uploads/chats/120-1653782928-1806894718.jpeg",
-          // "https://matelive.test/uploads/chats/120-1653782932-2342342343.jpeg"
-        ]
+        "attachments": [],
       };
 
       var message = Message(
         message: messageText,
+        roomId: widget.roomId,
+        sender: widget.receiver,
+        senderId: Login().user.id,
+        attachments: [],
+        updatedAt: DateTime.now(),
+        sending: true,
+        isReadByReceiver: true, // burası degisecek
+      );
+
+      chatController.messages.insert(0, message);
+      API().sendMessage(messageData).then((result) {
+        if (result.keys.first) {
+          setState(() {
+            chatController.messages[0].sending = false;
+          });
+          chatController.changeRoomsOrder(
+            message: message,
+            userId: receiver.id,
+          );
+        }
+      });
+    }
+  }
+
+  void sendImage() async {
+    var result = await chatController.uploadImage();
+
+    if (result) {
+      var messageData = {
+        "receiver_id": receiver.id,
+        "message": chatController.imageText,
+        "attachments": [chatController.imageUrl]
+      };
+
+      var message = Message(
+        message: chatController.imageText,
+        attachments: [chatController.imageUrl],
         roomId: widget.roomId,
         sender: widget.receiver,
         senderId: Login().user.id,
@@ -425,6 +494,9 @@ class _MessagePageState extends State<MessagePage> {
             message: message,
             userId: receiver.id,
           );
+        } else {
+          chatController.messages.removeAt(0);
+          failureSnackbar(result.values.first);
         }
       });
     }
