@@ -191,8 +191,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                                         ],
                                       ),
                                 onTap: () {
-                                  var result = Get.find<ChatController>()
+                                  var chatController =
+                                      Get.find<ChatController>();
+                                  var result = chatController
                                       .getExistRoomId(userDetail.id);
+                                  chatController.messages.clear();
 
                                   Get.to(() => MessagePage(
                                         roomId: result,

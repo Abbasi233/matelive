@@ -5,7 +5,6 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:matelive/controller/getX/chat_controller.dart';
-import 'package:matelive/model/profile_detail.dart';
 import 'package:matelive/view/UserPage/user_page.dart';
 import 'package:matelive/view/utils/snackbar.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -38,33 +37,22 @@ class _MessagePageState extends State<MessagePage> {
 
   final _refreshController = RefreshController(initialRefresh: false);
 
-  PagedResponse pagedResponse;
-
   @override
   void initState() {
     super.initState();
     receiver = widget.receiver;
     chatController.activeChatId.value = widget.roomId;
 
-    chatController.messageLoading.value = true;
-    API().getMessages(Login().token, widget.roomId).then((value) {
-      if (value.keys.first) {
-        pagedResponse = value.values.first as PagedResponse;
-
-        if (pagedResponse.data != null) {
-          chatController.messages.addAll(pagedResponse.data as List<Message>);
-        } else {
-          chatController.messages.value = <Message>[];
-        }
-        chatController.messageLoading.value = false;
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => chatController.loadMessages(widget.roomId),
+    );
   }
 
   @override
   void dispose() {
-    chatController.messages.value = [];
-    chatController.activeChatId.value = null;
+    scrollController.dispose();
+    messageController.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -503,16 +491,20 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   void _onLoading() async {
-    if (pagedResponse.meta.currentPage < pagedResponse.meta.lastPage) {
+    PagedResponse metadata = chatController.messageMetadata;
+
+    if (metadata.meta.currentPage < metadata.meta.lastPage) {
       var loadNewMessages = await API().getMessages(
         Login().token,
         widget.roomId,
-        page: pagedResponse.meta.currentPage + 1,
+        page: metadata.meta.currentPage + 1,
       );
 
       if (loadNewMessages.keys.first) {
-        pagedResponse = loadNewMessages.values.first as PagedResponse;
-        chatController.messages.addAll(pagedResponse.data as List<Message>);
+        chatController.messageMetadata =
+            loadNewMessages.values.first as PagedResponse;
+        chatController.messages
+            .addAll(chatController.messageMetadata.data as List<Message>);
       }
     }
     _refreshController.loadComplete();

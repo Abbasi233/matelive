@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_init_to_null
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matelive/model/Chat/message.dart';
@@ -15,7 +16,10 @@ import '../api.dart';
 class ChatController extends GetxController {
   RxList<Room> rooms = RxList();
   RxList<Message> messages = RxList();
+
+  RxBool hasNewMessage = false.obs;
   RxBool messageLoading = false.obs;
+  PagedResponse messageMetadata = PagedResponse();
 
   RxInt activeChatId = RxInt(null);
   String imageUrl = "";
@@ -32,11 +36,29 @@ class ChatController extends GetxController {
     }
   }
 
+  Future<void> loadMessages(int roomId) async {
+    messageLoading.value = true;
+    API().getMessages(Login().token, roomId).then((value) {
+      if (value.keys.first) {
+        messageMetadata = value.values.first as PagedResponse;
+
+        if (messageMetadata.data != null) {
+          messages.value = messageMetadata.data as List<Message>;
+        } else {
+          messages.value = <Message>[];
+        }
+        messageLoading.value = false;
+      }
+    });
+  }
+
   void onNewMessage(Map<String, dynamic> map) {
     var message = Message.fromJson(map);
 
     if (activeChatId.value == message.roomId) {
       messages.insert(0, message);
+    } else {
+      hasNewMessage.value = true;
     }
 
     changeRoomsOrder(message: message, userId: message.senderId);

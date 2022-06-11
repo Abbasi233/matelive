@@ -754,7 +754,6 @@ class API {
     Map<String, dynamic> jsonResponse = convert.jsonDecode(
       await response.stream.bytesToString(),
     );
-    // print(jsonResponse);
 
     if (response.statusCode == 200) {
       return {true: PagedResponse.fromJson(jsonResponse, Message)};

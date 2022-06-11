@@ -202,29 +202,30 @@ class _CallPageState extends State<CallPage>
       engine.setEventHandler(
         RtcEngineEventHandler(
           activeSpeaker: (i) {
-            log("Aktive Speaker: $i");
+            log("Aktive Speaker: $i", name: "AGORA");
           },
           microphoneEnabled: (enable) {
-            log("Mikrofon: " + enable.toString());
+            log("Mikrofon: " + enable.toString(), name: "AGORA");
             callingController.microphoneState.value = enable;
           },
           warning: (warningCode) {
-            print(warningCode.toString());
+            log(warningCode.toString(), name: "AGORA");
           },
           // rtcStats: (stats) {
           //   log("User Count: ${stats.userCount}");
           // },
           connectionStateChanged: (state, reason) {
-            log("Connection Changed : ${state.toString()}, ${reason.toString()}");
+            log("Connection Changed : ${state.toString()}, ${reason.toString()}",
+                name: "AGORA");
           },
           joinChannelSuccess: (String channel, int uid, int elapsed) {
-            log('joinChannelSuccess $channel $uid');
+            log('joinChannelSuccess $channel $uid', name: "AGORA");
           },
           userJoined: (int uid, int elapsed) {
-            log('userJoined $uid');
+            log('userJoined $uid', name: "AGORA");
           },
           userOffline: (int uid, UserOfflineReason reason) {
-            log('userOffline $uid');
+            log('userOffline $uid', name: "AGORA");
             callingController.finishCall(uid, "user_left");
           },
           error: (error) {

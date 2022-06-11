@@ -24,6 +24,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage>
     with SingleTickerProviderStateMixin {
+  var chatController = Get.put(ChatController());
   var _landingPageController = Get.put(LandingPageController());
 
   TabController _tabController;
@@ -32,10 +33,7 @@ class _LandingPageState extends State<LandingPage>
   @override
   void initState() {
     super.initState();
-    // initPusher();
-    // Get.put(ChatController());
 
-    Get.lazyPut(() => ChatController());
     Get.lazyPut(() => CallingController());
 
     var pusherController = Get.put(PusherController(Login().token));
@@ -57,16 +55,22 @@ class _LandingPageState extends State<LandingPage>
           centerTitle: true,
           action: [
             Obx(() => _landingPageController.getPusherConState),
-            IconButton(
-              onPressed: () {
-                Get.to(
-                  () => RoomsPage(),
-                  transition: Transition.cupertino,
-                );
-              },
-              icon: Icon(
-                Icons.message_rounded,
-                color: Colors.grey[800],
+            Obx(
+              () => IconButton(
+                onPressed: () async {
+                  Get.to(
+                    () => RoomsPage(),
+                    transition: Transition.cupertino,
+                  );
+                  // WidgetsBinding.instance
+                  //     .addPostFrameCallback((_) => setState(() {}));
+                },
+                icon: Icon(
+                  Icons.message_rounded,
+                  color: chatController.hasNewMessage.value
+                      ? kPrimaryColor
+                      : Colors.grey[800],
+                ),
               ),
             )
           ],

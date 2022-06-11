@@ -26,10 +26,14 @@ class _RoomsPageState extends State<RoomsPage> {
   void initState() {
     super.initState();
     chatController.loadRooms();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => chatController.hasNewMessage.value = false);
   }
 
   @override
   void dispose() {
+    chatController.messages.clear();
     chatController.activeChatId.value = null;
     super.dispose();
   }
