@@ -58,12 +58,11 @@ class _LandingPageState extends State<LandingPage>
             Obx(
               () => IconButton(
                 onPressed: () async {
-                  Get.to(
+                  await Get.to(
                     () => RoomsPage(),
                     transition: Transition.cupertino,
                   );
-                  // WidgetsBinding.instance
-                  //     .addPostFrameCallback((_) => setState(() {}));
+                  chatController.setHasNewMessage();
                 },
                 icon: Icon(
                   Icons.message_rounded,

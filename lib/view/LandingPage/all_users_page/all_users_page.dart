@@ -30,9 +30,12 @@ class _AllUsersPageState extends State<AllUsersPage> {
     "Erkekler",
   ];
 
+  Timer timer;
+  String gender;
+  var searchController = TextEditingController();
+
   StreamController<List<dynamic>> streamController;
   final _refreshController = RefreshController(initialRefresh: false);
-
   @override
   void initState() {
     super.initState();
@@ -96,19 +99,19 @@ class _AllUsersPageState extends State<AllUsersPage> {
                         (label) => Column(
                           children: [
                             primaryButton(
-                              text: Text(
-                                label,
-                                style: styleH5(
-                                    color: _selectedFilter == label
-                                        ? kWhiteColor
-                                        : kPrimaryColor),
+                              text: Center(
+                                child: Text(
+                                  label,
+                                  style: styleH5(
+                                      color: _selectedFilter == label
+                                          ? kWhiteColor
+                                          : kPrimaryColor),
+                                ),
                               ),
                               backgroundColor: _selectedFilter == label
                                   ? kPrimaryColor
                                   : kWhiteColor,
                               onPressed: () async {
-                                String gender = "";
-
                                 setState(() {
                                   _selectedFilter = label;
                                   if (label == "Kadınlar") {
@@ -118,12 +121,7 @@ class _AllUsersPageState extends State<AllUsersPage> {
                                   }
                                 });
 
-                                streamController.add(null);
-                                var refreshUserList = await API()
-                                    .getAllUsers(Login().token, gender, "", "");
-                                pagedResponse = refreshUserList.values.first;
-                                userList = pagedResponse.data;
-                                streamController.add(userList);
+                                getAllUsers(gender, searchController.text);
                               },
                             ),
                             SizedBox(height: 10),
@@ -131,6 +129,41 @@ class _AllUsersPageState extends State<AllUsersPage> {
                         ),
                       )
                       .toList(),
+                ),
+                // fixedHeight,
+                TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: "Arama yapmak için girin",
+                    hintStyle: TextStyle(fontStyle: FontStyle.italic),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        kTextInputBorderRadius,
+                      ),
+                      borderSide: BorderSide(color: kPrimaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                        kTextInputBorderRadius,
+                      ),
+                      borderSide: BorderSide(color: kPrimaryColor),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    if (timer != null) timer.cancel();
+
+                    timer = Timer(
+                      Duration(milliseconds: 500),
+                      () {
+                        print("Searching");
+                        getAllUsers(gender, searchController.text);
+                      },
+                    );
+                  },
                 ),
                 fixedHeight,
                 StreamBuilder<List<dynamic>>(
@@ -168,6 +201,15 @@ class _AllUsersPageState extends State<AllUsersPage> {
         ),
       ),
     );
+  }
+
+  void getAllUsers(String gender, String search) async {
+    streamController.add(null);
+    var refreshUserList =
+        await API().getAllUsers(Login().token, gender, search, "");
+    pagedResponse = refreshUserList.values.first;
+    userList = pagedResponse.data;
+    streamController.add(userList);
   }
 
   void _onRefresh() async {

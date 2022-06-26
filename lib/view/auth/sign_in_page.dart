@@ -117,17 +117,19 @@ class SignInPage extends StatelessWidget {
                     Expanded(
                       child: primaryButton(
                         text: Expanded(
-                          child: AutoSizeText(
-                            'Giriş Yap',
-                            maxLines: 1,
+                          child: Center(
+                            child: AutoSizeText(
+                              'Giriş Yap',
+                              maxLines: 1,
+                            ),
                           ),
                         ),
                         imageIcon: Icon(Icons.person),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             var result = await _api.login({
-                              "email": _eMailController.text,
-                              "password": _passwordController.text,
+                              "email": _eMailController.text.trim(),
+                              "password": _passwordController.text.trim(),
                             });
 
                             if (result) {

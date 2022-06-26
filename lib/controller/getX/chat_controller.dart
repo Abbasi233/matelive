@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_init_to_null
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matelive/model/Chat/message.dart';
@@ -8,10 +6,10 @@ import 'package:matelive/model/paged_response.dart';
 import 'package:matelive/view/chats_page/message_page.dart';
 import 'package:matelive/view/chats_page/utils/image_preview.dart';
 
+import '../api.dart';
 import '../../model/login.dart';
 import '../../view/utils/snackbar.dart';
 import '../../view/utils/upload_image.dart';
-import '../api.dart';
 
 class ChatController extends GetxController {
   RxList<Room> rooms = RxList();
@@ -61,7 +59,10 @@ class ChatController extends GetxController {
       hasNewMessage.value = true;
     }
 
-    changeRoomsOrder(message: message, userId: message.senderId);
+    changeRoomsOrder(
+      message: message,
+      senderId: message.senderId,
+    );
   }
 
   void showNewMessageSnackbar(Map<String, dynamic> map) {
@@ -77,12 +78,16 @@ class ChatController extends GetxController {
     );
   }
 
-  int getExistRoomId(int userId) {
-    return rooms.firstWhereOrNull((room) => room.user.id == userId)?.id ?? 0;
+  int getExistRoomId(int receiverId) {
+    return rooms.firstWhereOrNull((room) => room.user.id == receiverId)?.id ??
+        0;
   }
 
-  void changeRoomsOrder({Message message, int userId}) {
-    var roomId = getExistRoomId(userId);
+  void changeRoomsOrder({
+    Message message,
+    int senderId,
+  }) {
+    var roomId = getExistRoomId(senderId);
     if (roomId != 0) {
       rooms.removeWhere((room) => room.id == roomId);
     }
@@ -92,13 +97,30 @@ class ChatController extends GetxController {
       Room(
         id: message.roomId,
         lastMessage: message.message,
+        lastMessageSentBy: message.senderId,
         user: message.sender,
-        // createdAt: message.updatedAt,
         updatedAt: message.updatedAt,
-        // isRead: message.senderId == Login().user.id ? false : true,
-        isRead: true,
+        isRead: {
+          message.senderId.toString(): true,
+          message.receiverId.toString(): false,
+        },
       ),
     );
+  }
+
+  void changeRoomIsRead() {
+    var room = rooms.firstWhere((room) => room.id == activeChatId.value);
+    room.isRead["${Login().user.id}"] = true;
+    rooms.refresh();
+  }
+
+  void setHasNewMessage() {
+    var userId = Login().user.id;
+    var result = rooms.firstWhere((room) => room.isRead["$userId"] == false,
+        orElse: () => null);
+    if (result == null) {
+      hasNewMessage.value = false;
+    }
   }
 
   Future<bool> uploadImage() async {
@@ -126,5 +148,11 @@ class ChatController extends GetxController {
 
     imageText = imageTextResult;
     return true;
+  }
+
+  Future<Map<bool, String>> deleteMessage(int id) async {
+    var result = await API().deleteMessage(Login().token, id);
+    print(result);
+    return result;
   }
 }

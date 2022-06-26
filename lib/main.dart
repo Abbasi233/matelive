@@ -19,7 +19,10 @@ void main() async {
   await GetStorage.init();
   _firstPage = await initFirstPage();
 
-  runApp(MyApp());
+  Future.delayed(
+    const Duration(milliseconds: 500),
+    () => runApp(MyApp()),
+  );
 }
 
 Future<Widget> initFirstPage() async {

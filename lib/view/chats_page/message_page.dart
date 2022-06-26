@@ -2,22 +2,23 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:matelive/controller/getX/chat_controller.dart';
-import 'package:matelive/view/UserPage/user_page.dart';
-import 'package:matelive/view/utils/snackbar.dart';
+import 'package:matelive/view/chats_page/utils/delete_message_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
 
-import '../../controller/api.dart';
-import '../../model/login.dart';
-import '../../model/paged_response.dart';
-import '../utils/progressIndicator.dart';
-import '../utils/show_image.dart';
 import '/constant.dart';
+import '/model/login.dart';
+import '/controller/api.dart';
 import '/view/utils/appBar.dart';
 import '/model/user_detail.dart';
 import '/model/Chat/message.dart';
+import '/view/utils/snackbar.dart';
+import '/model/paged_response.dart';
+import '/view/utils/show_image.dart';
+import '/view/UserPage/user_page.dart';
+import '/view/utils/progressIndicator.dart';
+import '/controller/getX/chat_controller.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({this.roomId = 0, this.receiver, Key key})
@@ -378,6 +379,18 @@ class _MessagePageState extends State<MessagePage> {
         //   chatController.downloadFile(chatMessage.message);
         // }
       },
+      onLongPress: () async {
+        var result = await Get.dialog(deleteMessageDialog());
+        if (result != null && result) {
+          var result = await chatController.deleteMessage(message.id);
+          if (result.keys.first) {
+            chatController.loadMessages(widget.roomId);
+            successSnackbar(result.values.first);
+          } else {
+            failureSnackbar(result.values.first);
+          }
+        }
+      },
     );
   }
 
@@ -428,12 +441,13 @@ class _MessagePageState extends State<MessagePage> {
       var message = Message(
         message: messageText,
         roomId: widget.roomId,
-        sender: widget.receiver,
+        sender: receiver,
         senderId: Login().user.id,
+        receiverId: receiver.id,
         attachments: [],
         updatedAt: DateTime.now(),
         sending: true,
-        isReadByReceiver: true, // burası degisecek
+        isReadByReceiver: false, // burası degisecek
       );
 
       chatController.messages.insert(0, message);
@@ -444,7 +458,7 @@ class _MessagePageState extends State<MessagePage> {
           });
           chatController.changeRoomsOrder(
             message: message,
-            userId: receiver.id,
+            senderId: receiver.id,
           );
         }
       });
@@ -480,7 +494,7 @@ class _MessagePageState extends State<MessagePage> {
           });
           chatController.changeRoomsOrder(
             message: message,
-            userId: receiver.id,
+            // senderId: receiver.id,
           );
         } else {
           chatController.messages.removeAt(0);

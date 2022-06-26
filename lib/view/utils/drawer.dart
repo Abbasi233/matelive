@@ -9,6 +9,7 @@ import 'package:matelive/view/LandingPage/contact_page/contact_page.dart';
 import 'package:matelive/view/LandingPage/controller.dart';
 import 'package:matelive/view/LandingPage/faq_page/faq_page.dart';
 import 'package:matelive/view/auth/utils/policy_page.dart';
+import 'package:matelive/view/utils/auto_size_text.dart';
 
 import '/constant.dart';
 import '/model/login.dart';
@@ -75,7 +76,11 @@ class MyDrawer {
                 children: [
                   Icon(LineAwesomeIcons.alternate_sign_out),
                   SizedBox(width: 5),
-                  Text("Çıkış"),
+                  Expanded(
+                    child: Center(
+                      child: autoSize(text: "Çıkış", paddingRight: 0),
+                    ),
+                  ),
                 ],
               ),
               padding: 50,
@@ -92,8 +97,8 @@ class MyDrawer {
                           await API().logout(Login().token);
                           // Token geçersizse mesaj dönüyor ama ekrana yazdırmaya gerek yok.
                           Get.find<ChatController>().dispose();
-                          Get.find<PusherController>().disconnect();
                           Get.find<StorageController>().saveLogin(null);
+                          await Get.find<PusherController>().disconnect();
                           Get.offAll(() => SignInPage());
                         },
                       ),

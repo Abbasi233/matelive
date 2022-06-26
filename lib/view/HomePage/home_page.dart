@@ -109,14 +109,16 @@ class _HomePageState extends State<HomePage>
                               Container(
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: primaryButton(
-                                  text: autoSize(
-                                    text: "Online Kullanıcıları Göster",
-                                    style: styleH4(
-                                      fontSize: 18,
-                                      color: kWhiteColor,
-                                      fontWeight: FontWeight.w500,
+                                  text: Center(
+                                    child: autoSize(
+                                      text: "Online Kullanıcıları Göster",
+                                      style: styleH4(
+                                        fontSize: 18,
+                                        color: kWhiteColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      paddingRight: 0,
                                     ),
-                                    paddingRight: 0,
                                   ),
                                   onPressed: () {
                                     Get.to(() => OnlineUsersPage());

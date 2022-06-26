@@ -264,38 +264,50 @@ class _CallPageState extends State<CallPage>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          primaryButton(
-            text: Row(
-              children: [
-                Icon(Icons.call),
-                SizedBox(width: 5),
-                Text("Kabul Et"),
-              ],
+          Expanded(
+            child: primaryButton(
+              text: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.call),
+                    SizedBox(width: 5),
+                    Text("Kabul Et"),
+                  ],
+                ),
+              ),
+              onPressed: () async {
+                await callingController.stopSound();
+                await callingController.startCall();
+                await callingController.acceptCall();
+                await joinChannel();
+                callAccepted.value = true;
+              },
+              backgroundColor: kGreenColor,
+              borderColor: kGreenColor,
+              height: 70,
+              padding: Get.width * .02,
             ),
-            onPressed: () async {
-              await callingController.stopSound();
-              await callingController.startCall();
-              await callingController.acceptCall();
-              await joinChannel();
-              callAccepted.value = true;
-            },
-            backgroundColor: kGreenColor,
-            borderColor: kGreenColor,
-            height: 70,
           ),
-          primaryButton(
-            text: Row(
-              children: [
-                Icon(Icons.call_end),
-                SizedBox(width: 5),
-                Text("Reddet"),
-              ],
+          Expanded(
+            child: primaryButton(
+              text: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.call_end),
+                    SizedBox(width: 5),
+                    Text("Reddet"),
+                  ],
+                ),
+              ),
+              onPressed: () async {
+                await callingController.stopSound();
+                await callingController.declineCall("declined_by_answerer");
+              },
+              height: 70,
+              padding: Get.width * .02,
             ),
-            onPressed: () async {
-              await callingController.stopSound();
-              await callingController.declineCall("declined_by_answerer");
-            },
-            height: 70,
           ),
         ],
       ),

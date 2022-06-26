@@ -132,11 +132,13 @@ class ContactPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only( bottom: 10),
+                padding: EdgeInsets.only(bottom: 10),
                 child: primaryButton(
-                  text: autoSize(
-                    text: 'Mesajı Gönder',
-                    paddingRight: 0,
+                  text: Center(
+                    child: autoSize(
+                      text: 'Mesajı Gönder',
+                      paddingRight: 0,
+                    ),
                   ),
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {

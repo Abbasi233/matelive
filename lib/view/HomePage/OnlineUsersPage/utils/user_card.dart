@@ -6,6 +6,7 @@ import 'package:matelive/controller/api.dart';
 import 'package:matelive/controller/getX/chat_controller.dart';
 import 'package:matelive/model/login.dart';
 import 'package:matelive/view/chats_page/message_page.dart';
+import 'package:matelive/view/utils/auto_size_text.dart';
 import 'package:matelive/view/utils/snackbar.dart';
 
 import '/constant.dart';
@@ -19,41 +20,6 @@ Widget userCard(
     bool online = false,
     bool showActionButtons = true}) {
   const double _fixedSize = 40;
-  Widget actionButton = online
-      ? primaryButton(
-          padding: Get.width * 0.1,
-          text: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(LineAwesomeIcons.phone),
-              SizedBox(width: 5),
-              Text("Şimdi Ara"),
-            ],
-          ),
-          onPressed: () {
-            Get.find<CallingController>().createCall(userDetail);
-          },
-        )
-      : primaryButton(
-          padding: Get.width * 0.1,
-          text: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.message),
-              SizedBox(width: 5),
-              Text("Mesaj Gönder"),
-            ],
-          ),
-          onPressed: () {
-            var result =
-                Get.find<ChatController>().getExistRoomId(userDetail.id);
-
-            Get.to(() => MessagePage(
-                  roomId: result,
-                  receiver: userDetail,
-                ));
-          },
-        );
 
   return Card(
     margin: const EdgeInsets.only(bottom: 30),
@@ -217,7 +183,68 @@ Widget userCard(
                             userDetail.age,
                             style: styleH4(color: kWhiteColor),
                           ),
-                          actionButton,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              userDetail.isOnline
+                                  ? Expanded(
+                                      child: primaryButton(
+                                        text: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(LineAwesomeIcons.phone),
+                                            SizedBox(width: 5),
+                                            Expanded(
+                                              child: autoSize(
+                                                text: "Şimdi Ara",
+                                                paddingRight: 0,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        onPressed: () {
+                                          Get.find<CallingController>()
+                                              .createCall(userDetail);
+                                        },
+                                      ),
+                                    )
+                                  : Container(),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: primaryButton(
+                                  borderColor: Colors.blue,
+                                  backgroundColor: Colors.blue,
+                                  text: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.message),
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        child: Center(
+                                          child: autoSize(
+                                            text: "Mesaj Gönder",
+                                            paddingRight: 0,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    var result = Get.find<ChatController>()
+                                        .getExistRoomId(userDetail.id);
+
+                                    Get.to(() => MessagePage(
+                                          roomId: result,
+                                          receiver: userDetail,
+                                        ));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

@@ -78,19 +78,18 @@ class PusherController extends GetxController {
       "App\\Events\\chatMessage",
       (PusherEvent event) {
         var map = jsonDecode(event.data)["message"];
-        int activeChatId = _chatController.activeChatId.value;
-
-        if (Get.currentRoute != "/RoomsPage" &&
-            activeChatId != map["room_id"]) {
-          _chatController.showNewMessageSnackbar(map);
-        }
+        // int activeChatId = _chatController.activeChatId.value;
+        // if (Get.currentRoute != "/RoomsPage" &&
+        //     activeChatId != map["room_id"]) {
+        //   _chatController.showNewMessageSnackbar(map);
+        // }
 
         _chatController.onNewMessage(map);
       },
     );
   }
 
-  void disconnect() {
-    _pusher.disconnect();
+  Future<void> disconnect() async {
+    await _pusher.disconnect();
   }
 }

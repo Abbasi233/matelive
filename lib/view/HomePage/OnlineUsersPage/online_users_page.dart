@@ -79,12 +79,14 @@ class _OnlineUsersPageState extends State<OnlineUsersPage> {
                       (label) => Column(
                         children: [
                           primaryButton(
-                            text: Text(
-                              label,
-                              style: styleH5(
-                                  color: _selectedFilter == label
-                                      ? kWhiteColor
-                                      : kPrimaryColor),
+                            text: Center(
+                              child: Text(
+                                label,
+                                style: styleH5(
+                                    color: _selectedFilter == label
+                                        ? kWhiteColor
+                                        : kPrimaryColor),
+                              ),
                             ),
                             backgroundColor: _selectedFilter == label
                                 ? kPrimaryColor

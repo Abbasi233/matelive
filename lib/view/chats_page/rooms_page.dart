@@ -1,14 +1,15 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:matelive/constant.dart';
-import 'package:matelive/controller/getX/chat_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
+import '/constant.dart';
 import '/model/login.dart';
+import '/model/Chat/room.dart';
 import '/view/utils/appBar.dart';
 import '/view/utils/auto_size_text.dart';
 import '/view/chats_page/message_page.dart';
+import '/controller/getX/chat_controller.dart';
 
 class RoomsPage extends StatefulWidget {
   const RoomsPage({Key key}) : super(key: key);
@@ -19,16 +20,12 @@ class RoomsPage extends StatefulWidget {
 
 class _RoomsPageState extends State<RoomsPage> {
   final _refreshController = RefreshController(initialRefresh: false);
-
   var chatController = Get.find<ChatController>();
 
   @override
   void initState() {
     super.initState();
     chatController.loadRooms();
-
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => chatController.hasNewMessage.value = false);
   }
 
   @override
@@ -75,6 +72,12 @@ class _RoomsPageState extends State<RoomsPage> {
                 return ListTile(
                   title: Text(
                     "${room.user.name} ${room.user.surname}",
+                    style: isReadByReceiver(room, Login().user.id)
+                        ? null
+                        : TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: kPrimaryColor,
+                          ),
                   ),
                   leading: CachedNetworkImage(
                     imageUrl: room.user.image,
@@ -101,14 +104,27 @@ class _RoomsPageState extends State<RoomsPage> {
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            room.user.id == Login().user.id
-                                ? Icon(Icons.check)
-                                : !room.isRead
-                                    ? Icon(
-                                        Icons.circle,
-                                        color: kPrimaryColor,
-                                      )
-                                    : Container(),
+                            room.lastMessageSentBy == Login().user.id
+                                ? Icon(
+                                    Icons.check,
+                                    color: isReadByReceiver(
+                                      room,
+                                      room.user.id,
+                                    )
+                                        ? Colors.blue
+                                        : Colors.grey,
+                                  )
+                                : isReadByReceiver(room, Login().user.id)
+                                    ? Container()
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.circle,
+                                          color: kPrimaryColor,
+                                          size: 20,
+                                        ),
+                                      ),
                             Expanded(
                               child: Text(
                                 room.lastMessage.toString(),
@@ -124,11 +140,13 @@ class _RoomsPageState extends State<RoomsPage> {
                         ),
                   onTap: () async {
                     print("Tap");
-                    await Get.to(() => MessagePage(
-                          roomId: room.id,
-                          receiver: room.user,
-                        ));
-                    // setState(() {});
+                    await Get.to(
+                      () => MessagePage(
+                        roomId: room.id,
+                        receiver: room.user,
+                      ),
+                    );
+                    chatController.changeRoomIsRead();
                   },
                 );
               },
@@ -137,6 +155,10 @@ class _RoomsPageState extends State<RoomsPage> {
         ),
       ),
     );
+  }
+
+  bool isReadByReceiver(Room room, int userId) {
+    return room.isRead != null && room.isRead["$userId"];
   }
 
   void _onRefresh() async {

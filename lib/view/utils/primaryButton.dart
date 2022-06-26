@@ -22,7 +22,7 @@ Widget primaryButton({
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: imageIcon == null
-              ? [text]
+              ? [Expanded(child: text)]
               : [text, SizedBox(width: 5), imageIcon],
         ),
         onPressed: disabled ? null : onPressed,

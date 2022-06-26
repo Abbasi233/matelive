@@ -799,4 +799,21 @@ class API {
     }
     return {false: jsonResponse["message"]};
   }
+
+  Future<Map<bool, String>> deleteMessage(String token, int id) async {
+    showProgressDialog();
+    Uri url = Uri.parse("$_URL/chat/message/$id");
+    http.Response response = await http.delete(
+      url,
+      headers: _getHeader(token),
+    );
+    Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
+    closeProgressDialog();
+    print(jsonResponse);
+
+    if (response.statusCode < 400) {
+      return {true: jsonResponse["message"]};
+    }
+    return {false: jsonResponse["message"]};
+  }
 }

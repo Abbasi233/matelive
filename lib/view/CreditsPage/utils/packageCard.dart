@@ -59,7 +59,7 @@ Widget creditCard({Credit credit, bool mostPopuler = false}) => Container(
                 style: styleH5(fontWeight: FontWeight.w500),
               ),
               primaryButton(
-                text: Text("Paketi Seç"),
+                text: Center(child: Text("Paketi Seç")),
                 onPressed: () {
                   var iapController = Get.find<IAPController>();
                   var userId = ProfileDetail().id;
