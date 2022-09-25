@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:matelive/view/chats_page/utils/delete_message_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
@@ -17,8 +16,9 @@ import '/view/utils/snackbar.dart';
 import '/model/paged_response.dart';
 import '/view/utils/show_image.dart';
 import '/view/UserPage/user_page.dart';
-import '/view/utils/progressIndicator.dart';
+import '/view/chats_page/utils/methods.dart';
 import '/controller/getX/chat_controller.dart';
+import '/view/chats_page/utils/delete_message_dialog.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({this.roomId = 0, this.receiver, Key key})
@@ -120,7 +120,7 @@ class _MessagePageState extends State<MessagePage> {
                       height: 0,
                       builder: (context, mode) => null,
                     ),
-                    footer: _customFooter(),
+                    footer: customFooter(),
                     physics: BouncingScrollPhysics(),
                     child: ListView.builder(
                       reverse: true,
@@ -522,30 +522,5 @@ class _MessagePageState extends State<MessagePage> {
       }
     }
     _refreshController.loadComplete();
-  }
-
-  Widget _customFooter() {
-    return CustomFooter(
-      height: 100,
-      loadStyle: LoadStyle.ShowWhenLoading,
-      builder: (BuildContext context, LoadStatus mode) {
-        Widget body;
-        if (mode == LoadStatus.idle) {
-          body = Text("Yüklemek için kaydırın");
-        } else if (mode == LoadStatus.loading) {
-          body = showProgressIndicator(context);
-        } else if (mode == LoadStatus.failed) {
-          body = Text("Yüklenirken hata oluştu. Tekrar deneyin.");
-        } else if (mode == LoadStatus.canLoading) {
-          body = Text("Yüklemek için bırakın");
-        } else {
-          body = Text("Liste Sonu");
-        }
-        return Container(
-          height: 55.0,
-          child: Center(child: body),
-        );
-      },
-    );
   }
 }

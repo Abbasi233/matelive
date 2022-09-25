@@ -729,8 +729,8 @@ class API {
   }
 
   /// CHAT
-  Future<Map<bool, dynamic>> getRooms(String token) async {
-    Uri url = Uri.parse("$_URL/chat/rooms");
+  Future<Map<bool, dynamic>> getRooms(String token, {int page = 1}) async {
+    Uri url = Uri.parse("$_URL/chat/rooms?page=$page");
     http.Response response = await http.get(url, headers: _getHeader(token));
     Map<String, dynamic> jsonResponse = convert.jsonDecode(response.body);
     // print(jsonResponse);

@@ -17,6 +17,7 @@ class ChatController extends GetxController {
 
   RxBool hasNewMessage = false.obs;
   RxBool messageLoading = false.obs;
+  PagedResponse roomsMetadata = PagedResponse();
   PagedResponse messageMetadata = PagedResponse();
 
   RxInt activeChatId = RxInt(null);
@@ -24,14 +25,17 @@ class ChatController extends GetxController {
   String imageText = "";
 
   Future<void> loadRooms() async {
-    var result = await API().getRooms(Login().token);
-    var pagedResponse = result.values.first as PagedResponse;
+    API().getRooms(Login().token).then((value) {
+      if (value.keys.first) {
+        roomsMetadata = value.values.first as PagedResponse;
 
-    if (pagedResponse.data != null) {
-      rooms.value = pagedResponse.data as List<Room>;
-    } else {
-      rooms.value = <Room>[];
-    }
+        if (roomsMetadata.data != null) {
+          rooms.value = roomsMetadata.data as List<Room>;
+        } else {
+          rooms.value = <Room>[];
+        }
+      }
+    });
   }
 
   Future<void> loadMessages(int roomId) async {
